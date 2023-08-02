@@ -17,11 +17,11 @@ func NewNotificationDeviceToken(userAddress, deviceToken string) *NotificationDe
 }
 
 type Notification struct {
-	Data         map[string]string
-	Notification *messaging.Notification
-	Android      *messaging.AndroidConfig
-	WebPush      *messaging.WebpushConfig
-	APNS         *messaging.APNSConfig
+	Data         map[string]string        `json:"data"`
+	Notification *messaging.Notification  `json:"notification"`
+	Android      *messaging.AndroidConfig `json:"android_config"`
+	WebPush      *messaging.WebpushConfig `json:"web_push_config"`
+	APNS         *messaging.APNSConfig    `json:"apns_config"`
 }
 
 func NewNotification(data map[string]string, notification *messaging.Notification, android *messaging.AndroidConfig, webPush *messaging.WebpushConfig, apns *messaging.APNSConfig) *Notification {
