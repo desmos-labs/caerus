@@ -1,0 +1,13 @@
+# IDEs
+.idea
+.vscode
+
+# Docker
+docker-compose.yml
+
+# Desmos
+.desmos
+desmos
+
+# Test coverage
+coverage.txt
