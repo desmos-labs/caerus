@@ -3,7 +3,7 @@ package files
 const (
 	StorageTypeIPFS = "IPFS"
 
-	EnvFileStorageBaseFolder   = "FILE_STORAGE_BASE_FOLDER"
-	EnvFileStorageType         = "FILE_STORAGE_TYPE"
-	EnvFileStorageIPFSEndpoint = "FILE_STORAGE_IPFS_ENDPOINT"
+	EnvFileStorageBaseFolder   = "APIS_FILE_STORAGE_BASE_FOLDER"
+	EnvFileStorageType         = "APIS_FILE_STORAGE_TYPE"
+	EnvFileStorageIPFSEndpoint = "APIS_FILE_STORAGE_IPFS_ENDPOINT"
 )
