@@ -7,6 +7,17 @@ import (
 	"github.com/desmos-labs/caerus/types"
 )
 
+// CanSendNotifications tells whether the user that is authenticating using the given token
+// can send notifications or not
+func (db *Database) CanSendNotifications(token string) (bool, error) {
+	stmt := `SELECT EXISTS(SELECT 1 FROM notification_senders WHERE token = $1)`
+	var exists bool
+	err := db.SQL.Get(&exists, stmt, token)
+	return exists, err
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
 // SaveNotificationDeviceToken allows to save the given device token inside the database
 func (db *Database) SaveNotificationDeviceToken(token *types.NotificationDeviceToken) error {
 	stmt := `INSERT INTO notifications_tokens (user_address, device_token) VALUES ($1, $2) ON CONFLICT DO NOTHING`
