@@ -19,4 +19,7 @@ const (
 	NotificationTitleKey = "notification_title"
 	NotificationBodyKey  = "notification_body"
 	NotificationImageKey = "notification_image"
+
+	ApplicationIDKey   = "application_id"
+	ApplicationNameKey = "application_name"
 )

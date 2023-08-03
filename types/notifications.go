@@ -16,22 +16,35 @@ func NewNotificationDeviceToken(userAddress, deviceToken string) *NotificationDe
 	}
 }
 
-type Notification struct {
-	Data         map[string]string        `json:"data"`
-	Notification *messaging.Notification  `json:"notification"`
-	Android      *messaging.AndroidConfig `json:"android_config"`
-	WebPush      *messaging.WebpushConfig `json:"web_push_config"`
-	APNS         *messaging.APNSConfig    `json:"apns_config"`
+// --------------------------------------------------------------------------------------------------------------------
+
+type NotificationApplication struct {
+	ID   string
+	Name string
 }
 
-func NewNotification(data map[string]string, notification *messaging.Notification, android *messaging.AndroidConfig, webPush *messaging.WebpushConfig, apns *messaging.APNSConfig) *Notification {
-	return &Notification{
-		Data:         data,
-		Notification: notification,
-		Android:      android,
-		WebPush:      webPush,
-		APNS:         apns,
-	}
+type NotificationSender struct {
+	Token       string
+	Application *NotificationApplication
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+type Notification struct {
+	// Application contains the details of the application that is sending the notification.
+	// It can be nil if the notification is sent by the server itself, or if there is no
+	// authentication set for sending notifications.
+	Application *NotificationApplication
+
+	// Notification is the notification to be sent
+	Notification *messaging.Notification `json:"notification"`
+
+	// Data is any additional data that should be sent along with the notification
+	Data map[string]string `json:"data"`
+
+	Android *messaging.AndroidConfig `json:"android_config"`
+	WebPush *messaging.WebpushConfig `json:"web_push_config"`
+	APNS    *messaging.APNSConfig    `json:"apns_config"`
 }
 
 // BackgroundAndroidConfig returns the AndroidConfig to be used when sending a notification in background.

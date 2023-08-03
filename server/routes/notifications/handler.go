@@ -55,16 +55,19 @@ func (h *Handler) ParseSendNotificationRequest(body []byte) (*SendNotificationRe
 
 // HandleSendNotificationRequest handles the request to send a new notification
 func (h *Handler) HandleSendNotificationRequest(req *SendNotificationRequest) error {
-	if h.cfg.RequiresAuthentication {
-		// Make sure the user can send notifications
-		canSend, err := h.db.CanSendNotifications(req.Token)
-		if err != nil {
-			return err
-		}
+	sender, found, err := h.db.GetNotificationSender(req.Token)
+	if err != nil {
+		return err
+	}
 
-		if !canSend {
-			return utils.WrapErr(http.StatusUnauthorized, "you cannot send notifications")
-		}
+	// Make sure the user can send notifications if the authentication is required
+	if h.cfg.RequiresAuthentication && !found {
+		return utils.WrapErr(http.StatusUnauthorized, "you cannot send notifications")
+	}
+
+	if sender != nil {
+		// Update the notification application to set the one of the sender
+		req.Notification.Application = sender.Application
 	}
 
 	// Send the notification

@@ -7,7 +7,7 @@ import (
 
 type Database interface {
 	base.Database
-	CanSendNotifications(token string) (bool, error)
+	GetNotificationSender(token string) (*types.NotificationSender, bool, error)
 	SaveNotificationDeviceToken(token *types.NotificationDeviceToken) error
 }
 

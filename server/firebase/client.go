@@ -87,6 +87,12 @@ func (c *Client) SendNotifications(deviceTokens []string, notification *caerus.N
 		return nil
 	}
 
+	// Put the application name and id inside the data
+	if notification.Application != nil {
+		notification.Data[ApplicationIDKey] = notification.Application.ID
+		notification.Data[ApplicationNameKey] = notification.Application.Name
+	}
+
 	// Put the title and body of the notification inside the data if the config specify this
 	var notificationData = notification.Notification
 	if !c.cfg.Notifications.SendNotificationField {

@@ -7,13 +7,48 @@ import (
 	"github.com/desmos-labs/caerus/types"
 )
 
-// CanSendNotifications tells whether the user that is authenticating using the given token
-// can send notifications or not
-func (db *Database) CanSendNotifications(token string) (bool, error) {
-	stmt := `SELECT EXISTS(SELECT 1 FROM notification_senders WHERE token = $1)`
-	var exists bool
-	err := db.SQL.Get(&exists, stmt, token)
-	return exists, err
+type notificationApplicationRow struct {
+	ID   string `db:"id"`
+	Name string `db:"name"`
+}
+
+type notificationSenderRow struct {
+	Token         string `db:"token"`
+	ApplicationID string `db:"application_id"`
+}
+
+// GetNotificationSender returns the notification sender having the given token
+func (db *Database) GetNotificationSender(token string) (*types.NotificationSender, bool, error) {
+	stmt := `SELECT * FROM notification_senders WHERE token = $1`
+
+	var senderRow notificationSenderRow
+	err := db.SQL.Get(&senderRow, stmt, token)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, false, nil
+		} else {
+			return nil, false, err
+		}
+	}
+
+	var applicationRow notificationApplicationRow
+	stmt = `SELECT * FROM notification_applications WHERE id = $1`
+	err = db.SQL.Get(&applicationRow, stmt, senderRow.ApplicationID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, false, nil
+		} else {
+			return nil, false, err
+		}
+	}
+
+	return &types.NotificationSender{
+		Token: senderRow.Token,
+		Application: &types.NotificationApplication{
+			ID:   applicationRow.ID,
+			Name: applicationRow.Name,
+		},
+	}, true, nil
 }
 
 // --------------------------------------------------------------------------------------------------------------------
