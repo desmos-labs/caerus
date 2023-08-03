@@ -1,5 +1,4 @@
 //nolint:gosec
-
 package firebase
 
 const (
