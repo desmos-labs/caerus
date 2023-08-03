@@ -178,8 +178,8 @@ func (h *Handler) HandleDeleteAccountRequest(req *DeleteAccountRequest) error {
 // --------------------------------------------------------------------------------------------------------------------
 
 // getDefaultHasuraResponse returns the default Hasura session response
-func (h *Handler) getDefaultHasuraResponse() (*UnauthorizedSessionResponse, error) {
-	return NewUnauthorizedHasuraSessionResponse(), nil
+func (h *Handler) getDefaultHasuraResponse() *UnauthorizedSessionResponse {
+	return NewUnauthorizedHasuraSessionResponse()
 }
 
 // HandleHasuraSessionRequest returns the session used to authenticate a Hasura user
@@ -189,21 +189,14 @@ func (h *Handler) HandleHasuraSessionRequest(token string) (HasuraSessionRespons
 		return nil, err
 	}
 
-	defaultResponse, err := h.getDefaultHasuraResponse()
-	if err != nil {
-		return nil, err
-	}
+	defaultResponse := h.getDefaultHasuraResponse()
 
 	return NewAuthorizedHasuraSessionResponse(defaultResponse, session.DesmosAddress), nil
 }
 
 // GetUnauthorizedHasuraSession returns the session used to authenticate an unauthorized Hasura user
 func (h *Handler) GetUnauthorizedHasuraSession() HasuraSessionResponse {
-	response, err := h.getDefaultHasuraResponse()
-	if err != nil {
-		panic(err)
-	}
-	return response
+	return h.getDefaultHasuraResponse()
 }
 
 // --------------------------------------------------------------------------------------------------------------------
