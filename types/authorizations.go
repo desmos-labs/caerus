@@ -11,6 +11,9 @@ type FeeGrantRequest struct {
 	// DesmosAddress is the Desmos address of the user requesting the fee grant allowance.
 	DesmosAddress string
 
+	// GranterAddress is the Desmos address of the user that will grant the fee grant allowance.
+	GranterAddress string
+
 	// RequestTime is the time at which the user requested the fee grant allowance.
 	RequestTime time.Time
 

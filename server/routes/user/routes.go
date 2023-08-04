@@ -165,27 +165,4 @@ func Register(router *gin.Engine, handler *Handler) {
 			c.String(http.StatusOK, token)
 		})
 
-	// ----------------------------------------
-	// --- Funds endpoints
-	// ----------------------------------------
-
-	router.
-		GET("/authorizations", authMiddleware, func(c *gin.Context) {
-			// Parse the request
-			token := c.MustGet(types.SessionTokenKey).(string)
-
-			err := handler.HandleFeeGrantRequest(token)
-			if err != nil {
-				utils.HandleError(c, err)
-				return
-			}
-
-			// Log the event
-			analytics.Enqueue(posthog.Capture{
-				DistinctId: c.MustGet(types.SessionDesmosAddressKey).(string),
-				Event:      "Requested Authorizations",
-			})
-
-			c.String(http.StatusOK, "Authorizations requested successfully. You will receive a notification once they have been approved")
-		})
 }

@@ -14,7 +14,4 @@ type Database interface {
 	SaveUser(desmosAddress string) error
 	UpdateLoginInfo(desmosAddress string) error
 	DeleteAllSessions(desmosAddress string) error
-
-	SaveFeeGrantRequest(request types.FeeGrantRequest) error
-	HasFeeGrantBeenGrantedToUser(user string) (bool, error)
 }

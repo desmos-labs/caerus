@@ -101,16 +101,3 @@ func (r *AuthorizedSessionResponse) MarshalJSON() ([]byte, error) {
 		UserAddress: r.userAddress,
 	})
 }
-
-// --------------------------------------------------------------------------------------------------------------------
-
-type SaveContactRequest struct {
-	UserAddress string
-	Platform    string `json:"platform"`
-	Username    string `json:"username"`
-}
-
-type DeleteContactRequest struct {
-	UserAddress string
-	ContactID   string
-}
