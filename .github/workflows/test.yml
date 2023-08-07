@@ -1,0 +1,76 @@
+name: Tests
+# Tests / Code Coverage workflow runs unit tests and uploads a code coverage report.
+# This workflow is run on pushes to main & every Pull Requests where a .go, .mod, .sum have been changed.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  Cleanup-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup 🧹
+        uses: rokroskar/workflow-run-cleanup-action@master
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+    if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/main'"
+
+  Unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Setup Go 🧰
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.19
+
+      - name: Compute diff 📜
+        uses: technote-space/get-diff-action@v6.1.2
+        id: git_diff
+        with:
+          PATTERNS: |
+            **/**.go
+            go.mod
+            go.sum
+
+      - name: Start database 🗄️
+        if: "env.GIT_DIFF != ''"
+        run: make start-test-db
+
+      - name: Start the chain 🔗
+        if: "env.GIT_DIFF != ''"
+        run: |
+          scripts/get_desmos_bin.sh 5.1.0
+          scripts/spawn_test_chain.sh -b
+          sleep 15
+
+      - name: Test client 🧪
+        if: "env.GIT_DIFF != ''"
+        working-directory: client
+        run: make test-unit
+
+      - name: Test server 🧪
+        if: "env.GIT_DIFF != ''"
+        working-directory: server
+        run: make test-unit
+
+      - name: Test types 🧪
+        if: "env.GIT_DIFF != ''"
+        working-directory: types
+        run: make test-unit
+
+      - name: Test utils 🧪
+        if: "env.GIT_DIFF != ''"
+        working-directory: utils
+        run: make test-unit
+
+      - name: Upload cove coverage 📤
+        if: "env.GIT_DIFF != ''"
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./client/coverage.txt,./server/coverage.txt,./types/coverage.txt,./utils/coverage.txt
