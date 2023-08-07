@@ -76,7 +76,7 @@ func NewClientFromEnvVariables() (*Client, error) {
 // --------------------------------------------------------------------------------------------------------------------
 
 // SendNotifications sends the given notification to the devices that have registered using the given tokens
-func (c *Client) SendNotifications(deviceTokens []string, notification *caerus.Notification) error {
+func (c *Client) SendNotifications(app *caerus.Application, deviceTokens []string, notification *caerus.Notification) error {
 	// Do nothing if the client is not configured
 	if c.firebaseMessaging == nil {
 		return nil
@@ -88,9 +88,9 @@ func (c *Client) SendNotifications(deviceTokens []string, notification *caerus.N
 	}
 
 	// Put the application name and id inside the data
-	if notification.Application != nil {
-		notification.Data[ApplicationIDKey] = notification.Application.ID
-		notification.Data[ApplicationNameKey] = notification.Application.Name
+	if app != nil {
+		notification.Data[ApplicationIDKey] = app.ID
+		notification.Data[ApplicationNameKey] = app.Name
 	}
 
 	// Put the title and body of the notification inside the data if the config specify this

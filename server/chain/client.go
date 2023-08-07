@@ -9,6 +9,7 @@ import (
 	cosmosclient "github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/authz"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	"github.com/desmos-labs/cosmos-go-wallet/client"
@@ -22,6 +23,7 @@ import (
 type Client struct {
 	*wallet.Wallet
 	FeeGrantConfig *FeeGrantConfig
+	authzClient    authz.QueryClient
 	bankClient     banktypes.QueryClient
 	feegrantClient feegrant.QueryClient
 }
@@ -58,11 +60,31 @@ func NewClientFromEnvVariables(txConfig cosmosclient.TxConfig, cdc codec.Codec) 
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// HasFeeGrant checks whether the given address already has a fee grant or not
-func (c *Client) HasFeeGrant(address string) (bool, error) {
+// HasGrantedMsgGrantAllowanceAuthorization checks whether the given address has granted a
+// MsgGrantAllowance authorization to the wallet of this client
+func (c *Client) HasGrantedMsgGrantAllowanceAuthorization(appAddress string) (bool, error) {
+	res, err := c.authzClient.Grants(context.Background(), &authz.QueryGrantsRequest{
+		Granter:    appAddress,
+		Grantee:    c.Wallet.AccAddress(),
+		MsgTypeUrl: sdk.MsgTypeURL(&feegrant.MsgGrantAllowance{}),
+	})
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return res.Grants != nil && len(res.Grants) > 0, nil
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+// HasFeeGrant checks whether the given address already has a fee grant from the given granter
+func (c *Client) HasFeeGrant(userAddress string, granterAddress string) (bool, error) {
 	res, err := c.feegrantClient.Allowance(context.Background(), &feegrant.QueryAllowanceRequest{
-		Granter: c.Wallet.AccAddress(),
-		Grantee: address,
+		Granter: granterAddress,
+		Grantee: userAddress,
 	})
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {

@@ -92,7 +92,7 @@ func (h *Handler) HandleAuthenticationRequest(request *AuthenticationRequest) (*
 	}
 
 	// Create the session
-	session, err := types.CreateSession(request.DesmosAddress)
+	session, err := types.CreateUserSession(request.DesmosAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (h *Handler) HandleAuthenticationRequest(request *AuthenticationRequest) (*
 // HandleRefreshSessionRequest refreshes the session associated with the given request
 func (h *Handler) HandleRefreshSessionRequest(token string) error {
 	// Check the session validity
-	session, err := h.db.GetSession(token)
+	session, err := h.db.GetUserSession(token)
 	if err != nil {
 		return err
 	}
@@ -156,7 +156,7 @@ func (h *Handler) HandleRefreshSessionRequest(token string) error {
 
 // HandleLogoutRequest allows to handle the request of logging out a user that is connected using the given session
 func (h *Handler) HandleLogoutRequest(req *LogoutRequest) error {
-	session, err := h.db.GetSession(req.Token)
+	session, err := h.db.GetUserSession(req.Token)
 	if err != nil {
 		return err
 	}
@@ -182,7 +182,7 @@ func (h *Handler) getDefaultHasuraResponse() *UnauthorizedSessionResponse {
 
 // HandleHasuraSessionRequest returns the session used to authenticate a Hasura user
 func (h *Handler) HandleHasuraSessionRequest(token string) (HasuraSessionResponse, error) {
-	session, err := h.GetSession(token)
+	session, err := h.GetUserSession(token)
 	if err != nil {
 		return nil, err
 	}

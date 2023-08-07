@@ -87,7 +87,7 @@ func (suite *FilesAPITestSuite) TestUploadMedia() {
 		{
 			name: "invalid session returns error",
 			setup: func() {
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Date(2020, 1, 1, 12, 00, 00, 000, time.UTC),
@@ -129,7 +129,7 @@ func (suite *FilesAPITestSuite) TestUploadMedia() {
 		{
 			name: "valid request works properly",
 			setup: func() {
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Now(),
@@ -225,7 +225,7 @@ func (suite *FilesAPITestSuite) TestDownloadMedia() {
 			name: "valid request works properly",
 			setup: func() string {
 				// Store the session for the upload
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Now(),

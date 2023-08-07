@@ -12,19 +12,33 @@ import (
 	"github.com/desmos-labs/caerus/server/utils"
 )
 
+// Register registers the routes related to the grants module inside the given router.
 func Register(router *gin.Engine, handler *Handler) {
-	authMiddleware := authentication.NewMiddleware(handler)
+	appAuthMiddleware := authentication.NewAppAuthMiddleware(handler)
 
 	// ----------------------------------------
 	// --- Funds endpoints
 	// ----------------------------------------
 
 	router.
-		GET("/authorizations", authMiddleware, func(c *gin.Context) {
-			// Parse the request
-			token := c.MustGet(types.SessionTokenKey).(string)
+		GET("/grant", appAuthMiddleware, func(c *gin.Context) {
+			// Get the request body
+			body, err := c.GetRawData()
+			if err != nil {
+				utils.HandleError(c, err)
+				return
+			}
 
-			err := handler.HandleFeeGrantRequest(token)
+			// Parse the request
+			req, err := handler.ParseRequestFeeGrantRequest(body)
+			if err != nil {
+				utils.HandleError(c, err)
+				return
+			}
+			req.AppID = c.MustGet(types.SessionAppID).(string)
+
+			// Handle the request
+			err = handler.HandleFeeGrantRequest(req)
 			if err != nil {
 				utils.HandleError(c, err)
 				return
@@ -32,10 +46,12 @@ func Register(router *gin.Engine, handler *Handler) {
 
 			// Log the event
 			analytics.Enqueue(posthog.Capture{
-				DistinctId: c.MustGet(types.SessionDesmosAddressKey).(string),
-				Event:      "Requested Authorizations",
+				DistinctId: req.AppID,
+				Event:      "Requested fee grant",
+				Properties: posthog.NewProperties().
+					Set(analytics.KeyUserAddress, req.DesmosAddress),
 			})
 
-			c.String(http.StatusOK, "Authorizations requested successfully. You will receive a notification once they have been approved")
+			c.String(http.StatusOK, "Fee grant requested successfully. You and the user will receive a notification once it has been granted")
 		})
 }

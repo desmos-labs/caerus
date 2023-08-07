@@ -1,6 +1,7 @@
 package grants
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 
@@ -27,15 +28,51 @@ func NewHandler(client *chain.Client, db Database) *Handler {
 
 // --------------------------------------------------------------------------------------------------------------------
 
+// ParseRequestFeeGrantRequest parses the given request body into a RequestFeeGrantRequest instance
+func (h *Handler) ParseRequestFeeGrantRequest(body []byte) (*RequestFeeGrantRequest, error) {
+	var req RequestFeeGrantRequest
+	return &req, json.Unmarshal(body, &req)
+}
+
 // HandleFeeGrantRequest handles the request of a fee grant from the user having the given token
-func (h *Handler) HandleFeeGrantRequest(token string) error {
-	session, err := h.GetSession(token)
+func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {
+	// Get the app details
+	app, found, err := h.db.GetApp(req.AppID)
 	if err != nil {
 		return err
 	}
 
+	if !found {
+		return serverutils.WrapErr(http.StatusNotFound, "Application not found")
+	}
+
+	// Check if the app has granted a MsgGrantFeeAllowance permission
+	hasGrantedAuthorization, err := h.client.HasGrantedMsgGrantAllowanceAuthorization(app.WalletAddress)
+	if err != nil {
+		return err
+	}
+
+	if !hasGrantedAuthorization {
+		return serverutils.WrapErr(http.StatusBadRequest, "On-chain authorization not found")
+	}
+
+	// Check if the application has reached the number of requests
+	requestRateLimit, err := h.db.GetAppFeeGrantRequestsLimit(req.AppID)
+	if err != nil {
+		return err
+	}
+
+	requestsCount, err := h.db.GetAppFeeGrantRequestsCount(req.AppID)
+	if err != nil {
+		return err
+	}
+
+	if requestRateLimit > 0 && requestsCount >= requestRateLimit {
+		return serverutils.NewTooManyRequestsError("Number of fee grant requests allowed reached")
+	}
+
 	// Check if the user has already been granted the fee grant
-	hasBeenGranted, err := h.db.HasFeeGrantBeenGrantedToUser(session.DesmosAddress)
+	hasBeenGranted, err := h.db.HasFeeGrantBeenGrantedToUser(req.AppID, req.DesmosAddress)
 	if err != nil {
 		return err
 	}
@@ -45,7 +82,7 @@ func (h *Handler) HandleFeeGrantRequest(token string) error {
 	}
 
 	// Check if the user already has on-chain funds
-	hasFunds, err := h.client.HasFunds(session.DesmosAddress)
+	hasFunds, err := h.client.HasFunds(req.DesmosAddress)
 	if err != nil {
 		return err
 	}
@@ -55,7 +92,7 @@ func (h *Handler) HandleFeeGrantRequest(token string) error {
 	}
 
 	// Check if the user already has an on-chain grant
-	hasGrant, err := h.client.HasFeeGrant(session.DesmosAddress)
+	hasGrant, err := h.client.HasFeeGrant(req.DesmosAddress, app.WalletAddress)
 	if err != nil {
 		return err
 	}
@@ -66,5 +103,5 @@ func (h *Handler) HandleFeeGrantRequest(token string) error {
 	}
 
 	// Store the request inside the database
-	return h.db.SaveFeeGrantRequest(types.NewFeeGrantRequest(session.DesmosAddress, time.Now(), grantTime))
+	return h.db.SaveFeeGrantRequest(types.NewFeeGrantRequest(req.AppID, req.DesmosAddress, time.Now(), grantTime))
 }

@@ -4,8 +4,10 @@
  */
 CREATE TABLE applications
 (
-    id                     TEXT                     NOT NULL PRIMARY KEY UNIQUE DEFAULT gen_random_uuid(),
-    name                   TEXT                     NOT NULL,
+    id              TEXT                     NOT NULL PRIMARY KEY UNIQUE DEFAULT gen_random_uuid(),
+
+    -- Name of the application
+    name            TEXT                     NOT NULL,
 
     -- Address of the wallet associated to the application.
     --
@@ -14,13 +16,13 @@ CREATE TABLE applications
     -- MsgGrantAllowance transactions on its behalf.
     -- If its not set, or an on-chain authorization does not exist, the application will not be
     -- able to request fee grants.
-    wallet_address         TEXT,
+    wallet_address  TEXT,
 
-    -- Whether the application can send notifications to the users or not
-    can_send_notifications BOOLEAN                  NOT NULL                    DEFAULT FALSE,
+    -- ID of the subscription plan that the application is subscribed to
+    subscription_id INTEGER REFERENCES application_subscriptions (id),
 
     -- Time at which the application was created
-    creation_time          TIMESTAMP WITH TIME ZONE NOT NULL                    DEFAULT NOW()
+    creation_time   TIMESTAMP WITH TIME ZONE NOT NULL                    DEFAULT NOW()
 );
 
 /**
@@ -42,4 +44,24 @@ CREATE TABLE application_tokens
 
     -- Time at which the token was created
     creation_time  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+/**
+ * Table that holds the details of the various subscription plans that can be
+ * subscribed to by applications.
+ */
+CREATE TABLE application_subscriptions
+(
+    id                       SERIAL  NOT NULL PRIMARY KEY,
+
+    -- Name of the subscription plan
+    subscription             TEXT    NOT NULL,
+
+    -- Number of fee grants that can be requested per day
+    -- If set to 0, no limit is applied
+    fee_grant_rate_limit     INTEGER NOT NULL,
+
+    -- Number of notifications that can be sent per day
+    -- If set to 0, no limit is applied
+    notifications_rate_limit INTEGER NOT NULL
 );

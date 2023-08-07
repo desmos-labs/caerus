@@ -15,7 +15,7 @@ import (
 
 // Register registers all the routes that allow to perform user-related operations
 func Register(router *gin.Engine, handler *Handler) {
-	authMiddleware := authentication.NewMiddleware(handler)
+	authMiddleware := authentication.NewUserAuthMiddleware(handler)
 
 	// ----------------------------------------
 	// --- Login endpoints
