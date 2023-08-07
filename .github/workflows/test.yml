@@ -38,17 +38,6 @@ jobs:
             go.mod
             go.sum
 
-      - name: Start database 🗄️
-        if: "env.GIT_DIFF != ''"
-        run: make start-test-db
-
-      - name: Start the chain 🔗
-        if: "env.GIT_DIFF != ''"
-        run: |
-          scripts/get_desmos_bin.sh 5.1.0
-          scripts/spawn_test_chain.sh -b
-          sleep 15
-
       - name: Test client 🧪
         if: "env.GIT_DIFF != ''"
         working-directory: client
