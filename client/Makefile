@@ -29,22 +29,7 @@ format:
 ###                           Tests & Simulation                            ###
 ###############################################################################
 
-stop-test-db:
-	@echo "Stopping test database..."
-	@docker stop apis-test-db || true && docker rm apis-test-db || true
-.PHONY: stop-test-db
-
-start-test-db: stop-test-db
-	@echo "Starting test database..."
-	@docker run --name apis-test-db -e POSTGRES_USER=apis -e POSTGRES_PASSWORD=password -e POSTGRES_DB=apis -d -p 6433:5432 postgres
-.PHONY: start-test-db
-
-start-test-chain:
-	@echo "Starting test chain"
-	@scripts/get_desmos_bin.sh 5.1.0
-	@scripts/spawn_test_chain.sh
-
-test-unit: start-test-db
+test-unit:
 	@echo "Executing unit tests..."
 	@go test -p=1 -mod=readonly -v -coverprofile coverage.txt ./...
 .PHONY: test-unit
