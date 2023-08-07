@@ -11,16 +11,16 @@ var (
 	DefaultSessionLength = time.Hour * 24 * 7 // 7 days
 )
 
-type Session struct {
+type UserSession struct {
 	DesmosAddress string
 	Token         string
 	CreationDate  time.Time
 	ExpiryTime    time.Time
 }
 
-// NewSession returns a new Sessions instance
-func NewSession(desmosAddress string, token string, creationDate time.Time, expiryTime time.Time) *Session {
-	return &Session{
+// NewUserSession returns a new UserSession instance
+func NewUserSession(desmosAddress string, token string, creationDate time.Time, expiryTime time.Time) *UserSession {
+	return &UserSession{
 		DesmosAddress: desmosAddress,
 		Token:         token,
 		CreationDate:  creationDate,
@@ -28,12 +28,12 @@ func NewSession(desmosAddress string, token string, creationDate time.Time, expi
 	}
 }
 
-// CreateSession creates a new session for the given Desmos address
-func CreateSession(desmosAddress string) (*Session, error) {
+// CreateUserSession creates a new session for the user having the given Desmos address
+func CreateUserSession(desmosAddress string) (*UserSession, error) {
 	// Get the creation time
 	creationTime := time.Now()
 
-	return NewSession(
+	return NewUserSession(
 		desmosAddress,
 		uuid.NewString(),
 		creationTime,
@@ -41,16 +41,16 @@ func CreateSession(desmosAddress string) (*Session, error) {
 	), nil
 }
 
-type EncryptedSession struct {
+type EncryptedUserSession struct {
 	DesmosAddress  string
 	EncryptedToken string
 	CreationDate   time.Time
 	ExpiryTime     *time.Time
 }
 
-// NewEncryptedSession returns a new EncryptedSessions instance
-func NewEncryptedSession(desmosAddress string, token string, creationDate time.Time, expiryTime *time.Time) *EncryptedSession {
-	return &EncryptedSession{
+// NewEncryptedUserSession returns a new EncryptedUserSession instance
+func NewEncryptedUserSession(desmosAddress string, token string, creationDate time.Time, expiryTime *time.Time) *EncryptedUserSession {
+	return &EncryptedUserSession{
 		DesmosAddress:  desmosAddress,
 		EncryptedToken: token,
 		CreationDate:   creationDate,
@@ -59,13 +59,13 @@ func NewEncryptedSession(desmosAddress string, token string, creationDate time.T
 }
 
 // Refresh refreshes this session instance extending its expiration time
-func (s *EncryptedSession) Refresh() *EncryptedSession {
+func (s *EncryptedUserSession) Refresh() *EncryptedUserSession {
 	if s.ExpiryTime == nil {
 		return s
 	}
 
 	updatedExpirationTime := time.Now().Add(DefaultSessionLength)
-	return NewEncryptedSession(
+	return NewEncryptedUserSession(
 		s.DesmosAddress,
 		s.EncryptedToken,
 		s.CreationDate,
@@ -73,13 +73,13 @@ func (s *EncryptedSession) Refresh() *EncryptedSession {
 	)
 }
 
-func (s *EncryptedSession) IsExpired() bool {
+func (s *EncryptedUserSession) IsExpired() bool {
 	return s.ExpiryTime != nil && s.ExpiryTime.Before(time.Now())
 }
 
 // Validate checks the validity of this session based on the given Desmos address.
 // It returns an error if anything goes wrong, and true if the session should be refresh and/or deleted from the store.
-func (s *EncryptedSession) Validate() (shouldRefresh bool, shouldDelete bool, err error) {
+func (s *EncryptedUserSession) Validate() (shouldRefresh bool, shouldDelete bool, err error) {
 	if s.IsExpired() {
 		return false, true, fmt.Errorf("token expired")
 	}

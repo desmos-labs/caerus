@@ -3,8 +3,13 @@ package base
 import (
 	"net/http"
 
+	"github.com/desmos-labs/caerus/server/authentication"
 	"github.com/desmos-labs/caerus/server/utils"
 	"github.com/desmos-labs/caerus/types"
+)
+
+var (
+	_ authentication.Source = &Handler{}
 )
 
 // Handler represents a basic handler that provides basic functionalities
@@ -18,10 +23,10 @@ func NewHandler(db Database) *Handler {
 	}
 }
 
-// GetSession returns
-func (h *Handler) GetSession(token string) (*types.EncryptedSession, error) {
+// GetUserSession implements authentication.Source
+func (h *Handler) GetUserSession(token string) (*types.EncryptedUserSession, error) {
 	// Check the session validity
-	session, err := h.db.GetSession(token)
+	session, err := h.db.GetUserSession(token)
 	if err != nil {
 		return nil, err
 	}
@@ -50,4 +55,19 @@ func (h *Handler) GetSession(token string) (*types.EncryptedSession, error) {
 	}
 
 	return session, nil
+}
+
+// GetAppToken implements authentication.Source
+func (h *Handler) GetAppToken(token string) (*types.EncryptedAppToken, error) {
+	// Check the session validity
+	encryptedToken, err := h.db.GetAppToken(token)
+	if err != nil {
+		return nil, err
+	}
+
+	if encryptedToken == nil {
+		return nil, utils.WrapErr(http.StatusUnauthorized, "invalid token")
+	}
+
+	return encryptedToken, nil
 }

@@ -323,7 +323,7 @@ func (suite *LoginAPIsTestSuite) TestLogin() {
 				suite.Require().Nil(encryptedNonce)
 
 				// Make sure the session has been created
-				encryptedSession, err := suite.db.GetSession(res.Token)
+				encryptedSession, err := suite.db.GetUserSession(res.Token)
 				suite.Require().NoError(err)
 				suite.Require().NotNil(encryptedSession)
 
@@ -375,7 +375,7 @@ func (suite *LoginAPIsTestSuite) TestLogout() {
 		{
 			name: "logout from single session works properly",
 			setup: func() {
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Now(),
@@ -404,7 +404,7 @@ func (suite *LoginAPIsTestSuite) TestLogout() {
 		{
 			name: "logout from all sessions works properly",
 			setup: func() {
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Now(),
@@ -412,7 +412,7 @@ func (suite *LoginAPIsTestSuite) TestLogout() {
 				))
 				suite.Require().NoError(err)
 
-				err = suite.db.SaveSession(types.NewSession(
+				err = suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"second-token",
 					time.Now().Add(-time.Minute),
@@ -478,7 +478,7 @@ func (suite *LoginAPIsTestSuite) TestDeleteAccount() {
 		{
 			name: "invalid session returns error",
 			setup: func() {
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Date(2020, 1, 1, 12, 00, 00, 000, time.UTC),
@@ -500,7 +500,7 @@ func (suite *LoginAPIsTestSuite) TestDeleteAccount() {
 		{
 			name: "valid request works properly",
 			setup: func() {
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Now(),
@@ -508,7 +508,7 @@ func (suite *LoginAPIsTestSuite) TestDeleteAccount() {
 				))
 				suite.Require().NoError(err)
 
-				err = suite.db.SaveSession(types.NewSession(
+				err = suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"second-token",
 					time.Now().Add(-time.Minute),
@@ -601,7 +601,7 @@ func (suite *LoginAPIsTestSuite) TestHasuraSession() {
 		{
 			name: "expired session returns unauthorized response",
 			setup: func() {
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Date(2020, 1, 1, 12, 00, 00, 000, time.UTC),
@@ -621,7 +621,7 @@ func (suite *LoginAPIsTestSuite) TestHasuraSession() {
 			shouldErr: false,
 			check: func(w *httptest.ResponseRecorder) {
 				// Make sure the expired session is deleted
-				encryptedSession, err := suite.db.GetSession("token")
+				encryptedSession, err := suite.db.GetUserSession("token")
 				suite.Require().NoError(err)
 				suite.Require().Nil(encryptedSession)
 
@@ -640,7 +640,7 @@ func (suite *LoginAPIsTestSuite) TestHasuraSession() {
 		{
 			name: "authorized user returns correct data",
 			setup: func() {
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Now(),
@@ -660,7 +660,7 @@ func (suite *LoginAPIsTestSuite) TestHasuraSession() {
 			shouldErr: false,
 			check: func(w *httptest.ResponseRecorder) {
 				// Make sure the session is refreshed
-				encryptedSession, err := suite.db.GetSession("token")
+				encryptedSession, err := suite.db.GetUserSession("token")
 				suite.Require().NoError(err)
 				suite.Require().NotNil(encryptedSession)
 				suite.Require().Greater(encryptedSession.ExpiryTime.Sub(time.Now()), time.Hour)
@@ -732,7 +732,7 @@ func (suite *LoginAPIsTestSuite) TestRefreshSession() {
 		{
 			name: "expired session returns an error",
 			setup: func() {
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Date(2020, 1, 1, 12, 00, 00, 000, time.UTC),
@@ -752,7 +752,7 @@ func (suite *LoginAPIsTestSuite) TestRefreshSession() {
 			shouldErr: true,
 			check: func(w *httptest.ResponseRecorder) {
 				// Make sure the expired session is deleted
-				encryptedSession, err := suite.db.GetSession("token")
+				encryptedSession, err := suite.db.GetUserSession("token")
 				suite.Require().NoError(err)
 				suite.Require().Nil(encryptedSession)
 			},
@@ -760,7 +760,7 @@ func (suite *LoginAPIsTestSuite) TestRefreshSession() {
 		{
 			name: "valid request returns no error - normal user",
 			setup: func() {
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Now(),
@@ -780,7 +780,7 @@ func (suite *LoginAPIsTestSuite) TestRefreshSession() {
 			shouldErr: false,
 			check: func(w *httptest.ResponseRecorder) {
 				// Make sure the session is refreshed
-				encryptedSession, err := suite.db.GetSession("token")
+				encryptedSession, err := suite.db.GetUserSession("token")
 				suite.Require().NoError(err)
 				suite.Require().NotNil(encryptedSession)
 				suite.Require().Greater(encryptedSession.ExpiryTime.Sub(time.Now()), time.Hour)
@@ -789,7 +789,7 @@ func (suite *LoginAPIsTestSuite) TestRefreshSession() {
 		{
 			name: "valid request returns no error - deleted user",
 			setup: func() {
-				err := suite.db.SaveSession(types.NewSession(
+				err := suite.db.SaveSession(types.NewUserSession(
 					"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					"token",
 					time.Now(),
@@ -809,7 +809,7 @@ func (suite *LoginAPIsTestSuite) TestRefreshSession() {
 			shouldErr: false,
 			check: func(w *httptest.ResponseRecorder) {
 				// Make sure the session is refreshed
-				encryptedSession, err := suite.db.GetSession("token")
+				encryptedSession, err := suite.db.GetUserSession("token")
 				suite.Require().NoError(err)
 				suite.Require().NotNil(encryptedSession)
 				suite.Require().Greater(encryptedSession.ExpiryTime.Sub(time.Now()), time.Hour)

@@ -10,8 +10,10 @@ import (
 	"github.com/desmos-labs/caerus/server/utils"
 )
 
+// Register allows to register all the routes related to notifications
 func Register(router *gin.Engine, handler *Handler) {
-	authMiddleware := authentication.NewMiddleware(handler)
+	appAuthMiddleware := authentication.NewAppAuthMiddleware(handler)
+	userAuthMiddleware := authentication.NewUserAuthMiddleware(handler)
 
 	notificationsRoutesGroup := router.Group("/notifications")
 
@@ -20,16 +22,9 @@ func Register(router *gin.Engine, handler *Handler) {
 	// ----------------------------------------
 
 	notificationsRoutesGroup.
-		POST("", func(c *gin.Context) {
+		POST("", appAuthMiddleware, func(c *gin.Context) {
 			// Read the body
 			body, err := c.GetRawData()
-			if err != nil {
-				utils.HandleError(c, err)
-				return
-			}
-
-			// Get the token
-			token, err := utils.GetTokenValue(c)
 			if err != nil {
 				utils.HandleError(c, err)
 				return
@@ -41,7 +36,7 @@ func Register(router *gin.Engine, handler *Handler) {
 				utils.HandleError(c, err)
 				return
 			}
-			req.Token = token
+			req.AppID = c.MustGet(types.SessionAppID).(string)
 
 			// Handle the request
 			err = handler.HandleSendNotificationRequest(req)
@@ -57,8 +52,8 @@ func Register(router *gin.Engine, handler *Handler) {
 	// --- Device token routes
 	// ----------------------------------------
 
-	notificationsRoutesGroup.Group("", authMiddleware).
-		POST("/tokens", func(c *gin.Context) {
+	notificationsRoutesGroup.
+		POST("/app-tokens", appAuthMiddleware, func(c *gin.Context) {
 			// Read the body
 			body, err := c.GetRawData()
 			if err != nil {
@@ -67,7 +62,32 @@ func Register(router *gin.Engine, handler *Handler) {
 			}
 
 			// Parse the request
-			req, err := handler.ParseRegisterDeviceTokenRequest(body)
+			req, err := handler.ParseRegisterAppDeviceTokenRequest(body)
+			if err != nil {
+				utils.HandleError(c, err)
+				return
+			}
+			req.AppID = c.MustGet(types.SessionAppID).(string)
+
+			// Handle the request
+			err = handler.HandleRegisterAppDeviceTokenRequest(req)
+			if err != nil {
+				utils.HandleError(c, err)
+				return
+			}
+
+			c.String(http.StatusOK, "Device token registered successfully")
+		}).
+		POST("/user-tokens", userAuthMiddleware, func(c *gin.Context) {
+			// Read the body
+			body, err := c.GetRawData()
+			if err != nil {
+				utils.HandleError(c, err)
+				return
+			}
+
+			// Parse the request
+			req, err := handler.ParseRegisterUserDeviceTokenRequest(body)
 			if err != nil {
 				utils.HandleError(c, err)
 				return
@@ -75,7 +95,7 @@ func Register(router *gin.Engine, handler *Handler) {
 			req.UserAddress = c.MustGet(types.SessionDesmosAddressKey).(string)
 
 			// Handle the request
-			err = handler.HandleRegisterDeviceTokenRequest(req)
+			err = handler.HandleRegisterUserDeviceTokenRequest(req)
 			if err != nil {
 				utils.HandleError(c, err)
 				return

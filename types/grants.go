@@ -8,6 +8,9 @@ import (
 
 // FeeGrantRequest contains the data of a fee grant allowance request that the user has made
 type FeeGrantRequest struct {
+	// AppID is the ID of the application that is requesting the fee grant for the user.
+	AppID string
+
 	// DesmosAddress is the Desmos address of the user requesting the fee grant allowance.
 	DesmosAddress string
 
@@ -19,8 +22,9 @@ type FeeGrantRequest struct {
 	GrantTime *time.Time
 }
 
-func NewFeeGrantRequest(desmosAddress string, requestTime time.Time, grantTime *time.Time) FeeGrantRequest {
+func NewFeeGrantRequest(appID string, desmosAddress string, requestTime time.Time, grantTime *time.Time) FeeGrantRequest {
 	return FeeGrantRequest{
+		AppID:         appID,
 		DesmosAddress: desmosAddress,
 		RequestTime:   requestTime,
 		GrantTime:     grantTime,

@@ -7,10 +7,16 @@ import (
 
 type Database interface {
 	base.Database
-	GetNotificationSender(token string) (*types.NotificationSender, bool, error)
-	SaveNotificationDeviceToken(token *types.NotificationDeviceToken) error
+
+	GetApp(appID string) (*types.Application, bool, error)
+
+	GetAppNotificationsRateLimit(appID string) (uint64, error)
+	GetAppNotificationsCount(appID string) (uint64, error)
+
+	SaveAppNotificationDeviceToken(token *types.AppNotificationDeviceToken) error
+	SaveUserNotificationDeviceToken(token *types.UserNotificationDeviceToken) error
 }
 
 type Firebase interface {
-	SendNotifications(deviceTokens []string, notification *types.Notification) error
+	SendNotifications(application *types.Application, deviceTokens []string, notification *types.Notification) error
 }

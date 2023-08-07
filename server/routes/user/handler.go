@@ -3,7 +3,6 @@ package user
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,7 +11,6 @@ import (
 	"github.com/desmos-labs/caerus/server/routes/base"
 	serverutils "github.com/desmos-labs/caerus/server/utils"
 	"github.com/desmos-labs/caerus/types"
-	"github.com/desmos-labs/caerus/utils"
 )
 
 type Handler struct {
@@ -94,7 +92,7 @@ func (h *Handler) HandleAuthenticationRequest(request *AuthenticationRequest) (*
 	}
 
 	// Create the session
-	session, err := types.CreateSession(request.DesmosAddress)
+	session, err := types.CreateUserSession(request.DesmosAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +117,7 @@ func (h *Handler) HandleAuthenticationRequest(request *AuthenticationRequest) (*
 // HandleRefreshSessionRequest refreshes the session associated with the given request
 func (h *Handler) HandleRefreshSessionRequest(token string) error {
 	// Check the session validity
-	session, err := h.db.GetSession(token)
+	session, err := h.db.GetUserSession(token)
 	if err != nil {
 		return err
 	}
@@ -158,7 +156,7 @@ func (h *Handler) HandleRefreshSessionRequest(token string) error {
 
 // HandleLogoutRequest allows to handle the request of logging out a user that is connected using the given session
 func (h *Handler) HandleLogoutRequest(req *LogoutRequest) error {
-	session, err := h.db.GetSession(req.Token)
+	session, err := h.db.GetUserSession(req.Token)
 	if err != nil {
 		return err
 	}
@@ -184,7 +182,7 @@ func (h *Handler) getDefaultHasuraResponse() *UnauthorizedSessionResponse {
 
 // HandleHasuraSessionRequest returns the session used to authenticate a Hasura user
 func (h *Handler) HandleHasuraSessionRequest(token string) (HasuraSessionResponse, error) {
-	session, err := h.GetSession(token)
+	session, err := h.GetUserSession(token)
 	if err != nil {
 		return nil, err
 	}
@@ -197,48 +195,4 @@ func (h *Handler) HandleHasuraSessionRequest(token string) (HasuraSessionRespons
 // GetUnauthorizedHasuraSession returns the session used to authenticate an unauthorized Hasura user
 func (h *Handler) GetUnauthorizedHasuraSession() HasuraSessionResponse {
 	return h.getDefaultHasuraResponse()
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-// HandleFeeGrantRequest handles the request of a fee grant from the user having the given token
-func (h *Handler) HandleFeeGrantRequest(token string) error {
-	session, err := h.GetSession(token)
-	if err != nil {
-		return err
-	}
-
-	// Check if the user has already been granted the fee grant
-	hasBeenGranted, err := h.db.HasFeeGrantBeenGrantedToUser(session.DesmosAddress)
-	if err != nil {
-		return err
-	}
-
-	if hasBeenGranted {
-		return serverutils.WrapErr(http.StatusBadRequest, "You have already been granted the authorizations in the past")
-	}
-
-	// Check if the user already has on-chain funds
-	hasFunds, err := h.client.HasFunds(session.DesmosAddress)
-	if err != nil {
-		return err
-	}
-
-	if hasFunds {
-		return serverutils.WrapErr(http.StatusBadRequest, "You already have funds in your wallet")
-	}
-
-	// Check if the user already has an on-chain grant
-	hasGrant, err := h.client.HasFeeGrant(session.DesmosAddress)
-	if err != nil {
-		return err
-	}
-
-	var grantTime *time.Time
-	if hasGrant {
-		grantTime = utils.GetTimePointer(time.Now())
-	}
-
-	// Store the request inside the database
-	return h.db.SaveFeeGrantRequest(types.NewFeeGrantRequest(session.DesmosAddress, time.Now(), grantTime))
 }

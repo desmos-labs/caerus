@@ -4,13 +4,29 @@ import (
 	"firebase.google.com/go/v4/messaging"
 )
 
-type NotificationDeviceToken struct {
+// AppNotificationDeviceToken represents a notification device token that is associated to an application
+type AppNotificationDeviceToken struct {
+	AppID       string
+	DeviceToken string
+}
+
+func NewAppNotificationDeviceToken(appID, deviceToken string) *AppNotificationDeviceToken {
+	return &AppNotificationDeviceToken{
+		AppID:       appID,
+		DeviceToken: deviceToken,
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+// UserNotificationDeviceToken represents a notification device token that is associated to a user
+type UserNotificationDeviceToken struct {
 	UserAddress string
 	DeviceToken string
 }
 
-func NewNotificationDeviceToken(userAddress, deviceToken string) *NotificationDeviceToken {
-	return &NotificationDeviceToken{
+func NewUserNotificationDeviceToken(userAddress, deviceToken string) *UserNotificationDeviceToken {
+	return &UserNotificationDeviceToken{
 		UserAddress: userAddress,
 		DeviceToken: deviceToken,
 	}
@@ -18,24 +34,7 @@ func NewNotificationDeviceToken(userAddress, deviceToken string) *NotificationDe
 
 // --------------------------------------------------------------------------------------------------------------------
 
-type NotificationApplication struct {
-	ID   string
-	Name string
-}
-
-type NotificationSender struct {
-	Token       string
-	Application *NotificationApplication
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
 type Notification struct {
-	// Application contains the details of the application that is sending the notification.
-	// It can be nil if the notification is sent by the server itself, or if there is no
-	// authentication set for sending notifications.
-	Application *NotificationApplication
-
 	// Notification is the notification to be sent
 	Notification *messaging.Notification `json:"notification"`
 

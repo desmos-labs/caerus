@@ -17,19 +17,6 @@ CREATE TABLE sessions
     expiration_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW() + INTERVAL '1 week'
 );
 
-/**
- * Table that holds the requests for on-chain fee grants.
- */
-CREATE TABLE fee_grant_requests
-(
-    desmos_address TEXT                     NOT NULL PRIMARY KEY,
-    request_time   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-
-    -- Time at which the authorizations were granted.
-    -- This will be updated after the on-chain authorization has been created
-    grant_time     TIMESTAMP WITH TIME ZONE
-);
-
 /*************************************************************************/
 /***                               Users                              ****/
 /*************************************************************************/

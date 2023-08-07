@@ -12,7 +12,7 @@ import (
 
 // Register registers all the request handlers related to the media functionalities
 func Register(router *gin.Engine, handler *Handler) {
-	authMiddleware := authentication.NewMiddleware(handler)
+	authMiddleware := authentication.NewUserAuthMiddleware(handler)
 
 	router.Group("/media").
 

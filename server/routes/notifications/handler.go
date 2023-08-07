@@ -11,37 +11,44 @@ import (
 
 type Handler struct {
 	*base.Handler
-	cfg      *Config
 	firebase Firebase
 	db       Database
 }
 
-func NewHandler(cfg *Config, firebase Firebase, db Database) *Handler {
+// NewHandler allows to build a new Handler instance
+func NewHandler(firebase Firebase, db Database) *Handler {
 	return &Handler{
 		Handler:  base.NewHandler(db),
-		cfg:      cfg,
 		firebase: firebase,
 		db:       db,
 	}
 }
 
-// NewHandlerFromEnvVariables builds a new Handler instance reading the configuration from the env variables
-func NewHandlerFromEnvVariables(firebase Firebase, db Database) *Handler {
-	return NewHandler(ReadConfigFromEnvVariables(), firebase, db)
+// --------------------------------------------------------------------------------------------------------------------
+
+// ParseRegisterAppDeviceTokenRequest parses the given body into a RegisterAppDeviceTokenRequest
+func (h *Handler) ParseRegisterAppDeviceTokenRequest(body []byte) (*RegisterAppDeviceTokenRequest, error) {
+	var req RegisterAppDeviceTokenRequest
+	return &req, json.Unmarshal(body, &req)
+}
+
+// HandleRegisterAppDeviceTokenRequest handles the request to register a new application device token
+func (h *Handler) HandleRegisterAppDeviceTokenRequest(req *RegisterAppDeviceTokenRequest) error {
+	return h.db.SaveAppNotificationDeviceToken(types.NewAppNotificationDeviceToken(req.AppID, req.DeviceToken))
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// ParseRegisterDeviceTokenRequest parses the given body into a RegisterDeviceTokenRequest
-func (h *Handler) ParseRegisterDeviceTokenRequest(body []byte) (*RegisterDeviceTokenRequest, error) {
-	var req RegisterDeviceTokenRequest
+// ParseRegisterUserDeviceTokenRequest parses the given body into a RegisterUserDeviceTokenRequest
+func (h *Handler) ParseRegisterUserDeviceTokenRequest(body []byte) (*RegisterUserDeviceTokenRequest, error) {
+	var req RegisterUserDeviceTokenRequest
 	err := json.Unmarshal(body, &req)
 	return &req, err
 }
 
-// HandleRegisterDeviceTokenRequest handles the request to register a new device token
-func (h *Handler) HandleRegisterDeviceTokenRequest(req *RegisterDeviceTokenRequest) error {
-	return h.db.SaveNotificationDeviceToken(types.NewNotificationDeviceToken(req.UserAddress, req.DeviceToken))
+// HandleRegisterUserDeviceTokenRequest handles the request to register a new device token
+func (h *Handler) HandleRegisterUserDeviceTokenRequest(req *RegisterUserDeviceTokenRequest) error {
+	return h.db.SaveUserNotificationDeviceToken(types.NewUserNotificationDeviceToken(req.UserAddress, req.DeviceToken))
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -55,21 +62,31 @@ func (h *Handler) ParseSendNotificationRequest(body []byte) (*SendNotificationRe
 
 // HandleSendNotificationRequest handles the request to send a new notification
 func (h *Handler) HandleSendNotificationRequest(req *SendNotificationRequest) error {
-	sender, found, err := h.db.GetNotificationSender(req.Token)
+	// Get the application details
+	app, found, err := h.db.GetApp(req.AppID)
 	if err != nil {
 		return err
 	}
 
-	// Make sure the user can send notifications if the authentication is required
-	if h.cfg.RequiresAuthentication && !found {
-		return utils.WrapErr(http.StatusUnauthorized, "you cannot send notifications")
+	if !found {
+		return utils.WrapErr(http.StatusNotFound, "Application not found")
 	}
 
-	if sender != nil {
-		// Update the notification application to set the one of the sender
-		req.Notification.Application = sender.Application
+	// Make sure the app has not reached the rate limit
+	notificationsRateLimit, err := h.db.GetAppNotificationsRateLimit(req.AppID)
+	if err != nil {
+		return err
+	}
+
+	notificationsCount, err := h.db.GetAppNotificationsCount(req.AppID)
+	if err != nil {
+		return err
+	}
+
+	if notificationsRateLimit > 0 && notificationsCount >= notificationsRateLimit {
+		return utils.NewTooManyRequestsError("Notifications rate limit reached")
 	}
 
 	// Send the notification
-	return h.firebase.SendNotifications(req.DeviceTokens, req.Notification)
+	return h.firebase.SendNotifications(app, req.DeviceTokens, req.Notification)
 }
