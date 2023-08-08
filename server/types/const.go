@@ -6,5 +6,7 @@ const (
 
 	SessionAppID = "session_app_id"
 
-	EnvAPIsHost = "APIS_HOST"
+	EnvAPIsAddress = "APIS_ADDRESS"
+	EnvAPIsPort    = "APIS_PORT"
+	EnvAPIsHost    = "APIS_HOST"
 )

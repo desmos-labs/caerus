@@ -87,7 +87,7 @@ func (suite *LoginAPIsTestSuite) SetupSuite() {
 	suite.apiClient = apiWallet
 
 	// Build the handler
-	suite.handler = user.NewHandler(suite.db, suite.cdc, suite.amino, suite.apiClient)
+	suite.handler = user.NewHandler(suite.cdc, suite.amino, suite.db)
 
 	// Create the router
 	suite.r, err = testutils.CreateRouter()

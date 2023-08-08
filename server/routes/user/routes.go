@@ -7,11 +7,17 @@ import (
 	"github.com/posthog/posthog-go"
 
 	"github.com/desmos-labs/caerus/server/analytics"
+	"github.com/desmos-labs/caerus/server/runner"
 
 	"github.com/desmos-labs/caerus/server/authentication"
 	"github.com/desmos-labs/caerus/server/types"
 	"github.com/desmos-labs/caerus/server/utils"
 )
+
+// RoutesRegistrar implements runner.RoutesRegister
+func RoutesRegistrar(router *gin.Engine, ctx runner.Context) {
+	Register(router, NewHandler(ctx.Codec, ctx.Amino, ctx.Database))
+}
 
 // Register registers all the routes that allow to perform user-related operations
 func Register(router *gin.Engine, handler *Handler) {
