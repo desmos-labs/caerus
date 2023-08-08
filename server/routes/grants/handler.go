@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/desmos-labs/caerus/server/chain"
 	"github.com/desmos-labs/caerus/server/routes/base"
 	serverutils "github.com/desmos-labs/caerus/server/utils"
 	"github.com/desmos-labs/caerus/types"
@@ -14,15 +13,15 @@ import (
 
 type Handler struct {
 	base.Handler
-	client *chain.Client
-	db     Database
+	chainClient ChainClient
+	db          Database
 }
 
 // NewHandler returns a new Handler instance
-func NewHandler(client *chain.Client, db Database) *Handler {
+func NewHandler(client ChainClient, db Database) *Handler {
 	return &Handler{
-		client: client,
-		db:     db,
+		chainClient: client,
+		db:          db,
 	}
 }
 
@@ -47,7 +46,7 @@ func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {
 	}
 
 	// Check if the app has granted a MsgGrantFeeAllowance permission
-	hasGrantedAuthorization, err := h.client.HasGrantedMsgGrantAllowanceAuthorization(app.WalletAddress)
+	hasGrantedAuthorization, err := h.chainClient.HasGrantedMsgGrantAllowanceAuthorization(app.WalletAddress)
 	if err != nil {
 		return err
 	}
@@ -82,7 +81,7 @@ func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {
 	}
 
 	// Check if the user already has on-chain funds
-	hasFunds, err := h.client.HasFunds(req.DesmosAddress)
+	hasFunds, err := h.chainClient.HasFunds(req.DesmosAddress)
 	if err != nil {
 		return err
 	}
@@ -92,7 +91,7 @@ func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {
 	}
 
 	// Check if the user already has an on-chain grant
-	hasGrant, err := h.client.HasFeeGrant(req.DesmosAddress, app.WalletAddress)
+	hasGrant, err := h.chainClient.HasFeeGrant(req.DesmosAddress, app.WalletAddress)
 	if err != nil {
 		return err
 	}

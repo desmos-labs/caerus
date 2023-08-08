@@ -16,3 +16,10 @@ type Database interface {
 	SaveFeeGrantRequest(request types.FeeGrantRequest) error
 	HasFeeGrantBeenGrantedToUser(appID string, user string) (bool, error)
 }
+
+type ChainClient interface {
+	HasGrantedMsgGrantAllowanceAuthorization(appAddress string) (bool, error)
+
+	HasFunds(address string) (bool, error)
+	HasFeeGrant(userAddress string, granterAddress string) (bool, error)
+}
