@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	client "github.com/desmos-labs/caerus/server/chain"
 	"github.com/desmos-labs/caerus/server/routes/base"
 	serverutils "github.com/desmos-labs/caerus/server/utils"
 	"github.com/desmos-labs/caerus/types"
@@ -15,20 +14,18 @@ import (
 
 type Handler struct {
 	*base.Handler
-	cdc    codec.Codec
-	amino  *codec.LegacyAmino
-	client *client.Client
-	db     Database
+	cdc   codec.Codec
+	amino *codec.LegacyAmino
+	db    Database
 }
 
 // NewHandler returns a new Handler instance
-func NewHandler(db Database, cdc codec.Codec, amino *codec.LegacyAmino, client *client.Client) *Handler {
+func NewHandler(db Database, cdc codec.Codec, amino *codec.LegacyAmino) *Handler {
 	return &Handler{
 		Handler: base.NewHandler(db),
 		db:      db,
 		cdc:     cdc,
 		amino:   amino,
-		client:  client,
 	}
 }
 
