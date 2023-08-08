@@ -10,7 +10,9 @@ require (
 	github.com/desmos-labs/caerus/utils v0.0.0
 	github.com/desmos-labs/cosmos-go-wallet v0.6.0
 	github.com/desmos-labs/desmos/v5 v5.2.0
+	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-co-op/gocron v1.31.0
 	github.com/golangci/golangci-lint v1.53.3
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.9
@@ -119,9 +121,7 @@ require (
 	github.com/fzipp/gocyclo v0.6.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
-	github.com/gin-contrib/cors v1.4.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/go-co-op/gocron v1.31.0 // indirect
 	github.com/go-critic/go-critic v0.8.1 // indirect
 	github.com/go-kit/kit v0.12.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
