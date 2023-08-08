@@ -4,18 +4,6 @@ import (
 	"github.com/desmos-labs/caerus/types"
 )
 
-type RegisterAppDeviceTokenRequest struct {
-	AppID       string
-	DeviceToken string `json:"device_token"`
-}
-
-// RegisterUserDeviceTokenRequest represents the request sent when a user wants to register
-// a new device token to receive notifications
-type RegisterUserDeviceTokenRequest struct {
-	UserAddress string
-	DeviceToken string `json:"device_token"`
-}
-
 // SendNotificationRequest represents the request sent when a user wants to send a new notification
 // to users who have registered their device token
 type SendNotificationRequest struct {

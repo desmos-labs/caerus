@@ -101,3 +101,12 @@ func (r *AuthorizedSessionResponse) MarshalJSON() ([]byte, error) {
 		UserAddress: r.userAddress,
 	})
 }
+
+// --------------------------------------------------------------------------------------------------------------------
+
+// RegisterUserDeviceTokenRequest represents the request sent when a user wants to register
+// a new device token to receive notifications
+type RegisterUserDeviceTokenRequest struct {
+	UserAddress string
+	DeviceToken string `json:"device_token"`
+}

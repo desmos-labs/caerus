@@ -196,3 +196,17 @@ func (h *Handler) HandleHasuraSessionRequest(token string) (HasuraSessionRespons
 func (h *Handler) GetUnauthorizedHasuraSession() HasuraSessionResponse {
 	return h.getDefaultHasuraResponse()
 }
+
+// --------------------------------------------------------------------------------------------------------------------
+
+// ParseRegisterUserDeviceTokenRequest parses the given body into a RegisterUserDeviceTokenRequest
+func (h *Handler) ParseRegisterUserDeviceTokenRequest(body []byte) (*RegisterUserDeviceTokenRequest, error) {
+	var req RegisterUserDeviceTokenRequest
+	err := json.Unmarshal(body, &req)
+	return &req, err
+}
+
+// HandleRegisterUserDeviceTokenRequest handles the request to register a new device token
+func (h *Handler) HandleRegisterUserDeviceTokenRequest(req *RegisterUserDeviceTokenRequest) error {
+	return h.db.SaveUserNotificationDeviceToken(types.NewUserNotificationDeviceToken(req.UserAddress, req.DeviceToken))
+}

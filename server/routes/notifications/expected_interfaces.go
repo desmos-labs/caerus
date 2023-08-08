@@ -12,9 +12,6 @@ type Database interface {
 
 	GetAppNotificationsRateLimit(appID string) (uint64, error)
 	GetAppNotificationsCount(appID string) (uint64, error)
-
-	SaveAppNotificationDeviceToken(token *types.AppNotificationDeviceToken) error
-	SaveUserNotificationDeviceToken(token *types.UserNotificationDeviceToken) error
 }
 
 type Firebase interface {

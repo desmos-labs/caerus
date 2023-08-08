@@ -73,30 +73,73 @@ func Register(router *gin.Engine, handler *Handler) {
 		})
 
 	// ----------------------------------------
+	// --- Logout endpoints
+	// ----------------------------------------
+
+	router.POST("/logout", authMiddleware, func(c *gin.Context) {
+		// Parse the request
+		all, found := c.GetQuery("all")
+		shouldLogoutAll := found && all == "true"
+
+		req := &LogoutRequest{
+			Token:            c.MustGet(types.SessionTokenKey).(string),
+			LogoutAllDevices: shouldLogoutAll,
+		}
+
+		// Handle the request
+		err := handler.HandleLogoutRequest(req)
+		if err != nil {
+			utils.HandleError(c, err)
+			return
+		}
+
+		c.String(http.StatusOK, "Logout successful")
+	})
+
+	// ----------------------------------------
 	// --- User endpoints
 	// ----------------------------------------
 
-	router.
-		POST("/logout", authMiddleware, func(c *gin.Context) {
+	router.Group("/me", authMiddleware).
+		POST("/sessions", authMiddleware, func(c *gin.Context) {
 			// Parse the request
-			all, found := c.GetQuery("all")
-			shouldLogoutAll := found && all == "true"
-
-			req := &LogoutRequest{
-				Token:            c.MustGet(types.SessionTokenKey).(string),
-				LogoutAllDevices: shouldLogoutAll,
-			}
+			token := c.MustGet(types.SessionTokenKey).(string)
 
 			// Handle the request
-			err := handler.HandleLogoutRequest(req)
+			err := handler.HandleRefreshSessionRequest(token)
 			if err != nil {
 				utils.HandleError(c, err)
 				return
 			}
 
-			c.String(http.StatusOK, "Logout successful")
+			c.String(http.StatusOK, token)
 		}).
-		DELETE("/me", authMiddleware, func(c *gin.Context) {
+		POST("/notification-tokens", func(c *gin.Context) {
+			// Read the body
+			body, err := c.GetRawData()
+			if err != nil {
+				utils.HandleError(c, err)
+				return
+			}
+
+			// Parse the request
+			req, err := handler.ParseRegisterUserDeviceTokenRequest(body)
+			if err != nil {
+				utils.HandleError(c, err)
+				return
+			}
+			req.UserAddress = c.MustGet(types.SessionDesmosAddressKey).(string)
+
+			// Handle the request
+			err = handler.HandleRegisterUserDeviceTokenRequest(req)
+			if err != nil {
+				utils.HandleError(c, err)
+				return
+			}
+
+			c.String(http.StatusOK, "Device token registered successfully")
+		}).
+		DELETE("", func(c *gin.Context) {
 			// Parse the request
 			req := &DeleteAccountRequest{
 				UserAddress: c.MustGet(types.SessionDesmosAddressKey).(string),
@@ -145,24 +188,4 @@ func Register(router *gin.Engine, handler *Handler) {
 
 			c.JSON(http.StatusOK, res)
 		})
-
-	// ----------------------------------------
-	// --- Sessions endpoints
-	// ----------------------------------------
-
-	router.
-		POST("/session", authMiddleware, func(c *gin.Context) {
-			// Parse the request
-			token := c.MustGet(types.SessionTokenKey).(string)
-
-			// Handle the request
-			err := handler.HandleRefreshSessionRequest(token)
-			if err != nil {
-				utils.HandleError(c, err)
-				return
-			}
-
-			c.String(http.StatusOK, token)
-		})
-
 }

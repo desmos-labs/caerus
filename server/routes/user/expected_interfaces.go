@@ -14,4 +14,6 @@ type Database interface {
 	SaveUser(desmosAddress string) error
 	UpdateLoginInfo(desmosAddress string) error
 	DeleteAllSessions(desmosAddress string) error
+
+	SaveUserNotificationDeviceToken(token *types.UserNotificationDeviceToken) error
 }

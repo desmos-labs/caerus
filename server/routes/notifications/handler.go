@@ -6,7 +6,6 @@ import (
 
 	"github.com/desmos-labs/caerus/server/routes/base"
 	"github.com/desmos-labs/caerus/server/utils"
-	"github.com/desmos-labs/caerus/types"
 )
 
 type Handler struct {
@@ -23,35 +22,6 @@ func NewHandler(firebase Firebase, db Database) *Handler {
 		db:       db,
 	}
 }
-
-// --------------------------------------------------------------------------------------------------------------------
-
-// ParseRegisterAppDeviceTokenRequest parses the given body into a RegisterAppDeviceTokenRequest
-func (h *Handler) ParseRegisterAppDeviceTokenRequest(body []byte) (*RegisterAppDeviceTokenRequest, error) {
-	var req RegisterAppDeviceTokenRequest
-	return &req, json.Unmarshal(body, &req)
-}
-
-// HandleRegisterAppDeviceTokenRequest handles the request to register a new application device token
-func (h *Handler) HandleRegisterAppDeviceTokenRequest(req *RegisterAppDeviceTokenRequest) error {
-	return h.db.SaveAppNotificationDeviceToken(types.NewAppNotificationDeviceToken(req.AppID, req.DeviceToken))
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-// ParseRegisterUserDeviceTokenRequest parses the given body into a RegisterUserDeviceTokenRequest
-func (h *Handler) ParseRegisterUserDeviceTokenRequest(body []byte) (*RegisterUserDeviceTokenRequest, error) {
-	var req RegisterUserDeviceTokenRequest
-	err := json.Unmarshal(body, &req)
-	return &req, err
-}
-
-// HandleRegisterUserDeviceTokenRequest handles the request to register a new device token
-func (h *Handler) HandleRegisterUserDeviceTokenRequest(req *RegisterUserDeviceTokenRequest) error {
-	return h.db.SaveUserNotificationDeviceToken(types.NewUserNotificationDeviceToken(req.UserAddress, req.DeviceToken))
-}
-
-// --------------------------------------------------------------------------------------------------------------------
 
 // ParseSendNotificationRequest parses the given request body into a SendNotificationRequest
 func (h *Handler) ParseSendNotificationRequest(body []byte) (*SendNotificationRequest, error) {

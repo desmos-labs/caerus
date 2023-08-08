@@ -39,6 +39,13 @@ func (db *Database) GetApp(appID string) (*types.Application, bool, error) {
 	), true, nil
 }
 
+// DeleteApp deletes the application having the given id, if any.
+func (db *Database) DeleteApp(appID string) error {
+	stmt := `DELETE FROM applications WHERE id = $1`
+	_, err := db.SQL.Exec(stmt, appID)
+	return err
+}
+
 // --------------------------------------------------------------------------------------------------------------------
 
 type appTokenRow struct {
