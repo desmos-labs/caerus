@@ -12,6 +12,16 @@ type Handler struct {
 	db Database
 }
 
+// NewHandler allows to build a new Handler instance
+func NewHandler(db Database) *Handler {
+	return &Handler{
+		Handler: base.NewHandler(db),
+		db:      db,
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
 // ParseRegisterAppDeviceTokenRequest parses the given body into a RegisterAppDeviceTokenRequest
 func (h *Handler) ParseRegisterAppDeviceTokenRequest(body []byte) (*RegisterAppDeviceTokenRequest, error) {
 	var req RegisterAppDeviceTokenRequest
