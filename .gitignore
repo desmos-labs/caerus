@@ -11,3 +11,6 @@ desmos
 
 # Test coverage
 coverage.txt
+
+# Build files
+build/
