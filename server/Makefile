@@ -74,7 +74,7 @@ stop-test-db:
 
 start-test-db: stop-test-db
 	@echo "Starting test database..."
-	@docker run --name apis-test-db -e POSTGRES_USER=apis -e POSTGRES_PASSWORD=password -e POSTGRES_DB=apis -d -p 6433:5432 postgres
+	@docker run --name apis-test-db -e POSTGRES_USER=caerus -e POSTGRES_PASSWORD=password -e POSTGRES_DB=caerus -d -p 6433:5432 postgres
 .PHONY: start-test-db
 
 start-test-chain:

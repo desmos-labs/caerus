@@ -10,7 +10,7 @@ import (
 )
 
 func CreateDatabase(pathToDbSchema string) (*database.Database, error) {
-	db, err := database.NewDatabase("postgres://apis:password@localhost:6433/apis?sslmode=disable&search_path=public")
+	db, err := database.NewDatabase("postgres://caerus:password@localhost:6433/caerus?sslmode=disable&search_path=public")
 	if err != nil {
 		return nil, err
 	}
