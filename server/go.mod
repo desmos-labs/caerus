@@ -6,8 +6,8 @@ require (
 	firebase.google.com/go/v4 v4.12.0
 	github.com/bbrks/go-blurhash v1.1.1
 	github.com/cosmos/cosmos-sdk v0.47.3
-	github.com/desmos-labs/caerus/types v0.0.0
-	github.com/desmos-labs/caerus/utils v0.0.0
+	github.com/desmos-labs/caerus/types v0.0.0-20230808192650-f6fdd335a263
+	github.com/desmos-labs/caerus/utils v0.0.0-20230808192650-f6fdd335a263
 	github.com/desmos-labs/cosmos-go-wallet v0.6.0
 	github.com/desmos-labs/desmos/v5 v5.2.0
 	github.com/gin-contrib/cors v1.4.0
@@ -355,10 +355,6 @@ replace (
 	// This is done to avoid the following error:
 	// https://github.com/desmos-labs/desmos/pull/1131#discussion_r1194090419
 	github.com/cosmos/gogoproto => github.com/cosmos/gogoproto v1.4.8
-
-	// Replace packages with local copies for faster development
-	github.com/desmos-labs/caerus/types => ../types
-	github.com/desmos-labs/caerus/utils => ../utils
 
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 )

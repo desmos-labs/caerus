@@ -683,6 +683,10 @@ github.com/denis-tingaikin/go-header v0.4.3 h1:tEaZKAlqql6SKCY++utLmkPLd6K8IBM20
 github.com/denis-tingaikin/go-header v0.4.3/go.mod h1:0wOCWuN71D5qIgE2nz9KrKmuYBAC2Mra5RassOIQ2/c=
 github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f h1:U5y3Y5UE0w7amNe7Z5G/twsBW0KEalRQXZzf8ufSh9I=
 github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f/go.mod h1:xH/i4TFMt8koVQZ6WFms69WAsDWr2XsYL3Hkl7jkoLE=
+github.com/desmos-labs/caerus/types v0.0.0-20230808192650-f6fdd335a263 h1:q5OWcQFy1fvohQWtJsCCrQ/UHpgHvmgGI4fXiS20ei4=
+github.com/desmos-labs/caerus/types v0.0.0-20230808192650-f6fdd335a263/go.mod h1:NXSdp9GjByugDiLIh3hCdbjCP85OGYUgWDJmZYpRGh4=
+github.com/desmos-labs/caerus/utils v0.0.0-20230808192650-f6fdd335a263 h1:3/ATvv6cZE2ajfqWYopfYNjZvYA5BmZuhY+sZgWwHBk=
+github.com/desmos-labs/caerus/utils v0.0.0-20230808192650-f6fdd335a263/go.mod h1:ociFAwAfJiSq00mk1AZ8R6XCwZyJqKluyhEi4xHjLOk=
 github.com/desmos-labs/cosmos-go-wallet v0.6.0 h1:9UmaigU/1UEZeLIrZscgjQHqASx/FJUoKIE+gkusnlQ=
 github.com/desmos-labs/cosmos-go-wallet v0.6.0/go.mod h1:jeSjv8+FEhv+GK2c0L1czodAR5CbTNiY4NakWwS3Y2g=
 github.com/desmos-labs/cosmos-sdk v0.47.2-desmos h1:vZApJFAGmrB8osk3YuDfHNb2L8YLUbLR9w/2RQ/ijMA=
