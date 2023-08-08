@@ -6,12 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/desmos-labs/caerus/server/authentication"
+	"github.com/desmos-labs/caerus/server/runner"
 	"github.com/desmos-labs/caerus/server/types"
 	"github.com/desmos-labs/caerus/server/utils"
 )
 
-// RegisterRoutes allows to register all the routes related to applications
-func RegisterRoutes(router *gin.Engine, handler *Handler) {
+// RoutesRegistrar implements runner.RoutesRegister
+func RoutesRegistrar(router *gin.Engine, ctx runner.Context) {
+	Register(router, NewHandler(ctx.Database))
+}
+
+// Register allows to register all the routes related to applications
+func Register(router *gin.Engine, handler *Handler) {
 	appAuthMiddleware := authentication.NewAppAuthMiddleware(handler)
 
 	applicationRouter := router.Group("/applications")

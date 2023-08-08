@@ -1,4 +1,24 @@
 /**
+ * Table that holds the details of the various subscription plans that can be
+ * subscribed to by applications.
+ */
+CREATE TABLE application_subscriptions
+(
+    id                       SERIAL  NOT NULL PRIMARY KEY,
+
+    -- Name of the subscription plan
+    subscription             TEXT    NOT NULL,
+
+    -- Number of fee grants that can be requested per day
+    -- If set to 0, no limit is applied
+    fee_grant_rate_limit     INTEGER NOT NULL,
+
+    -- Number of notifications that can be sent per day
+    -- If set to 0, no limit is applied
+    notifications_rate_limit INTEGER NOT NULL
+);
+
+/**
  * Table that holds the details of various application that are registered
  * and can use the APIs.
  */
@@ -46,22 +66,3 @@ CREATE TABLE application_tokens
     creation_time  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-/**
- * Table that holds the details of the various subscription plans that can be
- * subscribed to by applications.
- */
-CREATE TABLE application_subscriptions
-(
-    id                       SERIAL  NOT NULL PRIMARY KEY,
-
-    -- Name of the subscription plan
-    subscription             TEXT    NOT NULL,
-
-    -- Number of fee grants that can be requested per day
-    -- If set to 0, no limit is applied
-    fee_grant_rate_limit     INTEGER NOT NULL,
-
-    -- Number of notifications that can be sent per day
-    -- If set to 0, no limit is applied
-    notifications_rate_limit INTEGER NOT NULL
-);

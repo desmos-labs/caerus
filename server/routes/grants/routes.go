@@ -8,9 +8,15 @@ import (
 
 	"github.com/desmos-labs/caerus/server/analytics"
 	"github.com/desmos-labs/caerus/server/authentication"
+	"github.com/desmos-labs/caerus/server/runner"
 	"github.com/desmos-labs/caerus/server/types"
 	"github.com/desmos-labs/caerus/server/utils"
 )
+
+// RoutesRegistrar implements runner.RoutesRegister
+func RoutesRegistrar(router *gin.Engine, ctx runner.Context) {
+	Register(router, NewHandler(ctx.ChainClient, ctx.Database))
+}
 
 // Register registers the routes related to the grants module inside the given router.
 func Register(router *gin.Engine, handler *Handler) {

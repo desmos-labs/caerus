@@ -20,7 +20,7 @@ type Handler struct {
 }
 
 // NewHandler returns a new Handler instance
-func NewHandler(db Database, cdc codec.Codec, amino *codec.LegacyAmino) *Handler {
+func NewHandler(cdc codec.Codec, amino *codec.LegacyAmino, db Database) *Handler {
 	return &Handler{
 		Handler: base.NewHandler(db),
 		db:      db,

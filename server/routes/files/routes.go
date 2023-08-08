@@ -7,8 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/desmos-labs/caerus/server/authentication"
+	"github.com/desmos-labs/caerus/server/runner"
 	"github.com/desmos-labs/caerus/server/utils"
 )
+
+// RoutesRegistrar implements runner.RoutesRegister
+func RoutesRegistrar(router *gin.Engine, ctx runner.Context) {
+	Register(router, NewHandlerFromEnvVariables(ctx.Database))
+}
 
 // Register registers all the request handlers related to the media functionalities
 func Register(router *gin.Engine, handler *Handler) {
