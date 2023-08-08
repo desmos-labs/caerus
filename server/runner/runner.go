@@ -23,8 +23,7 @@ import (
 
 // Runner represents the structure that allows to run everything related to the server
 type Runner struct {
-	ctx Context
-
+	ctx             Context
 	routesRegisters []RoutesRegister
 }
 
@@ -33,7 +32,6 @@ func New(ctx Context) *Runner {
 	return &Runner{
 		ctx: ctx,
 	}
-
 }
 
 // AddRouteRegister allows to add a new route register to the runner
