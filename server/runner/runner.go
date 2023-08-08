@@ -17,11 +17,6 @@ import (
 
 	"github.com/desmos-labs/caerus/server/analytics"
 	"github.com/desmos-labs/caerus/server/logging"
-	applicationsroutes "github.com/desmos-labs/caerus/server/routes/applications"
-	filesroutes "github.com/desmos-labs/caerus/server/routes/files"
-	grantsroutes "github.com/desmos-labs/caerus/server/routes/grants"
-	notificationsroutes "github.com/desmos-labs/caerus/server/routes/notifications"
-	userroutes "github.com/desmos-labs/caerus/server/routes/user"
 	"github.com/desmos-labs/caerus/server/types"
 	"github.com/desmos-labs/caerus/utils"
 )
@@ -41,14 +36,7 @@ func New(ctx Context) *Runner {
 
 }
 
-func (r *Runner) RegisterDefaultRoutes() {
-	r.AddRouteRegister(applicationsroutes.RoutesRegistrar)
-	r.AddRouteRegister(filesroutes.RoutesRegistrar)
-	r.AddRouteRegister(grantsroutes.RoutesRegistrar)
-	r.AddRouteRegister(userroutes.RoutesRegistrar)
-	r.AddRouteRegister(notificationsroutes.RoutesRegistrar)
-}
-
+// AddRouteRegister allows to add a new route register to the runner
 func (r *Runner) AddRouteRegister(register RoutesRegister) {
 	r.routesRegisters = append(r.routesRegisters, register)
 }
