@@ -32,7 +32,12 @@ RUN cp /lib/libwasmvm_muslc.${arch}.a /usr/local/lib/libwasmvm_muslc.a
 # Set the environment variables
 ENV GIN_MODE=release
 
-# Set the entrypoint, so that the user can set the config using the CMD
-RUN BUILD_TAGS=muslc GOOS=linux GOARCH=amd64 LINK_STATICALLY=true make build
+# Build the executable
+# TODO: Remove the GOPROXY and GONOSUMDB directives. These are there only because the repository is currently private
+RUN GOPROXY=direct GONOSUMDB=github.com/desmos-labs/* BUILD_TAGS=muslc GOOS=linux GOARCH=amd64 LINK_STATICALLY=true make build
+
+# Move the executable inside the bin folder to make it runnable without specifying the full path
 RUN cp /code/build/server /usr/bin/server
+
+# Set the entrypoint, so that the user can set the config using the CMD
 ENTRYPOINT ["server"]
