@@ -46,7 +46,11 @@ jobs:
       - name: Test server 🧪
         if: "env.GIT_DIFF != ''"
         working-directory: server
-        run: make test-unit
+        run: |
+          scripts/get_desmos_bin.sh 5.1.0
+          scripts/spawn_test_chain.sh -b
+          sleep 15
+          make test-unit
 
       - name: Test types 🧪
         if: "env.GIT_DIFF != ''"
