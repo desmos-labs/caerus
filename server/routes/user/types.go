@@ -108,5 +108,5 @@ func (r *AuthorizedSessionResponse) MarshalJSON() ([]byte, error) {
 // a new device token to receive notifications
 type RegisterUserDeviceTokenRequest struct {
 	UserAddress string
-	DeviceToken string `json:"device_token"`
+	DeviceToken string `json:"token"`
 }

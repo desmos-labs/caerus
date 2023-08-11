@@ -2,7 +2,7 @@ package applications
 
 type RegisterAppDeviceTokenRequest struct {
 	AppID       string
-	DeviceToken string `json:"device_token"`
+	DeviceToken string `json:"token"`
 }
 
 type DeleteApplicationRequest struct {
