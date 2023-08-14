@@ -38,6 +38,17 @@ func (a ApplicationServer) RegisterNotificationToken(ctx context.Context, reques
 }
 
 func (a ApplicationServer) DeleteApp(ctx context.Context, request *DeleteAppRequest) (*emptypb.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+	userCtx, err := authentication.GetUserContext(ctx)
+	if err != nil {
+		return nil, utils.UnwrapError(ctx, err)
+	}
+
+	// Handle the request
+	req := NewDeleteApplicationRequest(userCtx.DesmosAddress, request.AppId)
+	err = a.handler.HandleDeleteApplicationRequest(req)
+	if err != nil {
+		return nil, utils.UnwrapError(ctx, err)
+	}
+
+	return &emptypb.Empty{}, nil
 }

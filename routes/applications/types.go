@@ -13,11 +13,13 @@ func NewRegisterAppDeviceTokenRequest(appID string, deviceToken string) *Registe
 }
 
 type DeleteApplicationRequest struct {
-	AppID string
+	UserAddress string
+	AppID       string
 }
 
-func NewDeleteAppRequest(appID string) *DeleteAppRequest {
-	return &DeleteAppRequest{
-		AppId: appID,
+func NewDeleteApplicationRequest(desmosAddress string, appID string) *DeleteApplicationRequest {
+	return &DeleteApplicationRequest{
+		UserAddress: desmosAddress,
+		AppID:       appID,
 	}
 }

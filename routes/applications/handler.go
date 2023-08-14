@@ -1,7 +1,10 @@
 package applications
 
 import (
+	"google.golang.org/grpc/codes"
+
 	"github.com/desmos-labs/caerus/types"
+	"github.com/desmos-labs/caerus/utils"
 )
 
 type Handler struct {
@@ -24,5 +27,15 @@ func (h *Handler) HandleRegisterAppDeviceTokenRequest(req *RegisterAppDeviceToke
 
 // HandleDeleteApplicationRequest handles the request to delete an application
 func (h *Handler) HandleDeleteApplicationRequest(req *DeleteApplicationRequest) error {
+	// Check to make sure the user can delete the app
+	canDelete, err := h.db.CanDeleteApp(req.UserAddress)
+	if err != nil {
+		return err
+	}
+
+	if !canDelete {
+		return utils.WrapErr(codes.PermissionDenied, "You cannot delete this application")
+	}
+
 	return h.db.DeleteApp(req.AppID)
 }
