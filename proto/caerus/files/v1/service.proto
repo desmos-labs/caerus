@@ -5,7 +5,7 @@ option go_package = "github.com/desmos-labs/caerus/routes/files";
 
 service FilesService {
   // UploadFile allows to upload a file
-  rpc UploadFile (stream FileChunk) returns (UploadFileResponse);
+  rpc UploadFile(stream FileChunk) returns (UploadFileResponse);
 
   // GetFile allows to get the contents of a file
   rpc GetFile(GetFileRequest) returns (stream FileChunk);
@@ -16,10 +16,6 @@ message FileChunk {
   bytes data = 2;
 }
 
-message UploadFileResponse {
-  string file_name = 1;
-}
+message UploadFileResponse { string file_name = 1; }
 
-message GetFileRequest {
-  string file_name = 1;
-}
+message GetFileRequest { string file_name = 1; }

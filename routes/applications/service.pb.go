@@ -160,7 +160,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ApplicationServiceClient interface {
-	// RegisterNotificationToken allows to register a notification token for a given application
+	// RegisterNotificationToken allows to register a notification token for a
+	// given application
 	RegisterNotificationToken(ctx context.Context, in *RegisterNotificationTokenRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// DeleteApp allows to delete an application
 	DeleteApp(ctx context.Context, in *DeleteAppRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -194,7 +195,8 @@ func (c *applicationServiceClient) DeleteApp(ctx context.Context, in *DeleteAppR
 
 // ApplicationServiceServer is the server API for ApplicationService service.
 type ApplicationServiceServer interface {
-	// RegisterNotificationToken allows to register a notification token for a given application
+	// RegisterNotificationToken allows to register a notification token for a
+	// given application
 	RegisterNotificationToken(context.Context, *RegisterNotificationTokenRequest) (*emptypb.Empty, error)
 	// DeleteApp allows to delete an application
 	DeleteApp(context.Context, *DeleteAppRequest) (*emptypb.Empty, error)

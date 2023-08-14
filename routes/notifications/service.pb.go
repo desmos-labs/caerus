@@ -29,7 +29,8 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type SendNotificationRequest struct {
-	// DeviceTokens represent the tokens of the devices to which to send the notification
+	// DeviceTokens represent the tokens of the devices to which to send the
+	// notification
 	DeviceTokens []string `protobuf:"bytes,1,rep,name=device_tokens,json=deviceTokens,proto3" json:"device_tokens,omitempty"`
 	// Notification contains the JSON-encoded data of the notification to be sent.
 	Notification []byte `protobuf:"bytes,2,opt,name=notification,proto3" json:"notification,omitempty"`

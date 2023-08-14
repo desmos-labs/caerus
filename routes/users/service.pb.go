@@ -35,7 +35,8 @@ var _ = time.Kitchen
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type GetNonceRequest struct {
-	// UserDesmosAddress represents the Desmos address of the user for which to get the nonce
+	// UserDesmosAddress represents the Desmos address of the user for which to
+	// get the nonce
 	UserDesmosAddress string `protobuf:"bytes,1,opt,name=user_desmos_address,json=userDesmosAddress,proto3" json:"user_desmos_address,omitempty"`
 }
 
@@ -80,7 +81,8 @@ func (m *GetNonceRequest) GetUserDesmosAddress() string {
 }
 
 type GetNonceResponse struct {
-	// Nonce represents the nonce value that should be signed in order to login the user
+	// Nonce represents the nonce value that should be signed in order to login
+	// the user
 	Nonce string `protobuf:"bytes,1,opt,name=nonce,proto3" json:"nonce,omitempty"`
 }
 
@@ -125,8 +127,9 @@ func (m *GetNonceResponse) GetNonce() string {
 }
 
 type LoginResponse struct {
-	// Token represents the bearer token that can be used to authenticate requests from the user
-	// without having to continuously perform the whole login procedure
+	// Token represents the bearer token that can be used to authenticate requests
+	// from the user without having to continuously perform the whole login
+	// procedure
 	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	// ExpirationTime represents the time at which the token will expire
 	ExpirationTime *time.Time `protobuf:"bytes,2,opt,name=expiration_time,json=expirationTime,proto3,stdtime" json:"expiration_time,omitempty"`
@@ -226,8 +229,8 @@ func (m *LogoutRequest) GetLogoutFromAll() bool {
 }
 
 type RefreshSessionResponse struct {
-	// Token represents the new token that should be used to authenticate future requests
-	// after the refresh of the session.
+	// Token represents the new token that should be used to authenticate future
+	// requests after the refresh of the session.
 	Token string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	// ExpirationTime represents the time at which the token will expire
 	ExpirationTime *time.Time `protobuf:"bytes,2,opt,name=expiration_time,json=expirationTime,proto3,stdtime" json:"expiration_time,omitempty"`
@@ -281,7 +284,8 @@ func (m *RefreshSessionResponse) GetExpirationTime() *time.Time {
 }
 
 type RegisterNotificationDeviceTokenRequest struct {
-	// DeviceToken represents the device token that should be registered as a notification device token for the user
+	// DeviceToken represents the device token that should be registered as a
+	// notification device token for the user
 	DeviceToken string `protobuf:"bytes,1,opt,name=device_token,json=deviceToken,proto3" json:"device_token,omitempty"`
 }
 
@@ -389,13 +393,16 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type UsersServiceClient interface {
-	// GetNonce allows to get a nonce that can later be signed to login the user inside the APIs
+	// GetNonce allows to get a nonce that can later be signed to login the user
+	// inside the APIs
 	GetNonce(ctx context.Context, in *GetNonceRequest, opts ...grpc.CallOption) (*GetNonceResponse, error)
-	// Login allows to finish the login procedure and get a bearer token to authenticate future requests
+	// Login allows to finish the login procedure and get a bearer token to
+	// authenticate future requests
 	Login(ctx context.Context, in *types.SignedRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	// RefreshSession allows the user to refresh their current session
 	RefreshSession(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*RefreshSessionResponse, error)
-	// RegisterDeviceNotificationToken allows to register a notification device tokens for future notifications
+	// RegisterDeviceNotificationToken allows to register a notification device
+	// tokens for future notifications
 	RegisterDeviceNotificationToken(ctx context.Context, in *RegisterNotificationDeviceTokenRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Logout allows the user to logout from either the current or all sessions
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -469,13 +476,16 @@ func (c *usersServiceClient) DeleteAccount(ctx context.Context, in *emptypb.Empt
 
 // UsersServiceServer is the server API for UsersService service.
 type UsersServiceServer interface {
-	// GetNonce allows to get a nonce that can later be signed to login the user inside the APIs
+	// GetNonce allows to get a nonce that can later be signed to login the user
+	// inside the APIs
 	GetNonce(context.Context, *GetNonceRequest) (*GetNonceResponse, error)
-	// Login allows to finish the login procedure and get a bearer token to authenticate future requests
+	// Login allows to finish the login procedure and get a bearer token to
+	// authenticate future requests
 	Login(context.Context, *types.SignedRequest) (*LoginResponse, error)
 	// RefreshSession allows the user to refresh their current session
 	RefreshSession(context.Context, *emptypb.Empty) (*RefreshSessionResponse, error)
-	// RegisterDeviceNotificationToken allows to register a notification device tokens for future notifications
+	// RegisterDeviceNotificationToken allows to register a notification device
+	// tokens for future notifications
 	RegisterDeviceNotificationToken(context.Context, *RegisterNotificationDeviceTokenRequest) (*emptypb.Empty, error)
 	// Logout allows the user to logout from either the current or all sessions
 	Logout(context.Context, *LogoutRequest) (*emptypb.Empty, error)

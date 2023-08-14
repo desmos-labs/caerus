@@ -27,8 +27,8 @@ type SignedRequest struct {
 	DesmosAddress string `protobuf:"bytes,1,opt,name=desmos_address,json=desmosAddress,proto3" json:"desmos_address,omitempty"`
 	// SignedBytes represents the hex-encoded bytes that were signed by the user
 	SignedBytes string `protobuf:"bytes,2,opt,name=signed_bytes,json=signedBytes,proto3" json:"signed_bytes,omitempty"`
-	// PubKeyBytes represents the hex-encoded bytes of the public key associated to the
-	// private key that was used to sign the data
+	// PubKeyBytes represents the hex-encoded bytes of the public key associated
+	// to the private key that was used to sign the data
 	PubKeyBytes string `protobuf:"bytes,3,opt,name=pub_key_bytes,json=pubKeyBytes,proto3" json:"pub_key_bytes,omitempty"`
 	// SignatureBytes represents the hex-encoded bytes that are resulting from the
 	// signature of the data

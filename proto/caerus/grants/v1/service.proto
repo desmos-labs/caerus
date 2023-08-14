@@ -6,7 +6,8 @@ option go_package = "github.com/desmos-labs/caerus/routes/grants";
 import "google/protobuf/empty.proto";
 
 service GrantsService {
-  rpc RequestFeeAllowance(RequestFeeAllowanceRequest) returns (google.protobuf.Empty);
+  rpc RequestFeeAllowance(RequestFeeAllowanceRequest)
+      returns (google.protobuf.Empty);
 }
 
 message RequestFeeAllowanceRequest {
