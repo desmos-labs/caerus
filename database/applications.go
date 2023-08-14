@@ -39,6 +39,14 @@ func (db *Database) GetApp(appID string) (*types.Application, bool, error) {
 	), true, nil
 }
 
+// CanDeleteApp tells whether the given user can delete the application having the given id.
+func (db *Database) CanDeleteApp(userAddress string, appID string) (bool, error) {
+	stmt := `SELECT EXISTS (SELECT 1 FROM application_admins WHERE user_address = $1 AND application_id = $2)`
+	var exists bool
+	err := db.SQL.Get(&exists, stmt, userAddress, appID)
+	return exists, err
+}
+
 // DeleteApp deletes the application having the given id, if any.
 func (db *Database) DeleteApp(appID string) error {
 	stmt := `DELETE FROM applications WHERE id = $1`

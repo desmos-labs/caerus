@@ -7,6 +7,6 @@ import (
 type Database interface {
 	SaveAppNotificationDeviceToken(token *types.AppNotificationDeviceToken) error
 
-	CanDeleteApp(desmosAddress string) (bool, error)
+	CanDeleteApp(desmosAddress string, appID string) (bool, error)
 	DeleteApp(appID string) error
 }

@@ -28,7 +28,7 @@ func (h *Handler) HandleRegisterAppDeviceTokenRequest(req *RegisterAppDeviceToke
 // HandleDeleteApplicationRequest handles the request to delete an application
 func (h *Handler) HandleDeleteApplicationRequest(req *DeleteApplicationRequest) error {
 	// Check to make sure the user can delete the app
-	canDelete, err := h.db.CanDeleteApp(req.UserAddress)
+	canDelete, err := h.db.CanDeleteApp(req.UserAddress, req.AppID)
 	if err != nil {
 		return err
 	}

@@ -46,6 +46,18 @@ CREATE TABLE applications
 );
 
 /**
+ * Table that holds the details of the various admins that can manage the
+ * applications.
+ */
+CREATE TABLE application_admins
+(
+    id             SERIAL NOT NULL PRIMARY KEY,
+    application_id TEXT   NOT NULL REFERENCES applications (id),
+    user_address   TEXT   NOT NULL,
+    CONSTRAINT unique_application_user_entry UNIQUE (application_id, user_address)
+);
+
+/**
  * Table that holds all the tokens that can be used to authenticate API requests
  * on behalf of different applications.
  */
