@@ -2,6 +2,7 @@ package users
 
 import (
 	"encoding/json"
+	"time"
 )
 
 const (
@@ -9,17 +10,26 @@ const (
 	UnauthorizedUserRole  = "anonymous"
 )
 
+// NewGetNonceResponse builds a new GetNonceRequest instance
 func NewGetNonceResponse(nonce string) *GetNonceResponse {
 	return &GetNonceResponse{
 		Nonce: nonce,
 	}
 }
 
-// --------------------------------------------------------------------------------------------------------------------
-
-func NewLoginResponse(token string) *LoginResponse {
+// NewLoginResponse builds a new LoginResponse instance
+func NewLoginResponse(token string, expirationTime *time.Time) *LoginResponse {
 	return &LoginResponse{
-		Token: token,
+		Token:          token,
+		ExpirationTime: expirationTime,
+	}
+}
+
+// NewSessionRefreshResponse builds a new SessionRefreshResponse instance
+func NewSessionRefreshResponse(token string, expirationTime *time.Time) *RefreshSessionResponse {
+	return &RefreshSessionResponse{
+		Token:          token,
+		ExpirationTime: expirationTime,
 	}
 }
 

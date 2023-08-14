@@ -63,12 +63,12 @@ func (s *Server) RefreshSession(ctx context.Context, _ *emptypb.Empty) (*Refresh
 		return nil, utils.UnwrapError(ctx, err)
 	}
 
-	err = s.handler.HandleRefreshSessionRequest(userCtx.Token)
+	res, err := s.handler.HandleRefreshSessionRequest(userCtx.Token)
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)
 	}
 
-	return &RefreshSessionResponse{Token: userCtx.Token}, err
+	return res, err
 }
 
 func (s *Server) RegisterDeviceNotificationToken(ctx context.Context, request *RegisterNotificationDeviceTokenRequest) (*emptypb.Empty, error) {

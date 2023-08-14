@@ -4,7 +4,10 @@ package caerus.users.v1;
 option go_package = "github.com/desmos-labs/caerus/routes/users";
 
 import "caerus/types/v1/requests.proto";
+
+import "gogoproto/gogo.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 service UsersService {
   // GetNonce allows to get a nonce that can later be signed to login the user inside the APIs
@@ -42,6 +45,11 @@ message LoginResponse {
   // Token represents the bearer token that can be used to authenticate requests from the user
   // without having to continuously perform the whole login procedure
   string token = 1;
+
+  // ExpirationTime represents the time at which the token will expire
+  google.protobuf.Timestamp expiration_time = 2 [
+    (gogoproto.stdtime) = true
+  ];
 }
 
 message LogoutRequest {
@@ -54,6 +62,11 @@ message RefreshSessionResponse {
   // Token represents the new token that should be used to authenticate future requests
   // after the refresh of the session.
   string token = 1;
+
+  // ExpirationTime represents the time at which the token will expire
+  google.protobuf.Timestamp expiration_time = 2 [
+    (gogoproto.stdtime) = true
+  ];
 }
 
 message RegisterNotificationDeviceTokenRequest {

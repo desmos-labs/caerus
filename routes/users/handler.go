@@ -96,47 +96,50 @@ func (h *Handler) HandleAuthenticationRequest(request *types.SignedRequest) (*Lo
 		return nil, err
 	}
 
-	return NewLoginResponse(session.Token), nil
+	return NewLoginResponse(session.Token, &session.ExpiryTime), nil
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
 // HandleRefreshSessionRequest refreshes the session associated with the given request
-func (h *Handler) HandleRefreshSessionRequest(token string) error {
+func (h *Handler) HandleRefreshSessionRequest(token string) (*RefreshSessionResponse, error) {
 	// Check the session validity
 	session, err := h.db.GetUserSession(token)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if session == nil {
-		return serverutils.WrapErr(http.StatusUnauthorized, "invalid token")
+		return nil, serverutils.WrapErr(http.StatusUnauthorized, "invalid token")
 	}
 
 	_, shouldDelete, err := session.Validate()
 	if shouldDelete {
 		err := h.db.DeleteSession(session.EncryptedToken)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 	if err != nil {
-		return serverutils.WrapErr(http.StatusUnauthorized, err.Error())
+		return nil, serverutils.WrapErr(http.StatusUnauthorized, err.Error())
 	}
 
 	// Refresh the session
-	err = h.db.UpdateSession(session.Refresh())
+	session = session.Refresh()
+
+	// Update the session
+	err = h.db.UpdateSession(session)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Save the user information
 	err = h.db.SaveUser(session.DesmosAddress)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return NewSessionRefreshResponse(token, session.ExpiryTime), nil
 }
 
 // --------------------------------------------------------------------------------------------------------------------
