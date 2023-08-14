@@ -175,11 +175,11 @@ func (suite *FilesAPITestSuite) TestUploadMedia() {
 				var res files.UploadFileResponse
 				err = json.Unmarshal(resBz, &res)
 				suite.Require().NoError(err)
-				suite.Require().NotEmpty(res.URL)
+				suite.Require().NotEmpty(res.Url)
 
 				// Make sure the image hash has been saved properly
 				var hash string
-				err = suite.db.SQL.QueryRow(`SELECT hash FROM images_hashes WHERE image_url = $1`, res.URL).Scan(&hash)
+				err = suite.db.SQL.QueryRow(`SELECT hash FROM images_hashes WHERE image_url = $1`, res.Url).Scan(&hash)
 				suite.Require().NoError(err)
 				suite.Require().Equal("L-J[3W*E#u;2%Lb:sE$OWBe@R%NH", hash)
 			},
@@ -271,7 +271,7 @@ func (suite *FilesAPITestSuite) TestDownloadMedia() {
 				err = json.Unmarshal(resBz, &uploadResponse)
 				suite.Require().NoError(err)
 
-				return uploadResponse.URL
+				return uploadResponse.Url
 			},
 			buildRequest: func(url string) (*http.Request, error) {
 				return http.NewRequest("GET", url, nil)

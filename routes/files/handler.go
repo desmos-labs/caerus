@@ -7,7 +7,6 @@ import (
 	_ "image/gif"  // Required to properly decode GIF images
 	_ "image/jpeg" // Required to properly decode JPEG images
 	_ "image/png"  // Required to properly decode PNG images
-	"io"
 	"net/http"
 	"os"
 	"path"
@@ -15,13 +14,11 @@ import (
 
 	"github.com/bbrks/go-blurhash"
 
-	"github.com/desmos-labs/caerus/routes/base"
 	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
 )
 
 type Handler struct {
-	*base.Handler
 	host         string
 	uploadFolder string
 	storage      Storage
@@ -35,7 +32,6 @@ func NewHandler(host string, filesBasePath string, storage Storage, db Database)
 	utils.CreateDirIfNotExists(uploadsFolder)
 
 	return &Handler{
-		Handler:      base.NewHandler(db),
 		host:         host,
 		uploadFolder: uploadsFolder,
 		storage:      storage,
@@ -71,34 +67,24 @@ func (h *Handler) createUploadsFolder() error {
 	return nil
 }
 
-// GetFileFromRequest reads the given request and stores the associated file bytes
+// SaveFile reads the given request and stores the associated file bytes
 // into a new file within the upload folder.
-func (h *Handler) GetFileFromRequest(r *http.Request) (string, error) {
-	uploaded, header, err := r.FormFile(FileFormKey)
-	if err != nil {
-		return "", err
-	}
+func (h *Handler) SaveFile(fileName string, data []byte) (string, error) {
 
 	// Create the upload folder if it does not exist
-	err = h.createUploadsFolder()
+	err := h.createUploadsFolder()
 	if err != nil {
 		return "", err
 	}
 
-	// Check the content type
-	bz, err := io.ReadAll(uploaded)
-	if err != nil {
-		return "", err
-	}
-
-	mimeType := strings.Split(http.DetectContentType(bz), "/")[0]
+	mimeType := strings.Split(http.DetectContentType(data), "/")[0]
 	if mimeType != "image" && mimeType != "video" {
 		return "", utils.WrapErr(http.StatusBadRequest, "Unsupported file type")
 	}
 
 	// Copy the uploads file bytes to the out file
-	filePath := path.Join(h.uploadFolder, header.Filename)
-	err = os.WriteFile(filePath, bz, 0600)
+	filePath := path.Join(h.uploadFolder, fileName)
+	err = os.WriteFile(filePath, data, 0600)
 	if err != nil {
 		return "", err
 	}
