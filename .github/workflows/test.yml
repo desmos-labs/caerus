@@ -38,32 +38,19 @@ jobs:
             go.mod
             go.sum
 
-      - name: Test client 🧪
+      - name: Start test chain 🧪
         if: "env.GIT_DIFF != ''"
-        working-directory: client
-        run: make test-unit
-
-      - name: Test server 🧪
-        if: "env.GIT_DIFF != ''"
-        working-directory: server
         run: |
           scripts/get_desmos_bin.sh 5.1.0
           scripts/spawn_test_chain.sh -b
           sleep 15
-          make test-unit
 
-      - name: Test types 🧪
+      - name: Run tests 🧪
         if: "env.GIT_DIFF != ''"
-        working-directory: types
-        run: make test-unit
-
-      - name: Test utils 🧪
-        if: "env.GIT_DIFF != ''"
-        working-directory: utils
         run: make test-unit
 
       - name: Upload cove coverage 📤
         if: "env.GIT_DIFF != ''"
         uses: codecov/codecov-action@v3
         with:
-          files: ./client/coverage.txt,./server/coverage.txt,./types/coverage.txt,./utils/coverage.txt
+          files: ./coverage.txt
