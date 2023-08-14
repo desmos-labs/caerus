@@ -1,30 +1,22 @@
 package utils
 
 import (
+	"context"
 	"fmt"
 	"net/http"
-	"strings"
 	"time"
 	"unicode"
 
-	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
-
-// GetTokenValue returns the token value associated with the given context, reading it from the Authorization header
-func GetTokenValue(c *gin.Context) (string, error) {
-	headerValue := c.GetHeader("Authorization")
-	token := strings.TrimSpace(strings.TrimPrefix(headerValue, "Bearer"))
-	if token == "" {
-		return "", WrapErr(http.StatusUnauthorized, "wrong Authorization header value")
-	}
-
-	return token, nil
-}
 
 // --------------------------------------------------------------------------------------------------------------------
 
 type HttpError struct {
-	StatusCode int
+	StatusCode codes.Code
 	Response   string
 	Headers    map[string]string
 }
@@ -34,7 +26,7 @@ func (e *HttpError) Error() string {
 }
 
 // WrapErr wraps the given error into a new one that contains the given status code and response
-func WrapErr(statusCode int, res string) *HttpError {
+func WrapErr(statusCode codes.Code, res string) *HttpError {
 	return &HttpError{
 		StatusCode: statusCode,
 		Response:   res,
@@ -68,29 +60,16 @@ func ucFirst(str string) string {
 	return ""
 }
 
-// UnwrapErr unwraps the given error returning the status code and response
-func UnwrapErr(err error) (statusCode int, res string, headers map[string]string) {
+func UnwrapError(ctx context.Context, err error) error {
 	if httpErr, ok := err.(*HttpError); ok {
-		return httpErr.StatusCode, httpErr.Response, httpErr.Headers
+		if len(httpErr.Headers) != 0 {
+			err := grpc.SendHeader(ctx, metadata.New(httpErr.Headers))
+			if err != nil {
+				return err
+			}
+		}
+
+		return status.Error(status.Code(err), httpErr.Response)
 	}
-	return http.StatusInternalServerError, ucFirst(err.Error()), nil
+	return status.Error(codes.Internal, ucFirst(err.Error()))
 }
-
-// --------------------------------------------------------------------------------------------------------------------
-
-type errorJsonResponse struct {
-	Error string `json:"error"`
-}
-
-// HandleError handles the given error by returning the proper response
-func HandleError(c *gin.Context, err error) {
-	statusCode, res, headers := UnwrapErr(err)
-	c.Abort()
-	c.Error(err)
-	for key, value := range headers {
-		c.Header(key, value)
-	}
-	c.JSON(statusCode, errorJsonResponse{Error: res})
-}
-
-// --------------------------------------------------------------------------------------------------------------------
