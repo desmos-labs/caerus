@@ -61,6 +61,10 @@ func ucFirst(str string) string {
 }
 
 func UnwrapError(ctx context.Context, err error) error {
+	if statusError, ok := status.FromError(err); ok {
+		return statusError.Err()
+	}
+
 	if httpErr, ok := err.(*HttpError); ok {
 		if len(httpErr.Headers) != 0 {
 			err := grpc.SendHeader(ctx, metadata.New(httpErr.Headers))
@@ -71,5 +75,6 @@ func UnwrapError(ctx context.Context, err error) error {
 
 		return status.Error(status.Code(err), httpErr.Response)
 	}
+
 	return status.Error(codes.Internal, ucFirst(err.Error()))
 }
