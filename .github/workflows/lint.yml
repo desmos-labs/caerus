@@ -30,22 +30,6 @@ jobs:
             .mod
             .sum
 
-      - name: Lint client ✅
+      - name: Run linting ✅
         if: "env.GIT_DIFF != ''"
-        working-directory: client
-        run: make lint
-
-      - name: Lint server ✅
-        if: "env.GIT_DIFF != ''"
-        working-directory: server
-        run: make lint
-
-      - name: Lint types ✅
-        if: "env.GIT_DIFF != ''"
-        working-directory: types
-        run: make lint
-
-      - name: Lint utils ✅
-        if: "env.GIT_DIFF != ''"
-        working-directory: utils
         run: make lint
