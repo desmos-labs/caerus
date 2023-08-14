@@ -1,17 +1,14 @@
 package grants
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
-	"github.com/desmos-labs/caerus/routes/base"
 	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
 )
 
 type Handler struct {
-	base.Handler
 	chainClient ChainClient
 	db          Database
 }
@@ -25,12 +22,6 @@ func NewHandler(client ChainClient, db Database) *Handler {
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-
-// ParseRequestFeeGrantRequest parses the given request body into a RequestFeeGrantRequest instance
-func (h *Handler) ParseRequestFeeGrantRequest(body []byte) (*RequestFeeGrantRequest, error) {
-	var req RequestFeeGrantRequest
-	return &req, json.Unmarshal(body, &req)
-}
 
 // HandleFeeGrantRequest handles the request of a fee grant from the user having the given token
 func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {

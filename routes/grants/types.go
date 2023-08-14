@@ -5,5 +5,12 @@ type RequestFeeGrantRequest struct {
 	AppID string
 
 	// DesmosAddress is the address of the user requesting the fee grant
-	DesmosAddress string `json:"desmos_address" yaml:"desmos_address"`
+	DesmosAddress string
+}
+
+func NewRequestFeeGrantRequest(appID string, desmosAddress string) *RequestFeeGrantRequest {
+	return &RequestFeeGrantRequest{
+		AppID:         appID,
+		DesmosAddress: desmosAddress,
+	}
 }
