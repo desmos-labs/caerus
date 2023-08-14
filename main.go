@@ -6,15 +6,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/desmos-labs/desmos/v5/app"
 	"github.com/go-co-op/gocron"
+	"google.golang.org/grpc"
 
 	client "github.com/desmos-labs/caerus/chain"
 	"github.com/desmos-labs/caerus/database"
 	"github.com/desmos-labs/caerus/firebase"
-	applicationsroutes "github.com/desmos-labs/caerus/routes/applications"
-	filesroutes "github.com/desmos-labs/caerus/routes/files"
-	grantsroutes "github.com/desmos-labs/caerus/routes/grants"
-	notificationsroutes "github.com/desmos-labs/caerus/routes/notifications"
-	userroutes "github.com/desmos-labs/caerus/routes/user"
+	"github.com/desmos-labs/caerus/routes/applications"
+	"github.com/desmos-labs/caerus/routes/files"
+	"github.com/desmos-labs/caerus/routes/grants"
+	"github.com/desmos-labs/caerus/routes/notifications"
 	"github.com/desmos-labs/caerus/runner"
 )
 
@@ -56,11 +56,12 @@ func main() {
 	})
 
 	// Register the default routes
-	serverRunner.AddRouteRegister(applicationsroutes.RoutesRegistrar)
-	serverRunner.AddRouteRegister(filesroutes.RoutesRegistrar)
-	serverRunner.AddRouteRegister(grantsroutes.RoutesRegistrar)
-	serverRunner.AddRouteRegister(userroutes.RoutesRegistrar)
-	serverRunner.AddRouteRegister(notificationsroutes.RoutesRegistrar)
+	serverRunner.SetServiceRegistrar(func(context runner.Context, server *grpc.Server) {
+		applications.RegisterApplicationServiceServer(server, applications.NewServer(context.Database))
+		files.RegisterFilesServiceServer(server, files.NewServer(context.Database))
+		grants.RegisterGrantsServiceServer(server, grants.NewServer(context.ChainClient, context.Database))
+		notifications.RegisterNotificationsServiceServer(server, notifications.NewServer(context.FirebaseClient, context.Database))
+	})
 
 	// Run your server instance
 	serverRunner.Run()
