@@ -1,13 +1,10 @@
 package grants
 
 import (
-	"github.com/desmos-labs/caerus/routes/base"
 	"github.com/desmos-labs/caerus/types"
 )
 
 type Database interface {
-	base.Database
-
 	GetApp(appID string) (*types.Application, bool, error)
 
 	GetAppFeeGrantRequestsLimit(appID string) (uint64, error)
