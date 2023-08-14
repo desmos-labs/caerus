@@ -2,8 +2,8 @@ package runner
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/gin-gonic/gin"
 	"github.com/go-co-op/gocron"
+	"google.golang.org/grpc"
 
 	"github.com/desmos-labs/caerus/chain"
 	"github.com/desmos-labs/caerus/database"
@@ -21,5 +21,4 @@ type Context struct {
 	Database       *database.Database
 }
 
-// RoutesRegister represents a function that allows to register a series of routes into the given engince
-type RoutesRegister func(engine *gin.Engine, context Context)
+type ServiceRegistrar func(context Context, server *grpc.Server)
