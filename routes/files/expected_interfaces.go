@@ -1,5 +1,5 @@
 package files
 
 type Database interface {
-	SaveMediaHash(imageUrl string, hash string) error
+	SaveMediaHash(fileName string, hash string) error
 }

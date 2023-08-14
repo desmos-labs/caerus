@@ -5,6 +5,8 @@ import (
 
 	auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // BearerTokenAuthFunction returns a function that checks whether the given context.Context
@@ -15,6 +17,9 @@ func BearerTokenAuthFunction(source Source) func(context.Context) (context.Conte
 	return func(ctx context.Context) (context.Context, error) {
 		token, err := auth.AuthFromMD(ctx, "bearer")
 		if err != nil {
+			if errStat, ok := status.FromError(err); ok && errStat.Code() == codes.Unauthenticated {
+				return &UnAuthenticatedContext{Context: ctx}, nil
+			}
 			return nil, err
 		}
 

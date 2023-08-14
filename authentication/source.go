@@ -9,6 +9,8 @@ import (
 
 // Source represents the interface that must be implemented in order to get the encrypted session of a user
 type Source interface {
+	isAuthSource()
+
 	// GetUserSession returns the user session associated to the given token
 	// or an error if something goes wrong
 	GetUserSession(token string) (*types.EncryptedUserSession, error)
@@ -46,10 +48,12 @@ func NewBaseAuthSource(db Database) *BaseAuthSource {
 	}
 }
 
+func (s *BaseAuthSource) isAuthSource() {}
+
 // GetUserSession implements authentication.Source
-func (h *BaseAuthSource) GetUserSession(token string) (*types.EncryptedUserSession, error) {
+func (s *BaseAuthSource) GetUserSession(token string) (*types.EncryptedUserSession, error) {
 	// Check the session validity
-	session, err := h.db.GetUserSession(token)
+	session, err := s.db.GetUserSession(token)
 	if err != nil {
 		return nil, err
 	}
@@ -59,8 +63,15 @@ func (h *BaseAuthSource) GetUserSession(token string) (*types.EncryptedUserSessi
 	}
 
 	shouldRefresh, shouldDelete, err := session.Validate()
+	if shouldRefresh {
+		session = session.Refresh()
+		err = s.db.UpdateSession(session)
+		if err != nil {
+			return nil, err
+		}
+	}
 	if shouldDelete {
-		err := h.db.DeleteSession(session.EncryptedToken)
+		err := s.db.DeleteSession(session.EncryptedToken)
 		if err != nil {
 			return nil, err
 		}
@@ -69,21 +80,13 @@ func (h *BaseAuthSource) GetUserSession(token string) (*types.EncryptedUserSessi
 		return nil, utils.WrapErr(http.StatusUnauthorized, err.Error())
 	}
 
-	if shouldRefresh {
-		session = session.Refresh()
-		err = h.db.UpdateSession(session)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	return session, nil
 }
 
 // GetAppToken implements authentication.Source
-func (h *BaseAuthSource) GetAppToken(token string) (*types.EncryptedAppToken, error) {
+func (s *BaseAuthSource) GetAppToken(token string) (*types.EncryptedAppToken, error) {
 	// Check the session validity
-	encryptedToken, err := h.db.GetAppToken(token)
+	encryptedToken, err := s.db.GetAppToken(token)
 	if err != nil {
 		return nil, err
 	}

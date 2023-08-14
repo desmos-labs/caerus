@@ -16,7 +16,13 @@ type Server struct {
 	handler *Handler
 }
 
-func NewServer(db Database) *Server {
+func NewServer(handler *Handler) *Server {
+	return &Server{
+		handler: handler,
+	}
+}
+
+func NewServerFromEnvVariables(db Database) *Server {
 	return &Server{
 		handler: NewHandlerFromEnvVariables(db),
 	}

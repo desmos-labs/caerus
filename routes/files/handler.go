@@ -2,7 +2,6 @@ package files
 
 import (
 	"errors"
-	"fmt"
 	"image"
 	_ "image/gif"  // Required to properly decode GIF images
 	_ "image/jpeg" // Required to properly decode JPEG images
@@ -14,25 +13,21 @@ import (
 
 	"github.com/bbrks/go-blurhash"
 
-	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
 )
 
 type Handler struct {
-	host         string
 	uploadFolder string
 	storage      Storage
 	db           Database
 }
 
 // NewHandler returns a new Handler instance
-func NewHandler(host string, filesBasePath string, storage Storage, db Database) *Handler {
-
+func NewHandler(filesBasePath string, storage Storage, db Database) *Handler {
 	uploadsFolder := path.Join(filesBasePath, "uploads")
 	utils.CreateDirIfNotExists(uploadsFolder)
 
 	return &Handler{
-		host:         host,
 		uploadFolder: uploadsFolder,
 		storage:      storage,
 		db:           db,
@@ -47,7 +42,6 @@ func NewHandlerFromEnvVariables(db Database) *Handler {
 	}
 
 	return NewHandler(
-		utils.GetEnvOr(types.EnvAPIsHost, "https://localhost:8080"),
 		utils.GetEnvOr(EnvFileStorageBaseFolder, defaultBasePath),
 		StorageFromEnvVariables(),
 		db,
@@ -102,8 +96,7 @@ func (h *Handler) UploadFile(filePath string) (string, *UploadFileResponse, erro
 	}
 
 	// Get the URL to download the file
-	fileUrl := fmt.Sprintf("%[1]s/media/%[2]s", h.host, fileName)
-	response := NewUploadFileResponse(fileUrl)
+	response := NewUploadFileResponse(fileName)
 
 	// Read the image
 	reader, err := os.Open(filePath)
@@ -128,9 +121,9 @@ func (h *Handler) UploadFile(filePath string) (string, *UploadFileResponse, erro
 	}
 
 	// Save the image hash
-	err = h.db.SaveMediaHash(fileUrl, str)
+	err = h.db.SaveMediaHash(fileName, str)
 	if err != nil {
-		return fileUrl, response, err
+		return filePath, response, err
 	}
 
 	return filePath, response, nil
