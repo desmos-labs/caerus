@@ -1,0 +1,18 @@
+syntax = "proto3";
+package caerus.notifications.v1;
+
+option go_package = "github.com/desmos-labs/caerus/routes/notifications";
+
+import "google/protobuf/empty.proto";
+
+service NotificationsService {
+  rpc SendNotification(SendNotificationRequest) returns (google.protobuf.Empty);
+}
+
+message SendNotificationRequest {
+  // DeviceTokens represent the tokens of the devices to which to send the notification
+  repeated string device_tokens = 1;
+
+  // Notification contains the JSON-encoded data of the notification to be sent.
+  bytes notification = 2;
+}
