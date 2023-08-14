@@ -1,8 +1,46 @@
+#!/usr/bin/make -f
+BUILDDIR ?= $(CURDIR)/build
+
+export GO111MODULE = on
+
 ###############################################################################
 ###                                   All                                   ###
 ###############################################################################
 
-all: lint test-unit
+all: lint test-unit build
+
+###############################################################################
+###                               Build flags                               ###
+###############################################################################
+
+build_tags = netgo
+
+# These lines here are essential to include the muslc library for static linking of libraries
+# (which is needed for the wasmvm one) available during the build. Without them, the build will fail.
+build_tags += $(BUILD_TAGS)
+build_tags := $(strip $(build_tags))
+
+ldflags =
+ifeq ($(LINK_STATICALLY),true)
+  ldflags += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
+endif
+
+ldflags := $(strip $(ldflags))
+BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
+
+###############################################################################
+###                                 Build                                   ###
+###############################################################################
+
+BUILD_TARGETS := build install
+
+build: BUILD_ARGS=-o $(BUILDDIR)/
+
+$(BUILDDIR)/:
+	mkdir -p $(BUILDDIR)/
+
+$(BUILD_TARGETS): go.sum $(BUILDDIR)/
+	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
 ###############################################################################
 ###                                Linting                                  ###
@@ -36,7 +74,7 @@ stop-test-db:
 
 start-test-db: stop-test-db
 	@echo "Starting test database..."
-	@docker run --name apis-test-db -e POSTGRES_USER=apis -e POSTGRES_PASSWORD=password -e POSTGRES_DB=apis -d -p 6433:5432 postgres
+	@docker run --name apis-test-db -e POSTGRES_USER=caerus -e POSTGRES_PASSWORD=password -e POSTGRES_DB=caerus -d -p 6433:5432 postgres
 .PHONY: start-test-db
 
 start-test-chain:
