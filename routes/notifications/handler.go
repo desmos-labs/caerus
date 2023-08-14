@@ -1,15 +1,12 @@
 package notifications
 
 import (
-	"encoding/json"
 	"net/http"
 
-	"github.com/desmos-labs/caerus/routes/base"
 	"github.com/desmos-labs/caerus/utils"
 )
 
 type Handler struct {
-	*base.Handler
 	firebase Firebase
 	db       Database
 }
@@ -17,21 +14,13 @@ type Handler struct {
 // NewHandler allows to build a new Handler instance
 func NewHandler(firebase Firebase, db Database) *Handler {
 	return &Handler{
-		Handler:  base.NewHandler(db),
 		firebase: firebase,
 		db:       db,
 	}
 }
 
-// ParseSendNotificationRequest parses the given request body into a SendNotificationRequest
-func (h *Handler) ParseSendNotificationRequest(body []byte) (*SendNotificationRequest, error) {
-	var req SendNotificationRequest
-	err := json.Unmarshal(body, &req)
-	return &req, err
-}
-
 // HandleSendNotificationRequest handles the request to send a new notification
-func (h *Handler) HandleSendNotificationRequest(req *SendNotificationRequest) error {
+func (h *Handler) HandleSendNotificationRequest(req *SendAppNotificationRequest) error {
 	// Get the application details
 	app, found, err := h.db.GetApp(req.AppID)
 	if err != nil {

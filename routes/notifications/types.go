@@ -4,15 +4,16 @@ import (
 	"github.com/desmos-labs/caerus/types"
 )
 
-// SendNotificationRequest represents the request sent when a user wants to send a new notification
-// to users who have registered their device token
-type SendNotificationRequest struct {
-	// AppID represents the ID of the application that wants to send the notification
-	AppID string
+type SendAppNotificationRequest struct {
+	AppID        string
+	DeviceTokens []string
+	Notification *types.Notification
+}
 
-	// DeviceTokens represent the device tokens of the users that should receive the notification
-	DeviceTokens []string `json:"device_tokens"`
-
-	// Notification represents the notification to send
-	Notification *types.Notification `json:"notification"`
+func NewSendAppNotificationRequest(appID string, deviceTokens []string, notification *types.Notification) *SendAppNotificationRequest {
+	return &SendAppNotificationRequest{
+		AppID:        appID,
+		DeviceTokens: deviceTokens,
+		Notification: notification,
+	}
 }
