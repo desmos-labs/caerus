@@ -1,9 +1,7 @@
-package user
+package users
 
 import (
 	"encoding/json"
-
-	"github.com/desmos-labs/caerus/types"
 )
 
 const (
@@ -11,52 +9,42 @@ const (
 	UnauthorizedUserRole  = "anonymous"
 )
 
-type NonceRequest struct {
-	// Address of the user requesting to log in
-	DesmosAddress string `json:"desmos_address"`
-}
-
-func NewNonceRequest(desmosAddress string) *NonceRequest {
-	return &NonceRequest{
-		DesmosAddress: desmosAddress,
-	}
-}
-
-type NonceResponse struct {
-	// Nonce that should be returned within a signed transaction's memo
-	Nonce string `json:"nonce"`
-}
-
-func NewNonceResponse(nonce string) *NonceResponse {
-	return &NonceResponse{
+func NewGetNonceResponse(nonce string) *GetNonceResponse {
+	return &GetNonceResponse{
 		Nonce: nonce,
 	}
 }
 
-type AuthenticationRequest struct {
-	*types.SignedRequest
-}
+// --------------------------------------------------------------------------------------------------------------------
 
-type AuthenticationResponse struct {
-	// Token that should be sent at each consequent request
-	Token string `json:"token"`
-}
-
-func NewAuthenticationResponse(token string) *AuthenticationResponse {
-	return &AuthenticationResponse{
+func NewLoginResponse(token string) *LoginResponse {
+	return &LoginResponse{
 		Token: token,
 	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
-type LogoutRequest struct {
+type LogoutUserRequest struct {
 	Token            string
 	LogoutAllDevices bool `json:"logout_all_devices"`
 }
 
+func NewLogoutUserRequest(token string, logoutAll bool) *LogoutUserRequest {
+	return &LogoutUserRequest{
+		Token:            token,
+		LogoutAllDevices: logoutAll,
+	}
+}
+
 type DeleteAccountRequest struct {
 	UserAddress string
+}
+
+func NewDeleteAccountRequest(userAddress string) *DeleteAccountRequest {
+	return &DeleteAccountRequest{
+		UserAddress: userAddress,
+	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -109,4 +97,11 @@ func (r *AuthorizedSessionResponse) MarshalJSON() ([]byte, error) {
 type RegisterUserDeviceTokenRequest struct {
 	UserAddress string
 	DeviceToken string `json:"token"`
+}
+
+func NewRegisterUserDeviceTokenRequest(userAddress string, token string) *RegisterUserDeviceTokenRequest {
+	return &RegisterUserDeviceTokenRequest{
+		UserAddress: userAddress,
+		DeviceToken: token,
+	}
 }

@@ -1,4 +1,4 @@
-package user_test
+package users_test
 
 import (
 	"bytes"
@@ -23,7 +23,7 @@ import (
 
 	client "github.com/desmos-labs/caerus/chain"
 	"github.com/desmos-labs/caerus/database"
-	"github.com/desmos-labs/caerus/routes/user"
+	"github.com/desmos-labs/caerus/routes/users"
 	"github.com/desmos-labs/caerus/testutils"
 	"github.com/desmos-labs/caerus/types"
 )
@@ -41,7 +41,7 @@ type LoginAPIsTestSuite struct {
 
 	r       *gin.Engine
 	db      *database.Database
-	handler *user.Handler
+	handler *users.Handler
 
 	chainCfg  *wallettypes.ChainConfig
 	apiClient *client.Client
@@ -87,14 +87,14 @@ func (suite *LoginAPIsTestSuite) SetupSuite() {
 	suite.apiClient = apiWallet
 
 	// Build the handler
-	suite.handler = user.NewHandler(suite.cdc, suite.amino, suite.db)
+	suite.handler = users.NewHandler(suite.cdc, suite.amino, suite.db)
 
 	// Create the router
 	suite.r, err = testutils.CreateRouter()
 	suite.Require().NoError(err)
 
 	// Register the routes
-	user.Register(suite.r, suite.handler)
+	users.Register(suite.r, suite.handler)
 }
 
 func (suite *LoginAPIsTestSuite) SetupTest() {
@@ -166,7 +166,7 @@ func (suite *LoginAPIsTestSuite) TestGetNonce() {
 				responseData, err := io.ReadAll(w.Body)
 				suite.Require().NoError(err)
 
-				var res user.NonceResponse
+				var res users.NonceResponse
 				err = json.Unmarshal(responseData, &res)
 				suite.Require().NoError(err)
 
@@ -210,7 +210,7 @@ func (suite *LoginAPIsTestSuite) TestLogin() {
 		{
 			name: "invalid signature returns error",
 			buildRequest: func() (*http.Request, error) {
-				req := user.AuthenticationRequest{
+				req := users.AuthenticationRequest{
 					SignedRequest: &types.SignedRequest{
 						DesmosAddress:  "desmos1tamzg6rfj9wlmqhthgfmn9awq0d8ssgfr8fjns",
 						PubKeyBytes:    "0a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a21033024e9e0ad4f93045ef5a60bb92171e6418cd13b082e7a7bc3ed05312a0b417d",
@@ -236,7 +236,7 @@ func (suite *LoginAPIsTestSuite) TestLogin() {
 				suite.Require().NoError(err)
 			},
 			buildRequest: func() (*http.Request, error) {
-				req := user.AuthenticationRequest{
+				req := users.AuthenticationRequest{
 					SignedRequest: &types.SignedRequest{
 						DesmosAddress:  "desmos13yp2fq3tslq6mmtq4628q38xzj75ethzela9uu",
 						PubKeyBytes:    "0a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a21033024e9e0ad4f93045ef5a60bb92171e6418cd13b082e7a7bc3ed05312a0b417d",
@@ -262,7 +262,7 @@ func (suite *LoginAPIsTestSuite) TestLogin() {
 				suite.Require().NoError(err)
 			},
 			buildRequest: func() (*http.Request, error) {
-				req := user.AuthenticationRequest{
+				req := users.AuthenticationRequest{
 					SignedRequest: &types.SignedRequest{
 						DesmosAddress:  "desmos13yp2fq3tslq6mmtq4628q38xzj75ethzela9uu",
 						PubKeyBytes:    "0a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a21033024e9e0ad4f93045ef5a60bb92171e6418cd13b082e7a7bc3ed05312a0b417d",
@@ -294,7 +294,7 @@ func (suite *LoginAPIsTestSuite) TestLogin() {
 				suite.Require().NoError(err)
 			},
 			buildRequest: func() (*http.Request, error) {
-				req := user.AuthenticationRequest{
+				req := users.AuthenticationRequest{
 					SignedRequest: &types.SignedRequest{
 						DesmosAddress:  "desmos13yp2fq3tslq6mmtq4628q38xzj75ethzela9uu",
 						PubKeyBytes:    "0a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a21033024e9e0ad4f93045ef5a60bb92171e6418cd13b082e7a7bc3ed05312a0b417d",
@@ -312,7 +312,7 @@ func (suite *LoginAPIsTestSuite) TestLogin() {
 				resBz, err := io.ReadAll(w.Body)
 				suite.Require().NoError(err)
 
-				var res user.AuthenticationResponse
+				var res users.AuthenticationResponse
 				err = json.Unmarshal(resBz, &res)
 				suite.Require().NoError(err)
 				suite.Require().NotEmpty(res.Token)
@@ -590,11 +590,11 @@ func (suite *LoginAPIsTestSuite) TestHasuraSession() {
 				resBz, err := io.ReadAll(w.Body)
 				suite.Require().NoError(err)
 
-				var res user.HasuraSessionResponseJSON
+				var res users.HasuraSessionResponseJSON
 				err = json.Unmarshal(resBz, &res)
 				suite.Require().NoError(err)
 
-				suite.Require().Equal(user.UnauthorizedUserRole, res.UserRole)
+				suite.Require().Equal(users.UnauthorizedUserRole, res.UserRole)
 				suite.Require().Equal("", res.UserAddress)
 			},
 		},
@@ -629,11 +629,11 @@ func (suite *LoginAPIsTestSuite) TestHasuraSession() {
 				resBz, err := io.ReadAll(w.Body)
 				suite.Require().NoError(err)
 
-				var res user.HasuraSessionResponseJSON
+				var res users.HasuraSessionResponseJSON
 				err = json.Unmarshal(resBz, &res)
 				suite.Require().NoError(err)
 
-				suite.Require().Equal(user.UnauthorizedUserRole, res.UserRole)
+				suite.Require().Equal(users.UnauthorizedUserRole, res.UserRole)
 				suite.Require().Equal("", res.UserAddress)
 			},
 		},
@@ -669,11 +669,11 @@ func (suite *LoginAPIsTestSuite) TestHasuraSession() {
 				resBz, err := io.ReadAll(w.Body)
 				suite.Require().NoError(err)
 
-				var res user.HasuraSessionResponseJSON
+				var res users.HasuraSessionResponseJSON
 				err = json.Unmarshal(resBz, &res)
 				suite.Require().NoError(err)
 
-				suite.Require().Equal(user.AuthenticatedUserRole, res.UserRole)
+				suite.Require().Equal(users.AuthenticatedUserRole, res.UserRole)
 				suite.Require().Equal("desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr", res.UserAddress)
 			},
 		},

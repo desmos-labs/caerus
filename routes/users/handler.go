@@ -1,19 +1,16 @@
-package user
+package users
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/desmos-labs/caerus/routes/base"
 	"github.com/desmos-labs/caerus/types"
 	serverutils "github.com/desmos-labs/caerus/utils"
 )
 
 type Handler struct {
-	*base.Handler
 	cdc   codec.Codec
 	amino *codec.LegacyAmino
 	db    Database
@@ -22,24 +19,23 @@ type Handler struct {
 // NewHandler returns a new Handler instance
 func NewHandler(cdc codec.Codec, amino *codec.LegacyAmino, db Database) *Handler {
 	return &Handler{
-		Handler: base.NewHandler(db),
-		db:      db,
-		cdc:     cdc,
-		amino:   amino,
+		db:    db,
+		cdc:   cdc,
+		amino: amino,
 	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
 // HandleNonceRequest returns the proper nonce for the given request
-func (h *Handler) HandleNonceRequest(request *NonceRequest) (*NonceResponse, error) {
-	_, err := sdk.AccAddressFromBech32(request.DesmosAddress)
+func (h *Handler) HandleNonceRequest(request *GetNonceRequest) (*GetNonceResponse, error) {
+	_, err := sdk.AccAddressFromBech32(request.UserDesmosAddress)
 	if err != nil {
 		return nil, serverutils.WrapErr(http.StatusBadRequest, "invalid Desmos address")
 	}
 
 	// Get the nonce
-	nonce, err := types.CreateNonce(request.DesmosAddress)
+	nonce, err := types.CreateNonce(request.UserDesmosAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -50,17 +46,11 @@ func (h *Handler) HandleNonceRequest(request *NonceRequest) (*NonceResponse, err
 		return nil, err
 	}
 
-	return NewNonceResponse(nonce.Value), nil
-}
-
-// ParseAuthenticateRequest parses the given request body into an AuthenticationRequest instace
-func (h *Handler) ParseAuthenticateRequest(body []byte) (*AuthenticationRequest, error) {
-	var req AuthenticationRequest
-	return &req, json.Unmarshal(body, &req)
+	return NewGetNonceResponse(nonce.Value), nil
 }
 
 // HandleAuthenticationRequest checks the given request to make sure the user has authenticated correctly
-func (h *Handler) HandleAuthenticationRequest(request *AuthenticationRequest) (*AuthenticationResponse, error) {
+func (h *Handler) HandleAuthenticationRequest(request *types.SignedRequest) (*LoginResponse, error) {
 	// Verify the request
 	memo, err := request.Verify(h.cdc, h.amino)
 	if err != nil {
@@ -106,7 +96,7 @@ func (h *Handler) HandleAuthenticationRequest(request *AuthenticationRequest) (*
 		return nil, err
 	}
 
-	return NewAuthenticationResponse(session.Token), nil
+	return NewLoginResponse(session.Token), nil
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -152,7 +142,7 @@ func (h *Handler) HandleRefreshSessionRequest(token string) error {
 // --------------------------------------------------------------------------------------------------------------------
 
 // HandleLogoutRequest allows to handle the request of logging out a user that is connected using the given session
-func (h *Handler) HandleLogoutRequest(req *LogoutRequest) error {
+func (h *Handler) HandleLogoutRequest(req *LogoutUserRequest) error {
 	session, err := h.db.GetUserSession(req.Token)
 	if err != nil {
 		return err
@@ -179,7 +169,7 @@ func (h *Handler) getDefaultHasuraResponse() *UnauthorizedSessionResponse {
 
 // HandleHasuraSessionRequest returns the session used to authenticate a Hasura user
 func (h *Handler) HandleHasuraSessionRequest(token string) (HasuraSessionResponse, error) {
-	session, err := h.GetUserSession(token)
+	session, err := h.db.GetUserSession(token)
 	if err != nil {
 		return nil, err
 	}
@@ -195,13 +185,6 @@ func (h *Handler) GetUnauthorizedHasuraSession() HasuraSessionResponse {
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-
-// ParseRegisterUserDeviceTokenRequest parses the given body into a RegisterUserDeviceTokenRequest
-func (h *Handler) ParseRegisterUserDeviceTokenRequest(body []byte) (*RegisterUserDeviceTokenRequest, error) {
-	var req RegisterUserDeviceTokenRequest
-	err := json.Unmarshal(body, &req)
-	return &req, err
-}
 
 // HandleRegisterUserDeviceTokenRequest handles the request to register a new device token
 func (h *Handler) HandleRegisterUserDeviceTokenRequest(req *RegisterUserDeviceTokenRequest) error {

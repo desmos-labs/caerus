@@ -1,12 +1,13 @@
-package user
+package users
 
 import (
-	"github.com/desmos-labs/caerus/routes/base"
+	"github.com/desmos-labs/caerus/authentication"
 	"github.com/desmos-labs/caerus/types"
 )
 
 type Database interface {
-	base.Database
+	authentication.Database
+
 	GetNonce(desmosAddress string, value string) (*types.EncryptedNonce, error)
 	SaveNonce(nonce *types.Nonce) error
 	DeleteNonce(nonce *types.EncryptedNonce) error
