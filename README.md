@@ -7,16 +7,20 @@ opportunity, luck and favorable moments. ([Wikipedia](https://en.wikipedia.org/w
 
 ## What is Caerus?
 
-Caerus is a set of tools that developers can use to build their own centralized server for easier application
-development on top of Desmos. It consists of two main packages:
+Caerus is a centralized server designed to gather various useful features for developers creating applications on Desmos. These features include:
 
-- The `server` package contains functions and type definitions useful for building a centralized server that can grant
-  fee allowances, send notifications, and generate dynamic links for client applications.
+- Requesting fee grants for onboarding new users.
+- Sending notifications to end clients.
+- Uploading files to IPFS and creating associated placeholders using [BlurHash](https://blurha.sh/).
+- Generating deep links supported by official applications (e.g., DPM).
 
-- The `client` package contains utility functions that make it easy to interact with a Caerus server instance. This
-  option is suitable for those who are building a centralized server and don't want to maintain their own Caerus
-  instance. You can use the `client` package to interact with
-  our [official Caerus server instance](#official-caerus-server).
+The code in this repository serves two main purposes:
+
+1. **Maintaining Your Own Caerus Instance:**
+   If you want full control over the features available to your clients, you can build and run the binary or use the provided Dockerfile to maintain your Caerus instance.
+
+2. **Using the Official Caerus Server:**
+   If you prefer not to manage your Caerus instance, you can register as an application within the [official server](#official-caerus-server). Upon [registration](#registering-as-an-application), you'll receive an authentication token to make calls to the server. This approach is suitable if you're already developing a centralized server or an end-user client and want to leverage Caerus's features without reimplementation. To create your client implementation, you can utilize a [Protobuf Compiler](https://grpc.io/docs/protoc-installation/) and reference the files in the `proto` folder.
 
 ## Official Caerus Server
 
@@ -26,3 +30,7 @@ following address:
 ```
 https://caerus.desmos.network
 ```
+
+### Registering as an application
+
+If you want to use the official Caerus instance, your application needs to be registered on our server. To get started, just reach out to our team at `development@desmos.network`. Let us know that you're interested in becoming a registered developer. We'll handle the process of setting up an account for you and giving you an authorization token. This token will allow you to make requests to our server seamlessly.  
