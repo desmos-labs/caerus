@@ -67,6 +67,6 @@ $$ LANGUAGE plpgsql;`
 }
 
 func TruncateDatabase(db *database.Database) error {
-	_, err := db.SQL.Exec(`SELECT truncate_tables('apis')`)
+	_, err := db.SQL.Exec(`SELECT truncate_tables('caerus')`)
 	return err
 }
