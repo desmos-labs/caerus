@@ -2,15 +2,7 @@ package testutils
 
 import (
 	"encoding/base64"
-
-	"github.com/gin-gonic/gin"
 )
-
-// CreateRouter creates the Gin router that should be used during tests
-func CreateRouter() (*gin.Engine, error) {
-	router := gin.New()
-	return router, nil
-}
 
 // GetTestImage returns the bytes of an image that can be used during tests
 func GetTestImage() ([]byte, error) {

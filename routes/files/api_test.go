@@ -3,7 +3,6 @@ package files_test
 import (
 	"context"
 	"io"
-	"net"
 	"os"
 	"path"
 	"testing"
@@ -12,10 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/metadata"
 
-	"github.com/desmos-labs/caerus/authentication"
 	"github.com/desmos-labs/caerus/testutils"
 
 	"github.com/desmos-labs/caerus/database"
@@ -60,25 +56,29 @@ func (suite *FilesAPITestSuite) SetupSuite() {
 	suite.handler = files.NewHandler(suite.tempDir, suite.storage, suite.db)
 
 	// Create the server
-	suite.server = grpc.NewServer(authentication.NewAuthInterceptors(authentication.NewBaseAuthSource(suite.db))...)
+	suite.server = testutils.CreateServer(suite.db)
 
 	// Register the service
 	service := files.NewServer(suite.handler)
 	files.RegisterFilesServiceServer(suite.server, service)
 
-	// Start the server
-	netListener, err := net.Listen("tcp", ":19090")
-	suite.Require().NoError(err)
-	go suite.server.Serve(netListener)
-
 	// Setup the client
-	conn, err := grpc.Dial("localhost:19090", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := testutils.StartServerAndConnect(suite.server)
 	suite.Require().NoError(err)
 	suite.client = files.NewFilesServiceClient(conn)
 }
 
+func (suite *FilesAPITestSuite) TearDownSuite() {
+	suite.server.Stop()
+}
+
 func (suite *FilesAPITestSuite) SetupTest() {
-	err := os.RemoveAll(path.Join(suite.tempDir, "uploads"))
+	// Truncate all the database data to make sure we have a clean database state
+	err := testutils.TruncateDatabase(suite.db)
+	suite.Require().NoError(err)
+
+	// Clean all the temporary files folders
+	err = os.RemoveAll(path.Join(suite.tempDir, "uploads"))
 	suite.Require().NoError(err)
 	utils.CreateDirIfNotExists(path.Join(suite.tempDir, "uploads"))
 	err = os.RemoveAll(path.Join(suite.tempDir, "storage"))
@@ -126,7 +126,7 @@ func (suite *FilesAPITestSuite) TestUploadMedia() {
 	testCases := []struct {
 		name         string
 		setup        func()
-		setupContext func() context.Context
+		setupContext func(ctx context.Context) context.Context
 		shouldErr    bool
 		check        func(res *files.UploadFileResponse)
 	}{
@@ -151,11 +151,8 @@ func (suite *FilesAPITestSuite) TestUploadMedia() {
 				_, err = outFile.Write(res)
 				suite.Require().NoError(err)
 			},
-			setupContext: func() context.Context {
-				return metadata.AppendToOutgoingContext(
-					context.Background(),
-					"Authorization", "Bearer token",
-				)
+			setupContext: func(ctx context.Context) context.Context {
+				return testutils.SetupContextWithAuthorization(ctx, "token")
 			},
 			shouldErr: true,
 		},
@@ -180,11 +177,8 @@ func (suite *FilesAPITestSuite) TestUploadMedia() {
 				_, err = outFile.Write(res)
 				suite.Require().NoError(err)
 			},
-			setupContext: func() context.Context {
-				return metadata.AppendToOutgoingContext(
-					context.Background(),
-					"Authorization", "Bearer token",
-				)
+			setupContext: func(ctx context.Context) context.Context {
+				return testutils.SetupContextWithAuthorization(ctx, "token")
 			},
 			shouldErr: false,
 			check: func(res *files.UploadFileResponse) {
@@ -209,7 +203,7 @@ func (suite *FilesAPITestSuite) TestUploadMedia() {
 
 			ctx := context.Background()
 			if tc.setupContext != nil {
-				ctx = tc.setupContext()
+				ctx = tc.setupContext(ctx)
 			}
 
 			// Perform the request
@@ -261,7 +255,7 @@ func (suite *FilesAPITestSuite) TestDownloadMedia() {
 				suite.Require().NoError(err)
 
 				// Upload the test image
-				ctx := metadata.AppendToOutgoingContext(context.Background(), "Authorization", "Bearer token")
+				ctx := testutils.SetupContextWithAuthorization(context.Background(), "token")
 				res, err := suite.uploadFile(ctx, path.Join(suite.tempDir, "temp_file.jpeg"))
 				suite.Require().NoError(err)
 
