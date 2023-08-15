@@ -183,6 +183,8 @@ func (suite *LoginAPIsTestSuite) TestGetNonce() {
 	for _, tc := range testCases {
 		tc := tc
 		suite.Run(tc.name, func() {
+			suite.SetupTest()
+
 			res, err := suite.client.GetNonce(context.Background(), tc.buildRequest())
 
 			if tc.shouldErr {
@@ -308,6 +310,7 @@ func (suite *LoginAPIsTestSuite) TestLogin() {
 	for _, tc := range testCases {
 		tc := tc
 		suite.Run(tc.name, func() {
+			suite.SetupTest()
 			if tc.setup != nil {
 				tc.setup()
 			}
@@ -421,6 +424,7 @@ func (suite *LoginAPIsTestSuite) TestRefreshSession() {
 	for _, tc := range testCases {
 		tc := tc
 		suite.Run(tc.name, func() {
+			suite.SetupTest()
 			if tc.setup != nil {
 				tc.setup()
 			}
