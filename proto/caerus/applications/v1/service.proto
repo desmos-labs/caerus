@@ -1,0 +1,20 @@
+syntax = "proto3";
+package caerus.applications.v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/desmos-labs/caerus/routes/applications";
+
+service ApplicationService {
+  // RegisterNotificationToken allows to register a notification token for a
+  // given application
+  rpc RegisterNotificationToken(RegisterNotificationTokenRequest)
+      returns (google.protobuf.Empty);
+
+  // DeleteApp allows to delete an application
+  rpc DeleteApp(DeleteAppRequest) returns (google.protobuf.Empty);
+}
+
+message RegisterNotificationTokenRequest { string token = 1; }
+
+message DeleteAppRequest { string app_id = 1; }

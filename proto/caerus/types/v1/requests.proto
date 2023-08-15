@@ -1,0 +1,20 @@
+syntax = "proto3";
+package caerus.types.v1;
+
+option go_package = "github.com/desmos-labs/caerus/types";
+
+message SignedRequest {
+  // DesmosAddress represents the Bech23-encoded Desmos address of the user
+  string desmos_address = 1;
+
+  // SignedBytes represents the hex-encoded bytes that were signed by the user
+  string signed_bytes = 2;
+
+  // PubKeyBytes represents the hex-encoded bytes of the public key associated
+  // to the private key that was used to sign the data
+  string pub_key_bytes = 3;
+
+  // SignatureBytes represents the hex-encoded bytes that are resulting from the
+  // signature of the data
+  string signature_bytes = 4;
+}

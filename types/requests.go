@@ -13,22 +13,7 @@ import (
 
 // -------------------------------------------------------------------------------------------------------------------
 
-// SignedRequest contains the data that is sent to the APIs for a signed request
-type SignedRequest struct {
-	// Bech32-encoded Desmos address
-	DesmosAddress string `json:"desmos_address"`
-
-	// Hex-encoded signed bytes
-	SignedBytes string `json:"signed_bytes"`
-
-	// Hex-encoded public key bytes
-	PubKeyBytes string `json:"pubkey_bytes"`
-
-	// Hex-encoded signature bytes
-	SignatureBytes string `json:"signature_bytes"`
-}
-
-func (r SignedRequest) Verify(cdc codec.Codec, amino *codec.LegacyAmino) (signedMemo string, err error) {
+func (r *SignedRequest) Verify(cdc codec.Codec, amino *codec.LegacyAmino) (signedMemo string, err error) {
 	// Read the public key
 	pubKeyBz, err := hex.DecodeString(r.PubKeyBytes)
 	if err != nil {

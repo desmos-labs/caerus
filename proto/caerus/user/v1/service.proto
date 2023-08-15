@@ -1,0 +1,79 @@
+syntax = "proto3";
+package caerus.users.v1;
+
+option go_package = "github.com/desmos-labs/caerus/routes/users";
+
+import "caerus/types/v1/requests.proto";
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service UsersService {
+  // GetNonce allows to get a nonce that can later be signed to login the user
+  // inside the APIs
+  rpc GetNonce(GetNonceRequest) returns (GetNonceResponse);
+
+  // Login allows to finish the login procedure and get a bearer token to
+  // authenticate future requests
+  rpc Login(caerus.types.v1.SignedRequest) returns (LoginResponse);
+
+  // RefreshSession allows the user to refresh their current session
+  rpc RefreshSession(google.protobuf.Empty) returns (RefreshSessionResponse);
+
+  // RegisterDeviceNotificationToken allows to register a notification device
+  // tokens for future notifications
+  rpc RegisterDeviceNotificationToken(RegisterNotificationDeviceTokenRequest)
+      returns (google.protobuf.Empty);
+
+  // Logout allows the user to logout from either the current or all sessions
+  rpc Logout(LogoutRequest) returns (google.protobuf.Empty);
+
+  // DeleteAccount allows the user to delete their account
+  // Note: Data will be deleted after 14 days of inactivity. During this time,
+  // the user can login again in order to stop the deletion procedure.
+  rpc DeleteAccount(google.protobuf.Empty) returns (google.protobuf.Empty);
+}
+
+message GetNonceRequest {
+  // UserDesmosAddress represents the Desmos address of the user for which to
+  // get the nonce
+  string user_desmos_address = 1;
+}
+
+message GetNonceResponse {
+  // Nonce represents the nonce value that should be signed in order to login
+  // the user
+  string nonce = 1;
+}
+
+message LoginResponse {
+  // Token represents the bearer token that can be used to authenticate requests
+  // from the user without having to continuously perform the whole login
+  // procedure
+  string token = 1;
+
+  // ExpirationTime represents the time at which the token will expire
+  google.protobuf.Timestamp expiration_time = 2 [ (gogoproto.stdtime) = true ];
+}
+
+message LogoutRequest {
+  // LogoutFromAll tells whether the user should be logout from all sessions.
+  // If false, the user will be logout only from the current session.
+  bool logout_from_all = 1;
+}
+
+message RefreshSessionResponse {
+  // Token represents the new token that should be used to authenticate future
+  // requests after the refresh of the session.
+  string token = 1;
+
+  // ExpirationTime represents the time at which the token will expire
+  google.protobuf.Timestamp expiration_time = 2 [ (gogoproto.stdtime) = true ];
+}
+
+message RegisterNotificationDeviceTokenRequest {
+  // DeviceToken represents the device token that should be registered as a
+  // notification device token for the user
+  string device_token = 1;
+}
