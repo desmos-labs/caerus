@@ -6,6 +6,46 @@ import (
 	"github.com/google/uuid"
 )
 
+type ApplicationSubscription struct {
+	ID                     uint64
+	Name                   string
+	FeeGrantLimit          uint64
+	NotificationsRateLimit uint64
+}
+
+func NewApplicationSubscription(id uint64, name string, feeGrantLimit uint64, notificationsRateLimit uint64) *ApplicationSubscription {
+	return &ApplicationSubscription{
+		ID:                     id,
+		Name:                   name,
+		FeeGrantLimit:          feeGrantLimit,
+		NotificationsRateLimit: notificationsRateLimit,
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+type Application struct {
+	ID             string
+	Name           string
+	WalletAddress  string
+	SubscriptionID uint64
+	Admins         []string
+	CreationTime   time.Time
+}
+
+func NewApplication(id string, name string, walletAddress string, subscriptionID uint64, admins []string, creationTime time.Time) *Application {
+	return &Application{
+		ID:             id,
+		Name:           name,
+		WalletAddress:  walletAddress,
+		SubscriptionID: subscriptionID,
+		Admins:         admins,
+		CreationTime:   creationTime,
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
 type AppToken struct {
 	AppID string
 	Name  string
@@ -34,41 +74,5 @@ func NewEncryptedAppToken(appID string, tokenName string, tokenValue string, cre
 		TokenName:    tokenName,
 		TokenValue:   tokenValue,
 		CreationTime: creationTime,
-	}
-}
-
-type Application struct {
-	ID             string
-	Name           string
-	WalletAddress  string
-	SubscriptionID uint64
-	Admins         []string
-	CreationTime   time.Time
-}
-
-func NewApplication(id string, name string, walletAddress string, subscriptionID uint64, admins []string, creationTime time.Time) *Application {
-	return &Application{
-		ID:             id,
-		Name:           name,
-		WalletAddress:  walletAddress,
-		SubscriptionID: subscriptionID,
-		Admins:         admins,
-		CreationTime:   creationTime,
-	}
-}
-
-type ApplicationSubscription struct {
-	ID                     uint64
-	Name                   string
-	FeeGrantLimit          uint64
-	NotificationsRateLimit uint64
-}
-
-func NewApplicationSubscription(id uint64, name string, feeGrantLimit uint64, notificationsRateLimit uint64) *ApplicationSubscription {
-	return &ApplicationSubscription{
-		ID:                     id,
-		Name:                   name,
-		FeeGrantLimit:          feeGrantLimit,
-		NotificationsRateLimit: notificationsRateLimit,
 	}
 }

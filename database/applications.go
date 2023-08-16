@@ -3,10 +3,57 @@ package database
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/desmos-labs/caerus/types"
 )
+
+// SaveAppSubscription allows to save the given application subscription inside the database.
+func (db *Database) SaveAppSubscription(subscription types.ApplicationSubscription) error {
+	stmt := `
+INSERT INTO application_subscriptions (id, subscription_name, fee_grant_rate_limit, notifications_rate_limit) 
+VALUES ($1, $2, $3, $4)
+ON CONFLICT (id) DO UPDATE 
+    SET subscription_name = excluded.subscription_name, 
+        fee_grant_rate_limit = excluded.fee_grant_rate_limit, 
+        notifications_rate_limit = excluded.notifications_rate_limit`
+	_, err := db.SQL.Exec(stmt, subscription.ID, subscription.Name, subscription.FeeGrantLimit, subscription.NotificationsRateLimit)
+	return err
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+// SaveApp allows to save the given application inside the database.
+func (db *Database) SaveApp(app types.Application) error {
+	// Save the application
+	stmt := `
+INSERT INTO applications (id, name, wallet_address, subscription_id, creation_time) 
+VALUES ($1, $2, $3, $4, $5)
+ON CONFLICT (id) DO UPDATE
+	SET name = excluded.name,
+	    wallet_address = excluded.wallet_address,
+	    subscription_id = excluded.subscription_id,
+	    creation_time = excluded.creation_time`
+	_, err := db.SQL.Exec(stmt, app.ID, app.Name, app.WalletAddress, app.SubscriptionID, app.CreationTime)
+	if err != nil {
+		return err
+	}
+
+	// Save the admins
+	stmt = `INSERT INTO application_admins (application_id, user_address) VALUES `
+
+	var args []interface{}
+	for i, admin := range app.Admins {
+		ai := i * 2
+
+		stmt += fmt.Sprintf("($%d, $%d),", ai+1, ai+2)
+		args = append(args, app.ID, admin)
+	}
+	stmt = stmt[:len(stmt)-1] + ` ON CONFLICT DO NOTHING`
+	_, err = db.SQL.Exec(stmt, args...)
+	return err
+}
 
 // SetAppAdmin sets the given user as admin of the application having the given id
 func (db *Database) SetAppAdmin(appID string, userAddress string) error {
@@ -73,7 +120,12 @@ func (db *Database) DeleteApp(appID string) error {
 
 // SaveAppToken allows to save the given application token inside the database
 func (db *Database) SaveAppToken(token types.AppToken) error {
-	stmt := `INSERT INTO application_tokens (application_id, token_name, token_value) VALUES ($1, $2, $3)`
+	stmt := `
+INSERT INTO application_tokens (application_id, token_name, token_value)
+VALUES ($1, $2, $3) 
+ON CONFLICT ON CONSTRAINT unique_token_name_for_application DO UPDATE 
+    SET token_value = excluded.token_value
+`
 	_, err := db.SQL.Exec(stmt, token.AppID, token.Name, db.encryptValue(token.Value))
 	return err
 }

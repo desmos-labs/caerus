@@ -75,6 +75,8 @@ CREATE TABLE application_tokens
     token_value    TEXT                     NOT NULL,
 
     -- Time at which the token was created
-    creation_time  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+    creation_time  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT unique_token_name_for_application UNIQUE (application_id, token_name)
 );
 
