@@ -43,6 +43,7 @@ func NewClient(cfg *Config, txConfig cosmosclient.TxConfig, cdc codec.Codec) (*C
 	return &Client{
 		Wallet:         cosmosWallet,
 		FeeGrantConfig: cfg.FeeGrant,
+		authzClient:    authz.NewQueryClient(walletClient.GRPCConn),
 		bankClient:     banktypes.NewQueryClient(walletClient.GRPCConn),
 		feegrantClient: feegrant.NewQueryClient(walletClient.GRPCConn),
 	}, nil
