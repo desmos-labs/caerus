@@ -8,7 +8,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
 
@@ -20,11 +19,11 @@ import (
 	"github.com/desmos-labs/caerus/utils"
 )
 
-func TestFilesAPIsTestSuite(t *testing.T) {
-	suite.Run(t, new(FilesAPITestSuite))
+func TestFilesServerTestSuite(t *testing.T) {
+	suite.Run(t, new(FilesServerTestSuite))
 }
 
-type FilesAPITestSuite struct {
+type FilesServerTestSuite struct {
 	suite.Suite
 
 	db      *database.Database
@@ -37,7 +36,7 @@ type FilesAPITestSuite struct {
 	tempDir string
 }
 
-func (suite *FilesAPITestSuite) SetupSuite() {
+func (suite *FilesServerTestSuite) SetupSuite() {
 	// Setup the database
 	db, err := testutils.CreateDatabase(path.Join("..", "..", "database", "schema"))
 	suite.Require().NoError(err)
@@ -47,9 +46,6 @@ func (suite *FilesAPITestSuite) SetupSuite() {
 	tempDir, err := os.MkdirTemp(suite.T().TempDir(), "*")
 	suite.Require().NoError(err)
 	suite.tempDir = tempDir
-
-	// Setup Gin in test mode
-	gin.SetMode(gin.TestMode)
 
 	// Create the handler
 	suite.storage = files.NewIPFSStorage("https://ipfs.desmos.network")
@@ -68,11 +64,11 @@ func (suite *FilesAPITestSuite) SetupSuite() {
 	suite.client = files.NewFilesServiceClient(conn)
 }
 
-func (suite *FilesAPITestSuite) TearDownSuite() {
+func (suite *FilesServerTestSuite) TearDownSuite() {
 	suite.server.Stop()
 }
 
-func (suite *FilesAPITestSuite) SetupTest() {
+func (suite *FilesServerTestSuite) SetupTest() {
 	// Truncate all the database data to make sure we have a clean database state
 	err := testutils.TruncateDatabase(suite.db)
 	suite.Require().NoError(err)
@@ -86,7 +82,7 @@ func (suite *FilesAPITestSuite) SetupTest() {
 	utils.CreateDirIfNotExists(path.Join(suite.tempDir, "storage"))
 }
 
-func (suite *FilesAPITestSuite) uploadFile(ctx context.Context, filePath string) (*files.UploadFileResponse, error) {
+func (suite *FilesServerTestSuite) uploadFile(ctx context.Context, filePath string) (*files.UploadFileResponse, error) {
 	stream, err := suite.client.UploadFile(ctx)
 
 	file, err := os.Open(filePath)
@@ -122,7 +118,7 @@ func (suite *FilesAPITestSuite) uploadFile(ctx context.Context, filePath string)
 
 // --------------------------------------------------------------------------------------------------------------------
 
-func (suite *FilesAPITestSuite) TestUploadMedia() {
+func (suite *FilesServerTestSuite) TestUploadMedia() {
 	testCases := []struct {
 		name         string
 		setup        func()
@@ -223,7 +219,7 @@ func (suite *FilesAPITestSuite) TestUploadMedia() {
 	}
 }
 
-func (suite *FilesAPITestSuite) TestDownloadMedia() {
+func (suite *FilesServerTestSuite) TestDownloadMedia() {
 	testCases := []struct {
 		name         string
 		setup        func() (fileName string)
