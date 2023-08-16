@@ -13,7 +13,6 @@ import (
 	wallettypes "github.com/desmos-labs/cosmos-go-wallet/types"
 	desmosapp "github.com/desmos-labs/desmos/v5/app"
 	profilestypes "github.com/desmos-labs/desmos/v5/x/profiles/types"
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -25,11 +24,11 @@ import (
 	"github.com/desmos-labs/caerus/types"
 )
 
-func TestLoginAPIsTestSuite(t *testing.T) {
-	suite.Run(t, new(LoginAPIsTestSuite))
+func TestUserServerTestSuite(t *testing.T) {
+	suite.Run(t, new(UsersServerTestSuite))
 }
 
-type LoginAPIsTestSuite struct {
+type UsersServerTestSuite struct {
 	suite.Suite
 
 	txConfig cosmosclient.TxConfig
@@ -46,10 +45,7 @@ type LoginAPIsTestSuite struct {
 	apiClient *client.Client
 }
 
-func (suite *LoginAPIsTestSuite) SetupSuite() {
-	// Setup Gin in test mode
-	gin.SetMode(gin.TestMode)
-
+func (suite *UsersServerTestSuite) SetupSuite() {
 	// Setup the Cosmos SDK config
 	desmosapp.SetupConfig(sdk.GetConfig())
 
@@ -101,11 +97,11 @@ func (suite *LoginAPIsTestSuite) SetupSuite() {
 	suite.client = users.NewUsersServiceClient(conn)
 }
 
-func (suite *LoginAPIsTestSuite) TearDownSuite() {
+func (suite *UsersServerTestSuite) TearDownSuite() {
 	suite.server.Stop()
 }
 
-func (suite *LoginAPIsTestSuite) SetupTest() {
+func (suite *UsersServerTestSuite) SetupTest() {
 	// Truncate all the database data to make sure we have a clean database state
 	err := testutils.TruncateDatabase(suite.db)
 	suite.Require().NoError(err)
@@ -114,7 +110,7 @@ func (suite *LoginAPIsTestSuite) SetupTest() {
 	suite.deleteGrants()
 }
 
-func (suite *LoginAPIsTestSuite) deleteGrants() {
+func (suite *UsersServerTestSuite) deleteGrants() {
 	var sdkMsg []sdk.Msg
 
 	// Remove all the feegrants made to the user
@@ -149,7 +145,7 @@ func (suite *LoginAPIsTestSuite) deleteGrants() {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-func (suite *LoginAPIsTestSuite) TestGetNonce() {
+func (suite *UsersServerTestSuite) TestGetNonce() {
 	testCases := []struct {
 		name         string
 		buildRequest func() *users.GetNonceRequest
@@ -200,7 +196,7 @@ func (suite *LoginAPIsTestSuite) TestGetNonce() {
 	}
 }
 
-func (suite *LoginAPIsTestSuite) TestLogin() {
+func (suite *UsersServerTestSuite) TestLogin() {
 	testCases := []struct {
 		name         string
 		setup        func()
@@ -330,7 +326,7 @@ func (suite *LoginAPIsTestSuite) TestLogin() {
 	}
 }
 
-func (suite *LoginAPIsTestSuite) TestRefreshSession() {
+func (suite *UsersServerTestSuite) TestRefreshSession() {
 	testCases := []struct {
 		name         string
 		setup        func()
@@ -449,7 +445,7 @@ func (suite *LoginAPIsTestSuite) TestRefreshSession() {
 	}
 }
 
-func (suite *LoginAPIsTestSuite) TestLogout() {
+func (suite *UsersServerTestSuite) TestLogout() {
 	testCases := []struct {
 		name         string
 		setup        func()
@@ -548,7 +544,7 @@ func (suite *LoginAPIsTestSuite) TestLogout() {
 	}
 }
 
-func (suite *LoginAPIsTestSuite) TestDeleteAccount() {
+func (suite *UsersServerTestSuite) TestDeleteAccount() {
 	testCases := []struct {
 		name         string
 		setup        func()
@@ -635,7 +631,7 @@ func (suite *LoginAPIsTestSuite) TestDeleteAccount() {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-//func (suite *LoginAPIsTestSuite) TestHasuraSession() {
+//func (suite *UsersServerTestSuite) TestHasuraSession() {
 //	testCases := []struct {
 //		name         string
 //		setup        func()
