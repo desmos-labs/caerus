@@ -15,6 +15,7 @@ import (
 	"github.com/desmos-labs/caerus/routes/files"
 	"github.com/desmos-labs/caerus/routes/grants"
 	"github.com/desmos-labs/caerus/routes/notifications"
+	"github.com/desmos-labs/caerus/routes/users"
 	"github.com/desmos-labs/caerus/runner"
 )
 
@@ -59,8 +60,9 @@ func main() {
 	serverRunner.SetServiceRegistrar(func(context runner.Context, server *grpc.Server) {
 		applications.RegisterApplicationServiceServer(server, applications.NewServer(context.Database))
 		files.RegisterFilesServiceServer(server, files.NewServerFromEnvVariables(context.Database))
-		grants.RegisterGrantsServiceServer(server, grants.NewServer(context.ChainClient, context.Database))
+		grants.RegisterGrantsServiceServer(server, grants.NewServerFromEnvVariables(context.ChainClient, context.Database))
 		notifications.RegisterNotificationsServiceServer(server, notifications.NewServer(context.FirebaseClient, context.Database))
+		users.RegisterUsersServiceServer(server, users.NewServerFromEnvVariables(context.Codec, context.Amino, context.Database))
 	})
 
 	// Run your server instance
