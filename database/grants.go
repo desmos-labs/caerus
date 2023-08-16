@@ -46,7 +46,7 @@ INSERT INTO fee_grant_requests (application_id, grantee_address, grant_time)
 VALUES ($1, $2, $3)
 ON CONFLICT ON CONSTRAINT unique_application_user_fee_grant_request DO NOTHING `
 
-	_, err := db.SQL.Exec(stmt, request.AppID, request.GrantTime, request.GrantTime)
+	_, err := db.SQL.Exec(stmt, request.AppID, request.DesmosAddress, request.GrantTime)
 	return err
 }
 
@@ -68,7 +68,7 @@ SELECT EXISTS (
 SELECT 1 
 FROM fee_grant_requests 
 WHERE application_id = $1
-  AND grantee_address = $1
+  AND grantee_address = $2
   AND grant_time IS NOT NULL
 )`
 	var exists bool
