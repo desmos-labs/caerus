@@ -7,7 +7,7 @@ CREATE TABLE application_subscriptions
     id                       SERIAL  NOT NULL PRIMARY KEY,
 
     -- Name of the subscription plan
-    subscription             TEXT    NOT NULL,
+    subscription_name        TEXT    NOT NULL,
 
     -- Number of fee grants that can be requested per day
     -- If set to 0, no limit is applied

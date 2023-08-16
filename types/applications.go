@@ -2,7 +2,23 @@ package types
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
+
+type AppToken struct {
+	AppID string
+	Name  string
+	Value string
+}
+
+func NewAppToken(appID string, tokenName string) AppToken {
+	return AppToken{
+		AppID: appID,
+		Name:  tokenName,
+		Value: uuid.NewString(),
+	}
+}
 
 type EncryptedAppToken struct {
 	AppID        string
@@ -26,15 +42,33 @@ type Application struct {
 	Name           string
 	WalletAddress  string
 	SubscriptionID uint64
+	Admins         []string
 	CreationTime   time.Time
 }
 
-func NewApplication(id string, name string, walletAddress string, subscriptionID uint64, creationTime time.Time) *Application {
+func NewApplication(id string, name string, walletAddress string, subscriptionID uint64, admins []string, creationTime time.Time) *Application {
 	return &Application{
 		ID:             id,
 		Name:           name,
 		WalletAddress:  walletAddress,
 		SubscriptionID: subscriptionID,
+		Admins:         admins,
 		CreationTime:   creationTime,
+	}
+}
+
+type ApplicationSubscription struct {
+	ID                     uint64
+	Name                   string
+	FeeGrantLimit          uint64
+	NotificationsRateLimit uint64
+}
+
+func NewApplicationSubscription(id uint64, name string, feeGrantLimit uint64, notificationsRateLimit uint64) *ApplicationSubscription {
+	return &ApplicationSubscription{
+		ID:                     id,
+		Name:                   name,
+		FeeGrantLimit:          feeGrantLimit,
+		NotificationsRateLimit: notificationsRateLimit,
 	}
 }
