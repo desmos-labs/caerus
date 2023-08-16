@@ -24,12 +24,12 @@ func NewServer(db Database) *ApplicationServer {
 }
 
 func (a ApplicationServer) RegisterNotificationToken(ctx context.Context, request *RegisterNotificationTokenRequest) (*emptypb.Empty, error) {
-	appCtx, err := authentication.GetAppContext(ctx)
+	appData, err := authentication.GetAuthenticatedAppData(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	err = a.handler.HandleRegisterAppDeviceTokenRequest(NewRegisterAppDeviceTokenRequest(appCtx.AppID, request.Token))
+	err = a.handler.HandleRegisterAppDeviceTokenRequest(NewRegisterAppDeviceTokenRequest(appData.AppID, request.Token))
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)
 	}
@@ -38,13 +38,13 @@ func (a ApplicationServer) RegisterNotificationToken(ctx context.Context, reques
 }
 
 func (a ApplicationServer) DeleteApp(ctx context.Context, request *DeleteAppRequest) (*emptypb.Empty, error) {
-	userCtx, err := authentication.GetUserContext(ctx)
+	userData, err := authentication.GetAuthenticatedUserData(ctx)
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)
 	}
 
 	// Handle the request
-	req := NewDeleteApplicationRequest(userCtx.DesmosAddress, request.AppId)
+	req := NewDeleteApplicationRequest(userData.DesmosAddress, request.AppId)
 	err = a.handler.HandleDeleteApplicationRequest(req)
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)

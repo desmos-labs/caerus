@@ -30,7 +30,7 @@ func NewServerFromEnvVariables(db Database) *Server {
 
 // UploadFile implements FilesServiceServer
 func (s *Server) UploadFile(stream FilesService_UploadFileServer) error {
-	_, err := authentication.GetUserContext(stream.Context())
+	_, err := authentication.GetAuthenticatedUserData(stream.Context())
 	if err != nil {
 		return err
 	}

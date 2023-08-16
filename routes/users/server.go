@@ -21,10 +21,16 @@ type Server struct {
 	handler *Handler
 }
 
-func NewServer(cdc codec.Codec, amino *codec.LegacyAmino, db Database) *Server {
+func NewServer(handler *Handler) *Server {
 	return &Server{
-		handler: NewHandler(cdc, amino, db),
+		handler: handler,
 	}
+}
+
+func NewServerFromEnvVariables(cdc codec.Codec, amino *codec.LegacyAmino, db Database) *Server {
+	return NewServer(
+		NewHandler(cdc, amino, db),
+	)
 }
 
 func (s *Server) GetNonce(ctx context.Context, request *GetNonceRequest) (*GetNonceResponse, error) {
@@ -58,12 +64,12 @@ func (s *Server) Login(ctx context.Context, request *types.SignedRequest) (*Logi
 }
 
 func (s *Server) RefreshSession(ctx context.Context, _ *emptypb.Empty) (*RefreshSessionResponse, error) {
-	userCtx, err := authentication.GetUserContext(ctx)
+	userData, err := authentication.GetAuthenticatedUserData(ctx)
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)
 	}
 
-	res, err := s.handler.HandleRefreshSessionRequest(userCtx.Token)
+	res, err := s.handler.HandleRefreshSessionRequest(userData.Token)
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)
 	}
@@ -72,13 +78,13 @@ func (s *Server) RefreshSession(ctx context.Context, _ *emptypb.Empty) (*Refresh
 }
 
 func (s *Server) RegisterDeviceNotificationToken(ctx context.Context, request *RegisterNotificationDeviceTokenRequest) (*emptypb.Empty, error) {
-	userCtx, err := authentication.GetUserContext(ctx)
+	userData, err := authentication.GetAuthenticatedUserData(ctx)
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)
 	}
 
 	// Handle the request
-	req := NewRegisterUserDeviceTokenRequest(userCtx.DesmosAddress, request.DeviceToken)
+	req := NewRegisterUserDeviceTokenRequest(userData.DesmosAddress, request.DeviceToken)
 	err = s.handler.HandleRegisterUserDeviceTokenRequest(req)
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)
@@ -88,13 +94,13 @@ func (s *Server) RegisterDeviceNotificationToken(ctx context.Context, request *R
 }
 
 func (s *Server) Logout(ctx context.Context, request *LogoutRequest) (*emptypb.Empty, error) {
-	userCtx, err := authentication.GetUserContext(ctx)
+	userData, err := authentication.GetAuthenticatedUserData(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	// Handle the request
-	err = s.handler.HandleLogoutRequest(NewLogoutUserRequest(userCtx.Token, request.LogoutFromAll))
+	err = s.handler.HandleLogoutRequest(NewLogoutUserRequest(userData.Token, request.LogoutFromAll))
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)
 	}
@@ -103,13 +109,13 @@ func (s *Server) Logout(ctx context.Context, request *LogoutRequest) (*emptypb.E
 }
 
 func (s *Server) DeleteAccount(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
-	userCtx, err := authentication.GetUserContext(ctx)
+	userData, err := authentication.GetAuthenticatedUserData(ctx)
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)
 	}
 
 	// Handle the request
-	req := NewDeleteAccountRequest(userCtx.DesmosAddress)
+	req := NewDeleteAccountRequest(userData.DesmosAddress)
 	err = s.handler.HandleDeleteAccountRequest(req)
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)

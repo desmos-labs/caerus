@@ -59,7 +59,7 @@ func (s *BaseAuthSource) GetUserSession(token string) (*types.EncryptedUserSessi
 	}
 
 	if session == nil {
-		return nil, utils.WrapErr(http.StatusUnauthorized, "invalid token")
+		return nil, nil
 	}
 
 	shouldRefresh, shouldDelete, err := session.Validate()
@@ -92,7 +92,7 @@ func (s *BaseAuthSource) GetAppToken(token string) (*types.EncryptedAppToken, er
 	}
 
 	if encryptedToken == nil {
-		return nil, utils.WrapErr(http.StatusUnauthorized, "invalid token")
+		return nil, nil
 	}
 
 	return encryptedToken, nil

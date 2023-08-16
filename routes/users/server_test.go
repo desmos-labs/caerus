@@ -6,19 +6,13 @@ import (
 	"testing"
 	"time"
 
-	cosmosclient "github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/feegrant"
-	wallettypes "github.com/desmos-labs/cosmos-go-wallet/types"
 	desmosapp "github.com/desmos-labs/desmos/v5/app"
-	profilestypes "github.com/desmos-labs/desmos/v5/x/profiles/types"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/desmos-labs/caerus/authentication"
-	client "github.com/desmos-labs/caerus/chain"
 	"github.com/desmos-labs/caerus/database"
 	"github.com/desmos-labs/caerus/routes/users"
 	"github.com/desmos-labs/caerus/testutils"
@@ -32,18 +26,11 @@ func TestUserServerTestSuite(t *testing.T) {
 type UsersServerTestSuite struct {
 	suite.Suite
 
-	txConfig cosmosclient.TxConfig
-	cdc      codec.Codec
-	amino    *codec.LegacyAmino
-
 	db      *database.Database
 	handler *users.Handler
 
 	server *grpc.Server
 	client users.UsersServiceClient
-
-	chainCfg  *wallettypes.ChainConfig
-	apiClient *client.Client
 }
 
 func (suite *UsersServerTestSuite) SetupSuite() {
@@ -57,39 +44,16 @@ func (suite *UsersServerTestSuite) SetupSuite() {
 
 	// Build chain-related stuff
 	encodingConfig := desmosapp.MakeEncodingConfig()
-	suite.txConfig, suite.cdc, suite.amino = encodingConfig.TxConfig, encodingConfig.Codec, encodingConfig.Amino
-
-	suite.chainCfg = &wallettypes.ChainConfig{
-		Bech32Prefix: "desmos",
-		RPCAddr:      "http://localhost:26657",
-		GRPCAddr:     "http://localhost:9090",
-		GasPrice:     "0.01stake",
-	}
-
-	// Build the API chain client
-	apiWallet, err := client.NewClient(&client.Config{
-		Account: &wallettypes.AccountConfig{
-			Mnemonic: "hour harbor fame unaware bunker junk garment decrease federal vicious island smile warrior fame right suit portion skate analyst multiply magnet medal fresh sweet",
-			HDPath:   "m/44'/852'/0'/0/0",
-		},
-		Chain: suite.chainCfg,
-		FeeGrant: &client.FeeGrantConfig{
-			MsgTypes:   []string{sdk.MsgTypeURL(&profilestypes.MsgSaveProfile{})},
-			GrantLimit: sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000000))),
-			Expiration: 1 * time.Hour,
-		},
-	}, suite.txConfig, suite.cdc)
-	suite.Require().NoError(err)
-	suite.apiClient = apiWallet
+	cdc, amino := encodingConfig.Codec, encodingConfig.Amino
 
 	// Create the handler
-	suite.handler = users.NewHandler(suite.cdc, suite.amino, suite.db)
+	suite.handler = users.NewHandler(cdc, amino, suite.db)
 
 	// Create the server
 	suite.server = testutils.CreateServer(suite.db)
 
 	// Register the service
-	service := users.NewServer(suite.cdc, suite.amino, suite.db)
+	service := users.NewServer(suite.handler)
 	users.RegisterUsersServiceServer(suite.server, service)
 
 	// Setup the client
@@ -106,42 +70,6 @@ func (suite *UsersServerTestSuite) SetupTest() {
 	// Truncate all the database data to make sure we have a clean database state
 	err := testutils.TruncateDatabase(suite.db)
 	suite.Require().NoError(err)
-
-	// Remove existing grants to make sure we have a clean chain state
-	suite.deleteGrants()
-}
-
-func (suite *UsersServerTestSuite) deleteGrants() {
-	var sdkMsg []sdk.Msg
-
-	// Remove all the feegrants made to the user
-	feegrantClient := feegrant.NewQueryClient(suite.apiClient.Client.GRPCConn)
-	allowancesRes, err := feegrantClient.AllowancesByGranter(context.Background(), &feegrant.QueryAllowancesByGranterRequest{
-		Granter: suite.apiClient.AccAddress(),
-	})
-	suite.Require().NoError(err)
-
-	for _, allowance := range allowancesRes.Allowances {
-		granterAddr, err := sdk.AccAddressFromBech32(allowance.Granter)
-		suite.Require().NoError(err)
-
-		granteeAddr, err := sdk.AccAddressFromBech32(allowance.Grantee)
-		suite.Require().NoError(err)
-
-		revokeMsg := feegrant.NewMsgRevokeAllowance(granterAddr, granteeAddr)
-
-		sdkMsg = append(sdkMsg, &revokeMsg)
-	}
-
-	if len(sdkMsg) == 0 {
-		return
-	}
-
-	// Broadcast the transaction
-	response, err := suite.apiClient.BroadcastTxCommit(&wallettypes.TransactionData{Messages: sdkMsg, GasAuto: true, FeeAuto: true})
-	suite.Require().NoError(err)
-	suite.Require().Zero(response.Code)
-	suite.Require().Zerof(response.Code, response.RawLog)
 }
 
 // --------------------------------------------------------------------------------------------------------------------

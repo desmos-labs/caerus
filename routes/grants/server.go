@@ -19,27 +19,33 @@ type Server struct {
 	handler *Handler
 }
 
-func NewServer(client ChainClient, db Database) *Server {
+func NewServer(handler *Handler) *Server {
 	return &Server{
-		handler: NewHandler(client, db),
+		handler: handler,
 	}
 }
 
+func NewServerFromEnvVariables(chainClient ChainClient, db Database) *Server {
+	return NewServer(
+		NewHandler(chainClient, db),
+	)
+}
+
 func (s *Server) RequestFeeAllowance(ctx context.Context, request *RequestFeeAllowanceRequest) (*emptypb.Empty, error) {
-	appCtx, err := authentication.GetAppContext(ctx)
+	appData, err := authentication.GetAuthenticatedAppData(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	// Handle the request
-	err = s.handler.HandleFeeGrantRequest(NewRequestFeeGrantRequest(appCtx.AppID, request.UserDesmosAddress))
+	err = s.handler.HandleFeeGrantRequest(NewRequestFeeGrantRequest(appData.AppID, request.UserDesmosAddress))
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)
 	}
 
 	// Log the event
 	analytics.Enqueue(posthog.Capture{
-		DistinctId: appCtx.AppID,
+		DistinctId: appData.AppID,
 		Event:      "Requested fee grant",
 		Properties: posthog.NewProperties().
 			Set(analytics.KeyUserAddress, request.UserDesmosAddress),

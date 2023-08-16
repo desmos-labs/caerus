@@ -28,7 +28,7 @@ func NewServer(firebase Firebase, db Database) *Server {
 }
 
 func (s Server) SendNotification(ctx context.Context, request *SendNotificationRequest) (*emptypb.Empty, error) {
-	appCtx, err := authentication.GetAppContext(ctx)
+	appData, err := authentication.GetAuthenticatedAppData(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (s Server) SendNotification(ctx context.Context, request *SendNotificationR
 	}
 
 	// Handle the request
-	req := NewSendAppNotificationRequest(appCtx.AppID, request.DeviceTokens, &notification)
+	req := NewSendAppNotificationRequest(appData.AppID, request.DeviceTokens, &notification)
 	err = s.handler.HandleSendNotificationRequest(req)
 	if err != nil {
 		return nil, utils.UnwrapError(ctx, err)

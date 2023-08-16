@@ -1,34 +1,23 @@
 package authentication
 
-import (
-	"context"
-)
+type ContextAuthenticationKey string
 
 var (
-	_ context.Context = &UnAuthenticatedContext{}
-	_ context.Context = &UserAuthenticatedContext{}
-	_ context.Context = &AppAuthenticatedContext{}
+	DataKey ContextAuthenticationKey = "AuthenticationData"
 )
 
 // UnAuthenticatedContext represents the gRPC context that will be used when the user is not authenticated
 type UnAuthenticatedContext struct {
-	context.Context
 }
 
-// UserAuthenticatedContext represents the gRPC context that will be used if the calls are made as an
-// authenticated user using the "Authorization: Bearer <token>" authentication method
-type UserAuthenticatedContext struct {
-	context.Context
-
+// AuthenticatedUserData contains the data of an authenticated user
+type AuthenticatedUserData struct {
 	Token         string
 	DesmosAddress string
 }
 
-// AppAuthenticatedContext represents the gRPC context that will be used if the calls are made as an
-// authenticated application using the "Authorization: Bearer <token>" authentication method
-type AppAuthenticatedContext struct {
-	context.Context
-
+// AuthenticatedAppData contains the data of an authenticated application
+type AuthenticatedAppData struct {
 	Token string
 	AppID string
 }
