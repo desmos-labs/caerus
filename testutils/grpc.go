@@ -1,20 +1,18 @@
 package testutils
 
 import (
-	"context"
-	"fmt"
 	"net"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/metadata"
 
 	"github.com/desmos-labs/caerus/authentication"
+	"github.com/desmos-labs/caerus/server"
 )
 
 // CreateServer creates a GRPC server instance with the proper options
 func CreateServer(db authentication.Database) *grpc.Server {
-	return grpc.NewServer(authentication.NewAuthInterceptors(authentication.NewBaseAuthSource(db))...)
+	return server.New(db)
 }
 
 // StartServerAndConnect starts the given server and connects to it, returning the gRPC connection
@@ -30,8 +28,4 @@ func StartServerAndConnect(server *grpc.Server) (*grpc.ClientConn, error) {
 
 	// Create the connection
 	return grpc.Dial("localhost:19090", grpc.WithTransportCredentials(insecure.NewCredentials()))
-}
-
-func SetupContextWithAuthorization(ctx context.Context, token string) context.Context {
-	return metadata.AppendToOutgoingContext(ctx, "Authorization", fmt.Sprintf("Bearer %s", token))
 }

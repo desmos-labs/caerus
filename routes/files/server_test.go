@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
 
+	"github.com/desmos-labs/caerus/authentication"
 	"github.com/desmos-labs/caerus/testutils"
 
 	"github.com/desmos-labs/caerus/database"
@@ -148,7 +149,7 @@ func (suite *FilesServerTestSuite) TestUploadMedia() {
 				suite.Require().NoError(err)
 			},
 			setupContext: func(ctx context.Context) context.Context {
-				return testutils.SetupContextWithAuthorization(ctx, "token")
+				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			shouldErr: true,
 		},
@@ -174,7 +175,7 @@ func (suite *FilesServerTestSuite) TestUploadMedia() {
 				suite.Require().NoError(err)
 			},
 			setupContext: func(ctx context.Context) context.Context {
-				return testutils.SetupContextWithAuthorization(ctx, "token")
+				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			shouldErr: false,
 			check: func(res *files.UploadFileResponse) {
@@ -251,7 +252,7 @@ func (suite *FilesServerTestSuite) TestDownloadMedia() {
 				suite.Require().NoError(err)
 
 				// Upload the test image
-				ctx := testutils.SetupContextWithAuthorization(context.Background(), "token")
+				ctx := authentication.SetupContextWithAuthorization(context.Background(), "token")
 				res, err := suite.uploadFile(ctx, path.Join(suite.tempDir, "temp_file.jpeg"))
 				suite.Require().NoError(err)
 

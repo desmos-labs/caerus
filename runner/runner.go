@@ -9,10 +9,9 @@ import (
 
 	"github.com/go-co-op/gocron"
 	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
 
 	"github.com/desmos-labs/caerus/analytics"
-	"github.com/desmos-labs/caerus/authentication"
+	"github.com/desmos-labs/caerus/server"
 	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
 )
@@ -36,12 +35,10 @@ func (r *Runner) SetServiceRegistrar(registrar ServiceRegistrar) {
 }
 
 func (r *Runner) Run() {
-	server := grpc.NewServer(
-		authentication.NewAuthInterceptors(authentication.NewBaseAuthSource(r.ctx.Database))...,
-	)
+	serverInstance := server.New(r.ctx.Database)
 
 	if r.serviceRegistrar != nil {
-		r.serviceRegistrar(r.ctx, server)
+		r.serviceRegistrar(r.ctx, serverInstance)
 	}
 
 	// Build the HTTP server to be able to shut it down if needed
@@ -52,7 +49,7 @@ func (r *Runner) Run() {
 		panic(err)
 	}
 
-	err = server.Serve(netListener)
+	err = serverInstance.Serve(netListener)
 	if err != nil {
 		panic(err)
 	}

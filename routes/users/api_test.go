@@ -17,6 +17,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 
+	"github.com/desmos-labs/caerus/authentication"
 	client "github.com/desmos-labs/caerus/chain"
 	"github.com/desmos-labs/caerus/database"
 	"github.com/desmos-labs/caerus/routes/users"
@@ -337,7 +338,7 @@ func (suite *UsersServerTestSuite) TestRefreshSession() {
 		{
 			name: "missing session returns an error",
 			setupContext: func(ctx context.Context) context.Context {
-				return testutils.SetupContextWithAuthorization(ctx, "token")
+				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			shouldErr: true,
 		},
@@ -353,7 +354,7 @@ func (suite *UsersServerTestSuite) TestRefreshSession() {
 				suite.Require().NoError(err)
 			},
 			setupContext: func(ctx context.Context) context.Context {
-				return testutils.SetupContextWithAuthorization(ctx, "token")
+				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			shouldErr: true,
 			check: func(res *users.RefreshSessionResponse) {
@@ -375,7 +376,7 @@ func (suite *UsersServerTestSuite) TestRefreshSession() {
 				suite.Require().NoError(err)
 			},
 			setupContext: func(ctx context.Context) context.Context {
-				return testutils.SetupContextWithAuthorization(ctx, "token")
+				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			shouldErr: false,
 			check: func(res *users.RefreshSessionResponse) {
@@ -401,7 +402,7 @@ func (suite *UsersServerTestSuite) TestRefreshSession() {
 				suite.Require().NoError(err)
 			},
 			setupContext: func(ctx context.Context) context.Context {
-				return testutils.SetupContextWithAuthorization(ctx, "token")
+				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			shouldErr: false,
 			check: func(res *users.RefreshSessionResponse) {
@@ -466,7 +467,7 @@ func (suite *UsersServerTestSuite) TestLogout() {
 				suite.Require().NoError(err)
 			},
 			setupContext: func(ctx context.Context) context.Context {
-				return testutils.SetupContextWithAuthorization(ctx, "token")
+				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			buildRequest: func() *users.LogoutRequest {
 				return &users.LogoutRequest{LogoutFromAll: false}
@@ -500,7 +501,7 @@ func (suite *UsersServerTestSuite) TestLogout() {
 				suite.Require().NoError(err)
 			},
 			setupContext: func(ctx context.Context) context.Context {
-				return testutils.SetupContextWithAuthorization(ctx, "token")
+				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			buildRequest: func() *users.LogoutRequest {
 				return &users.LogoutRequest{LogoutFromAll: true}
@@ -564,7 +565,7 @@ func (suite *UsersServerTestSuite) TestDeleteAccount() {
 				suite.Require().NoError(err)
 			},
 			setupContext: func(ctx context.Context) context.Context {
-				return testutils.SetupContextWithAuthorization(ctx, "token")
+				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			shouldErr: true,
 		},
@@ -588,7 +589,7 @@ func (suite *UsersServerTestSuite) TestDeleteAccount() {
 				suite.Require().NoError(err)
 			},
 			setupContext: func(ctx context.Context) context.Context {
-				return testutils.SetupContextWithAuthorization(ctx, "token")
+				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			shouldErr: false,
 			check: func() {
