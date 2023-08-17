@@ -61,6 +61,13 @@ WHERE application_id = $1
 	return err
 }
 
+// SetFeeGrantRequestsGranted sets the fee grant requests having the given ids as granted
+func (db *Database) SetFeeGrantRequestsGranted(ids []string) error {
+	stmt := `UPDATE fee_grant_requests SET grant_time = NOW() WHERE id IN $1`
+	_, err := db.SQL.Exec(stmt, ids)
+	return err
+}
+
 // HasFeeGrantBeenGrantedToUser returns true if the given user has already been granted the fee grant
 func (db *Database) HasFeeGrantBeenGrantedToUser(appID string, user string) (bool, error) {
 	stmt := `
@@ -84,9 +91,9 @@ type feeGrantRequestRow struct {
 	GrantTime      sql.NullTime `db:"grant_time"`
 }
 
-// GetFeeGrantRequests returns the oldest fee grant requests made from users
-func (db *Database) GetFeeGrantRequests(limit int) ([]types.FeeGrantRequest, error) {
-	stmt := `SELECT * FROM fee_grant_requests ORDER BY request_time LIMIT $1`
+// GetNotGrantedFeeGrantRequests returns the oldest fee grant requests made from users
+func (db *Database) GetNotGrantedFeeGrantRequests(limit int) ([]types.FeeGrantRequest, error) {
+	stmt := `SELECT * FROM fee_grant_requests WHERE grant_time IS NULL ORDER BY request_time LIMIT $1`
 
 	var rows []feeGrantRequestRow
 	err := db.SQL.Select(&rows, stmt, limit)

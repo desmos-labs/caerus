@@ -3,10 +3,10 @@
  */
 CREATE TABLE fee_grant_requests
 (
-    id              SERIAL                   NOT NULL PRIMARY KEY,
+    id              TEXT                   NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
 
     -- ID of the application that has requested the grant
-    application_id  TEXT                     NOT NULL,
+    application_id  TEXT                     NOT NULL REFERENCES applications (id) ON DELETE CASCADE,
 
     -- Desmos address of the user who should receive the grant
     grantee_address TEXT                     NOT NULL UNIQUE,
