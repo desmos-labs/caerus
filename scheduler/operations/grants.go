@@ -17,15 +17,15 @@ import (
 
 func RegisterGrantsOperations(ctx scheduler.Context, scheduler *gocron.Scheduler) {
 	scheduler.Every(10).Seconds().Do(func() {
-		err := grantAuthorizations(ctx)
+		err := GrantAuthorizations(ctx)
 		if err != nil {
 			log.Error().Err(err).Msg("error while granting authorizations")
 		}
 	})
 }
 
-// grantAuthorizations grants the authorizations to the users that have requested them
-func grantAuthorizations(ctx scheduler.Context) error {
+// GrantAuthorizations grants the authorizations to the users that have requested them
+func GrantAuthorizations(ctx scheduler.Context) error {
 	// Get at most 100 authorizations requests
 	feeGrantRequests, err := ctx.Database.GetNotGrantedFeeGrantRequests(100)
 	if err != nil {
@@ -39,7 +39,7 @@ func grantAuthorizations(ctx scheduler.Context) error {
 	}
 
 	// Get the grant requests ids.
-	// This will be used later on to mark thefease requests has granted
+	// This will be used later on to mark the fee requests as granted
 	var grantedGrantRequestsIDs []string
 
 	// Get the list of users to whom the fee allowances have been granted.
