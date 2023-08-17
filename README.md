@@ -1,5 +1,9 @@
 # Caerus
 
+![License](https://img.shields.io/github/license/desmos-labs/caerus.svg)
+[![Go Reference](https://pkg.go.dev/badge/github.com/desmos-labs/caerus/.svg)](https://pkg.go.dev/github.com/desmos-labs/caerus/)
+[![Codecov](https://codecov.io/gh/desmos-labs/caerus/branch/main/graph/badge.svg)](https://codecov.io/gh/desmos-labs/caerus/branch/main)
+
 In Greek mythology, Caerus /ˈsɪərəs, ˈsiːrəs/ (Greek: Καιρός, Kairos, the same as kairos) was the personification of
 opportunity, luck and favorable moments. ([Wikipedia](https://en.wikipedia.org/wiki/Caerus))
 
