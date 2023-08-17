@@ -2,6 +2,7 @@ package operations
 
 import (
 	"fmt"
+	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
@@ -37,8 +38,13 @@ func grantAuthorizations(ctx scheduler.Context) error {
 		appsFeeGrantRequests[feeGrantRequest.AppID] = append(appsFeeGrantRequests[feeGrantRequest.AppID], feeGrantRequest)
 	}
 
-	// Get the grant requests ids
-	var grantRequestsIDs []string
+	// Get the grant requests ids.
+	// This will be used later on to mark thefease requests has granted
+	var grantedGrantRequestsIDs []string
+
+	// Get the list of users to whom the fee allowances have been granted.
+	// This will be used later on to notify applications about which users the grants have been given to
+	grantedUsers := map[string][]string{}
 
 	// Build the messages to be sent
 	var msgExecMsgs []sdk.Msg
@@ -51,11 +57,37 @@ func grantAuthorizations(ctx scheduler.Context) error {
 
 		if !found {
 			log.Error().Str("application id", appID).Msg("application not found while trying to grant a fee allowance")
+
+			// Skip this application since we are not going to be able to properly execute the message
 			continue
 		}
 
-		// TODO: Check if the app still has the on-chain MsgExec authorization
+		// Check if the app still has the on-chain MsgExec authorization
 		// If it does not have an authorization, send a notification
+		hasOnChainAuthorization, err := ctx.ChainClient.HasGrantedMsgGrantAllowanceAuthorization(app.WalletAddress)
+		if err != nil {
+			return err
+		}
+
+		if !hasOnChainAuthorization {
+			appTokens, err := ctx.Database.GetAppNotificationTokens(appID)
+			if err != nil {
+				return err
+			}
+
+			err = ctx.FirebaseClient.SendNotifications(nil, appTokens, &types.Notification{
+				Data: map[string]string{
+					types.NotificationTypeKey:    "missing_authorization",
+					types.NotificationMessageKey: "Your application is missing the on-chain authorization to be able to send fee allowances",
+				},
+			})
+			if err != nil {
+				return err
+			}
+
+			// Skip this application since we are not going to be able to properly execute the message
+			continue
+		}
 
 		// Build the MsgExec instances
 		var grantAllowanceMsgs []sdk.Msg
@@ -76,7 +108,9 @@ func grantAuthorizations(ctx scheduler.Context) error {
 				return err
 			}
 
-			grantRequestsIDs = append(grantRequestsIDs, grantRequest.ID)
+			grantedGrantRequestsIDs = append(grantedGrantRequestsIDs, grantRequest.ID)
+			grantedUsers[appID] = append(grantedUsers[appID], grantRequest.DesmosAddress)
+
 			grantAllowanceMsgs = append(grantAllowanceMsgs, msgGrantAllowance)
 		}
 
@@ -108,12 +142,29 @@ func grantAuthorizations(ctx scheduler.Context) error {
 	}
 
 	// Set the grant requests as granted
-	err = ctx.Database.SetFeeGrantRequestsGranted(grantRequestsIDs)
+	err = ctx.Database.SetFeeGrantRequestsGranted(grantedGrantRequestsIDs)
 	if err != nil {
 		return err
 	}
 
-	// TODO: Send a notification to the applications
+	// Send a notification to the applications
+	for appID, usersAddresses := range grantedUsers {
+		appTokens, err := ctx.Database.GetAppNotificationTokens(appID)
+		if err != nil {
+			return err
+		}
+
+		err = ctx.FirebaseClient.SendNotifications(nil, appTokens, &types.Notification{
+			Data: map[string]string{
+				types.NotificationTypeKey:    "fee_allowances_granted",
+				types.NotificationMessageKey: "Your fee allowances have been granted",
+				"users":                      strings.Join(usersAddresses, ","),
+			},
+		})
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
