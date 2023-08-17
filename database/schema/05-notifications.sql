@@ -5,7 +5,7 @@
 CREATE TABLE application_notifications_tokens
 (
     id             SERIAL                   NOT NULL PRIMARY KEY,
-    application_id TEXT                     NOT NULL REFERENCES applications (id),
+    application_id TEXT                     NOT NULL REFERENCES applications (id) ON DELETE CASCADE,
     device_token   TEXT                     NOT NULL,
     timestamp      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     CONSTRAINT unique_application_notification_token UNIQUE (application_id, device_token)
@@ -29,10 +29,10 @@ CREATE TABLE user_notifications_tokens
  */
 CREATE TABLE notifications
 (
-    id             TEXT                     NOT NULL PRIMARY KEY,
+    id             TEXT                     NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
 
     -- ID of the application that has sent the notification
-    application_id TEXT                     NOT NULL REFERENCES applications (id),
+    application_id TEXT                     NOT NULL,
 
     -- JSON-encoded list of addresses of the users that has received the notification
     user_addresses JSONB                    NOT NULL,
@@ -41,5 +41,5 @@ CREATE TABLE notifications
     notification   JSONB                    NOT NULL,
 
     -- Time when the notification has been sent
-    send_time      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+    send_time      TIMESTAMP WITH TIME ZONE NOT NULL             DEFAULT NOW()
 );

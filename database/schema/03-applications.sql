@@ -52,7 +52,7 @@ CREATE TABLE applications
 CREATE TABLE application_admins
 (
     id             SERIAL NOT NULL PRIMARY KEY,
-    application_id TEXT   NOT NULL REFERENCES applications (id),
+    application_id TEXT   NOT NULL REFERENCES applications (id) ON DELETE CASCADE,
     user_address   TEXT   NOT NULL,
     CONSTRAINT unique_application_user_entry UNIQUE (application_id, user_address)
 );
@@ -66,7 +66,7 @@ CREATE TABLE application_tokens
     id             SERIAL                   NOT NULL PRIMARY KEY,
 
     -- ID of the application that owns the token
-    application_id TEXT                     NOT NULL REFERENCES applications (id),
+    application_id TEXT                     NOT NULL REFERENCES applications (id) ON DELETE CASCADE,
 
     -- Name of the token decided by the user
     token_name     TEXT                     NOT NULL,

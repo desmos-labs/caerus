@@ -6,7 +6,7 @@ CREATE TABLE fee_grant_requests
     id              SERIAL                   NOT NULL PRIMARY KEY,
 
     -- ID of the application that has requested the grant
-    application_id  TEXT                     NOT NULL REFERENCES applications (id),
+    application_id  TEXT                     NOT NULL,
 
     -- Desmos address of the user who should receive the grant
     grantee_address TEXT                     NOT NULL UNIQUE,
