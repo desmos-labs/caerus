@@ -9,7 +9,6 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"google.golang.org/grpc"
 
 	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
@@ -49,14 +48,4 @@ func ZeroLogInterceptorLogger(l zerolog.Logger) logging.Logger {
 			panic(fmt.Sprintf("unknown level %v", lvl))
 		}
 	})
-}
-
-// NewLoggingInterceptor returns a list of gprc.ServerOptions that can be used to enable logging
-// on the gRPC server
-func NewLoggingInterceptor() []grpc.ServerOption {
-	logFunc := ZeroLogInterceptorLogger(log.Logger)
-	return []grpc.ServerOption{
-		grpc.ChainUnaryInterceptor(logging.UnaryServerInterceptor(logFunc)),
-		grpc.ChainStreamInterceptor(logging.StreamServerInterceptor(logFunc)),
-	}
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/auth"
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -63,15 +62,5 @@ func BearerTokenAuthFunction(source Source) func(context.Context) (context.Conte
 
 		// Return unauthenticated context
 		return unAuthenticatedContext(ctx), nil
-	}
-}
-
-// NewAuthInterceptors returns a list of grpc.ServerOption that can be used to register interceptors
-// inside a gRPC server to make it support client-side authentication properly
-func NewAuthInterceptors(source Source) []grpc.ServerOption {
-	authFunc := BearerTokenAuthFunction(source)
-	return []grpc.ServerOption{
-		grpc.StreamInterceptor(auth.StreamServerInterceptor(authFunc)),
-		grpc.UnaryInterceptor(auth.UnaryServerInterceptor(authFunc)),
 	}
 }
