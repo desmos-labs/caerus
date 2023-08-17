@@ -46,7 +46,7 @@ func NewTooManyRequestsError(res string) *HttpError {
 	nextDayMidnight := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day()+1, 0, 0, 0, 0, time.UTC)
 	retryAfter := nextDayMidnight.Sub(currentTime).Seconds()
 
-	return WrapErr(http.StatusTooManyRequests, res).WithHeaders(map[string]string{
+	return WrapErr(codes.ResourceExhausted, res).WithHeaders(map[string]string{
 		http.CanonicalHeaderKey("Retry-After"): fmt.Sprintf("%d", int(retryAfter)),
 	})
 }
@@ -73,7 +73,7 @@ func UnwrapError(ctx context.Context, err error) error {
 			}
 		}
 
-		return status.Error(status.Code(err), httpErr.Response)
+		return status.Error(httpErr.StatusCode, httpErr.Response)
 	}
 
 	return status.Error(codes.Internal, ucFirst(err.Error()))

@@ -27,7 +27,7 @@ import (
 	"github.com/desmos-labs/caerus/types"
 )
 
-func TestGrantsAPIsTestSuite(t *testing.T) {
+func TestGrantsServerTestSuite(t *testing.T) {
 	suite.Run(t, new(GrantsServerTestSuite))
 }
 

@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/desmos-labs/caerus/authentication"
-	"github.com/desmos-labs/caerus/utils"
 )
 
 var (
@@ -46,13 +45,13 @@ func (s *Server) UploadFile(stream FilesService_UploadFileServer) error {
 			// First of all, store the file
 			filePath, err := s.handler.SaveFile(fileName, fileData)
 			if err != nil {
-				return utils.UnwrapError(stream.Context(), err)
+				return err
 			}
 
 			// Now, handle the request
 			tempFilePath, res, err := s.handler.UploadFile(filePath)
 			if err != nil {
-				return utils.UnwrapError(stream.Context(), err)
+				return err
 			}
 			os.Remove(tempFilePath)
 
@@ -72,7 +71,7 @@ func (s *Server) GetFile(request *GetFileRequest, stream FilesService_GetFileSer
 	// Download the file contents into a temporary file
 	tempFilePath, err := s.handler.GetFile(request.FileName)
 	if err != nil {
-		return utils.UnwrapError(stream.Context(), err)
+		return err
 	}
 	defer os.Remove(tempFilePath)
 

@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/bbrks/go-blurhash"
+	"google.golang.org/grpc/codes"
 
 	"github.com/desmos-labs/caerus/utils"
 )
@@ -73,7 +74,7 @@ func (h *Handler) SaveFile(fileName string, data []byte) (string, error) {
 
 	mimeType := strings.Split(http.DetectContentType(data), "/")[0]
 	if mimeType != "image" && mimeType != "video" {
-		return "", utils.WrapErr(http.StatusBadRequest, "Unsupported file type")
+		return "", utils.WrapErr(codes.InvalidArgument, "Unsupported file type")
 	}
 
 	// Copy the uploads file bytes to the out file

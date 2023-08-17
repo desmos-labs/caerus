@@ -21,5 +21,6 @@ func New(db authentication.Database) *grpc.Server {
 	return grpc.NewServer(JoinServerOptions(
 		logging.NewLoggingInterceptor(),
 		authentication.NewAuthInterceptors(authentication.NewBaseAuthSource(db)),
+		NewErrorInterceptor(),
 	)...)
 }

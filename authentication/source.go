@@ -1,7 +1,7 @@
 package authentication
 
 import (
-	"net/http"
+	"google.golang.org/grpc/codes"
 
 	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
@@ -77,7 +77,7 @@ func (s *BaseAuthSource) GetUserSession(token string) (*types.EncryptedUserSessi
 		}
 	}
 	if err != nil {
-		return nil, utils.WrapErr(http.StatusUnauthorized, err.Error())
+		return nil, utils.WrapErr(codes.Unauthenticated, err.Error())
 	}
 
 	return session, nil

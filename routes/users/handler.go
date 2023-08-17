@@ -1,10 +1,9 @@
 package users
 
 import (
-	"net/http"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"google.golang.org/grpc/codes"
 
 	"github.com/desmos-labs/caerus/types"
 	serverutils "github.com/desmos-labs/caerus/utils"
@@ -31,7 +30,7 @@ func NewHandler(cdc codec.Codec, amino *codec.LegacyAmino, db Database) *Handler
 func (h *Handler) HandleNonceRequest(request *GetNonceRequest) (*GetNonceResponse, error) {
 	_, err := sdk.AccAddressFromBech32(request.UserDesmosAddress)
 	if err != nil {
-		return nil, serverutils.WrapErr(http.StatusBadRequest, "invalid Desmos address")
+		return nil, serverutils.WrapErr(codes.InvalidArgument, "invalid Desmos address")
 	}
 
 	// Get the nonce
@@ -54,7 +53,7 @@ func (h *Handler) HandleAuthenticationRequest(request *types.SignedRequest) (*Lo
 	// Verify the request
 	memo, err := request.Verify(h.cdc, h.amino)
 	if err != nil {
-		return nil, err
+		return nil, serverutils.WrapErr(codes.InvalidArgument, err.Error())
 	}
 
 	// Get the nonce from the database
@@ -64,7 +63,7 @@ func (h *Handler) HandleAuthenticationRequest(request *types.SignedRequest) (*Lo
 	}
 
 	if nonce == nil {
-		return nil, serverutils.WrapErr(http.StatusBadRequest, "wrong nonce value")
+		return nil, serverutils.WrapErr(codes.InvalidArgument, "wrong nonce value")
 	}
 
 	// Remove the nonce
@@ -75,7 +74,7 @@ func (h *Handler) HandleAuthenticationRequest(request *types.SignedRequest) (*Lo
 
 	// Verify the validity of the nonce
 	if nonce.IsExpired() {
-		return nil, serverutils.WrapErr(http.StatusBadRequest, "nonce is expired")
+		return nil, serverutils.WrapErr(codes.FailedPrecondition, "nonce is expired")
 	}
 
 	// Create the session
@@ -110,7 +109,7 @@ func (h *Handler) HandleRefreshSessionRequest(token string) (*RefreshSessionResp
 	}
 
 	if session == nil {
-		return nil, serverutils.WrapErr(http.StatusUnauthorized, "invalid token")
+		return nil, serverutils.WrapErr(codes.Unauthenticated, "invalid token")
 	}
 
 	_, shouldDelete, err := session.Validate()
@@ -121,7 +120,7 @@ func (h *Handler) HandleRefreshSessionRequest(token string) (*RefreshSessionResp
 		}
 	}
 	if err != nil {
-		return nil, serverutils.WrapErr(http.StatusUnauthorized, err.Error())
+		return nil, serverutils.WrapErr(codes.Unauthenticated, err.Error())
 	}
 
 	// Refresh the session

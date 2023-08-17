@@ -8,7 +8,6 @@ import (
 
 	"github.com/desmos-labs/caerus/analytics"
 	"github.com/desmos-labs/caerus/authentication"
-	"github.com/desmos-labs/caerus/utils"
 )
 
 var (
@@ -40,7 +39,7 @@ func (s *Server) RequestFeeAllowance(ctx context.Context, request *RequestFeeAll
 	// Handle the request
 	err = s.handler.HandleFeeGrantRequest(NewRequestFeeGrantRequest(appData.AppID, request.UserDesmosAddress))
 	if err != nil {
-		return nil, utils.UnwrapError(ctx, err)
+		return nil, err
 	}
 
 	// Log the event
@@ -51,5 +50,5 @@ func (s *Server) RequestFeeAllowance(ctx context.Context, request *RequestFeeAll
 			Set(analytics.KeyUserAddress, request.UserDesmosAddress),
 	})
 
-	return &emptypb.Empty{}, err
+	return &emptypb.Empty{}, nil
 }

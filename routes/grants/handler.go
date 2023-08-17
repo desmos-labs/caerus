@@ -1,8 +1,9 @@
 package grants
 
 import (
-	"net/http"
 	"time"
+
+	"google.golang.org/grpc/codes"
 
 	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
@@ -32,7 +33,7 @@ func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {
 	}
 
 	if !found {
-		return utils.WrapErr(http.StatusNotFound, "Application not found")
+		return utils.WrapErr(codes.FailedPrecondition, "application not found")
 	}
 
 	// Check if the app has granted a MsgGrantFeeAllowance permission
@@ -42,7 +43,7 @@ func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {
 	}
 
 	if !hasGrantedAuthorization {
-		return utils.WrapErr(http.StatusBadRequest, "On-chain authorization not found")
+		return utils.WrapErr(codes.FailedPrecondition, "on-chain authorization not found")
 	}
 
 	// Check if the application has reached the number of requests
@@ -57,7 +58,7 @@ func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {
 	}
 
 	if requestRateLimit > 0 && requestsCount >= requestRateLimit {
-		return utils.NewTooManyRequestsError("Number of fee grant requests allowed reached")
+		return utils.NewTooManyRequestsError("number of fee grant requests allowed reached")
 	}
 
 	// Check if the user has already been granted the fee grant
@@ -67,7 +68,7 @@ func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {
 	}
 
 	if hasBeenGranted {
-		return utils.WrapErr(http.StatusBadRequest, "You have already been granted the authorizations in the past")
+		return utils.WrapErr(codes.FailedPrecondition, "you have already been granted the authorizations in the past")
 	}
 
 	// Check if the user already has on-chain funds
@@ -77,7 +78,7 @@ func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {
 	}
 
 	if hasFunds {
-		return utils.WrapErr(http.StatusBadRequest, "You already have funds in your wallet")
+		return utils.WrapErr(codes.FailedPrecondition, "you already have funds in your wallet")
 	}
 
 	// Check if the user already has an on-chain grant
