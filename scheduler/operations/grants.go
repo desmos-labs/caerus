@@ -32,7 +32,7 @@ func grantAuthorizations(ctx scheduler.Context) error {
 	}
 
 	// Group the authorizations based on the application that is associated to them
-	var appsFeeGrantRequests map[string][]types.FeeGrantRequest
+	appsFeeGrantRequests := map[string][]types.FeeGrantRequest{}
 	for _, feeGrantRequest := range feeGrantRequests {
 		appsFeeGrantRequests[feeGrantRequest.AppID] = append(appsFeeGrantRequests[feeGrantRequest.AppID], feeGrantRequest)
 	}
