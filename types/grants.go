@@ -30,11 +30,12 @@ type FeeGrantRequest struct {
 	GrantTime *time.Time
 }
 
-func NewFeeGrantRequest(appID string, desmosAddress string, requestTime time.Time, grantTime *time.Time) FeeGrantRequest {
+func NewFeeGrantRequest(appID string, desmosAddress string, allowance feegrant.FeeAllowanceI, requestTime time.Time, grantTime *time.Time) FeeGrantRequest {
 	return FeeGrantRequest{
 		ID:            uuid.NewString(),
 		AppID:         appID,
 		DesmosAddress: desmosAddress,
+		Allowance:     allowance,
 		RequestTime:   requestTime,
 		GrantTime:     grantTime,
 	}

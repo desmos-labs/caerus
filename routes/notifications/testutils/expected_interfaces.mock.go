@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	types "github.com/desmos-labs/caerus/types"
-	gomock "github.com/golang/mock/gomock"
+	gomock "go.uber.org/mock/gomock"
 )
 
 // MockDatabase is a mock of Database interface.

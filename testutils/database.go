@@ -4,13 +4,16 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/desmos-labs/desmos/v5/app"
 	_ "github.com/lib/pq"
 
 	"github.com/desmos-labs/caerus/database"
 )
 
 func CreateDatabase(pathToDbSchema string) (*database.Database, error) {
-	db, err := database.NewDatabase("postgres://caerus:password@localhost:6433/caerus?sslmode=disable&search_path=public")
+	cdc, _ := app.MakeCodecs()
+
+	db, err := database.NewDatabase("postgres://caerus:password@localhost:6433/caerus?sslmode=disable&search_path=public", cdc)
 	if err != nil {
 		return nil, err
 	}

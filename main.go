@@ -26,7 +26,7 @@ func main() {
 	txConfig, cdc, amino := encodingCfg.TxConfig, encodingCfg.Codec, encodingCfg.Amino
 
 	// Build the database
-	db, err := database.NewDatabaseFromEnvVariables()
+	db, err := database.NewDatabaseFromEnvVariables(cdc)
 	if err != nil {
 		panic(err)
 	}
@@ -69,7 +69,7 @@ func main() {
 	serverRunner.SetServiceRegistrar(func(context runner.Context, server *grpc.Server) {
 		applications.RegisterApplicationServiceServer(server, applications.NewServerFromEnvVariables(context.Database))
 		files.RegisterFilesServiceServer(server, files.NewServerFromEnvVariables(context.Database))
-		grants.RegisterGrantsServiceServer(server, grants.NewServerFromEnvVariables(context.ChainClient, context.Database))
+		grants.RegisterGrantsServiceServer(server, grants.NewServerFromEnvVariables(context.ChainClient, context.Codec, context.Database))
 		notifications.RegisterNotificationsServiceServer(server, notifications.NewServerFromEnvVariables(context.FirebaseClient, context.Database))
 		users.RegisterUsersServiceServer(server, users.NewServerFromEnvVariables(context.Codec, context.Amino, context.Database))
 	})

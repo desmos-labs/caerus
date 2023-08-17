@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/jmoiron/sqlx"
 
 	"github.com/desmos-labs/caerus/utils"
@@ -12,11 +13,12 @@ import (
 
 type Database struct {
 	url string
+	cdc codec.Codec
 	SQL *sqlx.DB
 }
 
 // NewDatabase returns a new Database instance
-func NewDatabase(url string) (*Database, error) {
+func NewDatabase(url string, cdc codec.Codec) (*Database, error) {
 	sqlDb, err := sqlx.Open("postgres", url)
 	if err != nil {
 		return nil, err
@@ -24,18 +26,19 @@ func NewDatabase(url string) (*Database, error) {
 
 	return &Database{
 		url: url,
+		cdc: cdc,
 		SQL: sqlDb,
 	}, nil
 }
 
 // NewDatabaseFromEnvVariables returns a new Database instance reading the configuration from the environment variables
-func NewDatabaseFromEnvVariables() (*Database, error) {
+func NewDatabaseFromEnvVariables(cdc codec.Codec) (*Database, error) {
 	databaseURI := utils.GetEnvOr(EnvDatabaseURI, "")
 	if databaseURI == "" {
 		return nil, fmt.Errorf("missing environment variable %s", EnvDatabaseURI)
 	}
 
-	return NewDatabase(databaseURI)
+	return NewDatabase(databaseURI, cdc)
 }
 
 // encryptValue encrypts the given values so that it can be stored in the database safely

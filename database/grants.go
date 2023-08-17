@@ -2,7 +2,11 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
+
+	"github.com/cosmos/cosmos-sdk/x/feegrant"
+	"github.com/cosmos/gogoproto/proto"
 
 	"github.com/desmos-labs/caerus/types"
 )
@@ -42,11 +46,28 @@ WHERE application_id = $1
 // SaveFeeGrantRequest stores a new authorization request from the given user
 func (db *Database) SaveFeeGrantRequest(request types.FeeGrantRequest) error {
 	stmt := `
-INSERT INTO fee_grant_requests (application_id, grantee_address, grant_time) 
-VALUES ($1, $2, $3)
+INSERT INTO fee_grant_requests (id, application_id, allowance, grantee_address, request_time, grant_time) 
+VALUES ($1, $2, $3, $4, $5, $6)
 ON CONFLICT ON CONSTRAINT unique_application_user_fee_grant_request DO NOTHING `
 
-	_, err := db.SQL.Exec(stmt, request.AppID, request.DesmosAddress, request.GrantTime)
+	protoAllowance, ok := request.Allowance.(proto.Message)
+	if !ok {
+		return fmt.Errorf("cannot proto marshal %T", request.Allowance)
+	}
+
+	allowanceBz, err := db.cdc.MarshalInterfaceJSON(protoAllowance)
+	if err != nil {
+		return fmt.Errorf("cannot marshal %T to json", protoAllowance)
+	}
+
+	_, err = db.SQL.Exec(stmt,
+		request.ID,
+		request.AppID,
+		string(allowanceBz),
+		request.DesmosAddress,
+		request.RequestTime,
+		TimeToNullTime(request.GrantTime),
+	)
 	return err
 }
 
@@ -84,9 +105,10 @@ WHERE application_id = $1
 }
 
 type feeGrantRequestRow struct {
-	ID             uint64       `db:"id"`
+	ID             string       `db:"id"`
 	AppID          string       `db:"application_id"`
 	GranteeAddress string       `db:"grantee_address"`
+	Allowance      []byte       `db:"allowance"`
 	RequestTime    time.Time    `db:"request_time"`
 	GrantTime      sql.NullTime `db:"grant_time"`
 }
@@ -103,12 +125,20 @@ func (db *Database) GetNotGrantedFeeGrantRequests(limit int) ([]types.FeeGrantRe
 
 	var requests = make([]types.FeeGrantRequest, len(rows))
 	for index, row := range rows {
-		requests[index] = types.NewFeeGrantRequest(
-			row.AppID,
-			row.GranteeAddress,
-			row.RequestTime,
-			NullTimeToTime(row.GrantTime),
-		)
+		var allowance feegrant.FeeAllowanceI
+		err := db.cdc.UnmarshalInterfaceJSON(row.Allowance, &allowance)
+		if err != nil {
+			return nil, fmt.Errorf("cannot unmarshal allowance: %s", err)
+		}
+
+		requests[index] = types.FeeGrantRequest{
+			ID:            row.ID,
+			AppID:         row.AppID,
+			DesmosAddress: row.GranteeAddress,
+			Allowance:     allowance,
+			RequestTime:   row.RequestTime,
+			GrantTime:     NullTimeToTime(row.GrantTime),
+		}
 	}
 
 	return requests, nil
