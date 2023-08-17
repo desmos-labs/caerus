@@ -9,6 +9,10 @@ type Database interface {
 
 	GetAppNotificationsRateLimit(appID string) (uint64, error)
 	GetAppNotificationsCount(appID string) (uint64, error)
+
+	GetUserNotificationTokens(address string) ([]string, error)
+
+	SaveSentNotification(notification *types.SentNotification) error
 }
 
 type Firebase interface {

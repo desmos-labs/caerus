@@ -10,7 +10,6 @@ import (
 
 	"github.com/desmos-labs/caerus/authentication"
 	"github.com/desmos-labs/caerus/types"
-	"github.com/desmos-labs/caerus/utils"
 )
 
 var (
@@ -21,10 +20,16 @@ type Server struct {
 	handler *Handler
 }
 
-func NewServer(firebase Firebase, db Database) *Server {
+func NewServer(handler *Handler) *Server {
 	return &Server{
-		handler: NewHandler(firebase, db),
+		handler: handler,
 	}
+}
+
+func NewServerFromEnvVariables(firebase Firebase, db Database) *Server {
+	return NewServer(
+		NewHandler(firebase, db),
+	)
 }
 
 func (s Server) SendNotification(ctx context.Context, request *SendNotificationRequest) (*emptypb.Empty, error) {
@@ -37,14 +42,19 @@ func (s Server) SendNotification(ctx context.Context, request *SendNotificationR
 	var notification types.Notification
 	err = json.Unmarshal(request.Notification, &notification)
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, "Invalid notification")
+		return nil, status.Error(codes.InvalidArgument, "invalid notification data")
+	}
+
+	// Build and validate the request
+	req := NewSendAppNotificationRequest(appData.AppID, request.UserAddresses, &notification)
+	if err := req.Validate(); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	// Handle the request
-	req := NewSendAppNotificationRequest(appData.AppID, request.DeviceTokens, &notification)
 	err = s.handler.HandleSendNotificationRequest(req)
 	if err != nil {
-		return nil, utils.UnwrapError(ctx, err)
+		return nil, err
 	}
 
 	return &emptypb.Empty{}, err

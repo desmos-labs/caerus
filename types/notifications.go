@@ -1,7 +1,11 @@
 package types
 
 import (
+	"fmt"
+	"time"
+
 	"firebase.google.com/go/v4/messaging"
+	"github.com/google/uuid"
 )
 
 // AppNotificationDeviceToken represents a notification device token that is associated to an application
@@ -36,14 +40,22 @@ func NewUserNotificationDeviceToken(userAddress, deviceToken string) *UserNotifi
 
 type Notification struct {
 	// Notification is the notification to be sent
-	Notification *messaging.Notification `json:"notification"`
+	Notification *messaging.Notification `json:"notification,omitempty"`
 
 	// Data is any additional data that should be sent along with the notification
-	Data map[string]string `json:"data"`
+	Data map[string]string `json:"data,omitempty"`
 
-	Android *messaging.AndroidConfig `json:"android_config"`
-	WebPush *messaging.WebpushConfig `json:"web_push_config"`
-	APNS    *messaging.APNSConfig    `json:"apns_config"`
+	Android *messaging.AndroidConfig `json:"android_config,omitempty"`
+	WebPush *messaging.WebpushConfig `json:"web_push_config,omitempty"`
+	APNS    *messaging.APNSConfig    `json:"apns_config,omitempty"`
+}
+
+func (n *Notification) Validate() error {
+	if n.Notification == nil && len(n.Data) == 0 {
+		return fmt.Errorf("either notitication or data should be specified")
+	}
+
+	return nil
 }
 
 // BackgroundAndroidConfig returns the AndroidConfig to be used when sending a notification in background.
@@ -68,5 +80,25 @@ func BackgroundAPNSConfig() *messaging.APNSConfig {
 		Headers: map[string]string{
 			"apns-priority": "5",
 		},
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+type SentNotification struct {
+	ID            string
+	AppID         string
+	UserAddresses []string
+	Notification  *Notification
+	SendTime      time.Time
+}
+
+func NewSentNotification(appID string, userAddresses []string, notification *Notification) *SentNotification {
+	return &SentNotification{
+		ID:            uuid.NewString(),
+		AppID:         appID,
+		UserAddresses: userAddresses,
+		Notification:  notification,
+		SendTime:      time.Now(),
 	}
 }

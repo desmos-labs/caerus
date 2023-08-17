@@ -1,8 +1,9 @@
 package notifications
 
 import (
-	"net/http"
+	"google.golang.org/grpc/codes"
 
+	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
 )
 
@@ -28,7 +29,7 @@ func (h *Handler) HandleSendNotificationRequest(req *SendAppNotificationRequest)
 	}
 
 	if !found {
-		return utils.WrapErr(http.StatusNotFound, "Application not found")
+		return utils.WrapErr(codes.FailedPrecondition, "application not found")
 	}
 
 	// Make sure the app has not reached the rate limit
@@ -43,9 +44,28 @@ func (h *Handler) HandleSendNotificationRequest(req *SendAppNotificationRequest)
 	}
 
 	if notificationsRateLimit > 0 && notificationsCount >= notificationsRateLimit {
-		return utils.NewTooManyRequestsError("Notifications rate limit reached")
+		return utils.NewTooManyRequestsError("notifications rate limit reached")
 	}
 
-	// Send the notification
-	return h.firebase.SendNotifications(app, req.DeviceTokens, req.Notification)
+	// Get the notification tokens for each address
+	var notificationTokens []string
+	for _, address := range req.UserAddresses {
+		tokens, err := h.db.GetUserNotificationTokens(address)
+		if err != nil {
+			return err
+		}
+
+		notificationTokens = append(notificationTokens, tokens...)
+	}
+
+	// Send the notification if there are some tokens to which to send it
+	if len(notificationTokens) > 0 {
+		err = h.firebase.SendNotifications(app, notificationTokens, req.Notification)
+		if err != nil {
+			return err
+		}
+	}
+
+	// Store the sent notification
+	return h.db.SaveSentNotification(types.NewSentNotification(req.AppID, req.UserAddresses, req.Notification))
 }

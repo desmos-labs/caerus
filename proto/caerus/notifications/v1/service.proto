@@ -10,9 +10,8 @@ service NotificationsService {
 }
 
 message SendNotificationRequest {
-  // DeviceTokens represent the tokens of the devices to which to send the
-  // notification
-  repeated string device_tokens = 1;
+  // UserAddresses represent the addresses of the users to which send the notification
+  repeated string user_addresses = 1;
 
   // Notification contains the JSON-encoded data of the notification to be sent.
   bytes notification = 2;

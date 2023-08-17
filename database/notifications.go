@@ -2,10 +2,40 @@ package database
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 
 	"github.com/desmos-labs/caerus/types"
 )
+
+// SaveSentNotification allows to save the given notification inside the database
+func (db *Database) SaveSentNotification(notification *types.SentNotification) error {
+	stmt := `
+INSERT INTO notifications (id, application_id, user_addresses, notification, send_time) 
+VALUES ($1, $2, $3, $4, $5)
+ON CONFLICT DO NOTHING`
+
+	addressesBz, err := json.Marshal(notification.UserAddresses)
+	if err != nil {
+		return err
+	}
+
+	notificationBz, err := json.Marshal(notification.Notification)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.SQL.Exec(stmt,
+		notification.ID,
+		notification.AppID,
+		string(addressesBz),
+		string(notificationBz),
+		notification.SendTime,
+	)
+	return err
+}
+
+// --------------------------------------------------------------------------------------------------------------------
 
 // GetAppNotificationsRateLimit returns the notifications rate limit for the given application.
 // If 0 is returned, it means that the application has no rate limit.

@@ -61,7 +61,7 @@ func main() {
 		applications.RegisterApplicationServiceServer(server, applications.NewServer(context.Database))
 		files.RegisterFilesServiceServer(server, files.NewServerFromEnvVariables(context.Database))
 		grants.RegisterGrantsServiceServer(server, grants.NewServerFromEnvVariables(context.ChainClient, context.Database))
-		notifications.RegisterNotificationsServiceServer(server, notifications.NewServer(context.FirebaseClient, context.Database))
+		notifications.RegisterNotificationsServiceServer(server, notifications.NewServerFromEnvVariables(context.FirebaseClient, context.Database))
 		users.RegisterUsersServiceServer(server, users.NewServerFromEnvVariables(context.Codec, context.Amino, context.Database))
 	})
 

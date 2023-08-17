@@ -1,19 +1,29 @@
 package notifications
 
 import (
+	"fmt"
+
 	"github.com/desmos-labs/caerus/types"
 )
 
 type SendAppNotificationRequest struct {
-	AppID        string
-	DeviceTokens []string
-	Notification *types.Notification
+	AppID         string
+	UserAddresses []string
+	Notification  *types.Notification
 }
 
-func NewSendAppNotificationRequest(appID string, deviceTokens []string, notification *types.Notification) *SendAppNotificationRequest {
+func NewSendAppNotificationRequest(appID string, userAddresses []string, notification *types.Notification) *SendAppNotificationRequest {
 	return &SendAppNotificationRequest{
-		AppID:        appID,
-		DeviceTokens: deviceTokens,
-		Notification: notification,
+		AppID:         appID,
+		UserAddresses: userAddresses,
+		Notification:  notification,
 	}
+}
+
+func (r SendAppNotificationRequest) Validate() error {
+	if len(r.UserAddresses) == 0 {
+		return fmt.Errorf("user addresses cannot be empty")
+	}
+
+	return r.Notification.Validate()
 }
