@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"firebase.google.com/go/v4/messaging"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
+	"go.uber.org/mock/gomock"
 	"google.golang.org/grpc"
 
 	"github.com/desmos-labs/caerus/authentication"

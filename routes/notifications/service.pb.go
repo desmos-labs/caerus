@@ -29,7 +29,8 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type SendNotificationRequest struct {
-	// UserAddresses represent the addresses of the users to which send the notification
+	// UserAddresses represent the addresses of the users to which send the
+	// notification
 	UserAddresses []string `protobuf:"bytes,1,rep,name=user_addresses,json=userAddresses,proto3" json:"user_addresses,omitempty"`
 	// Notification contains the JSON-encoded data of the notification to be sent.
 	Notification []byte `protobuf:"bytes,2,opt,name=notification,proto3" json:"notification,omitempty"`

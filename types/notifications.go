@@ -38,6 +38,11 @@ func NewUserNotificationDeviceToken(userAddress, deviceToken string) *UserNotifi
 
 // --------------------------------------------------------------------------------------------------------------------
 
+const (
+	NotificationTypeKey    = "type"
+	NotificationMessageKey = "message"
+)
+
 type Notification struct {
 	// Notification is the notification to be sent
 	Notification *messaging.Notification `json:"notification,omitempty"`

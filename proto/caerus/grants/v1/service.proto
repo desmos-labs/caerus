@@ -3,6 +3,8 @@ package caerus.grants.v1;
 
 option go_package = "github.com/desmos-labs/caerus/routes/grants";
 
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/any.proto";
 import "google/protobuf/empty.proto";
 
 service GrantsService {
@@ -14,4 +16,10 @@ message RequestFeeAllowanceRequest {
   // UserDesmosAddress represents the Desmos address of the user that
   // should be granted the fee allowance
   string user_desmos_address = 1;
+
+  // Allowance represents the fee allowance that will be granted to the user.
+  // IT can be any allowance type that implements AllowanceI
+  google.protobuf.Any allowance = 2
+      [ (cosmos_proto.accepts_interface) =
+            "cosmos.feegrant.v1beta1.AllowanceI" ];
 }

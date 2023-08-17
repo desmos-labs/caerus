@@ -3,6 +3,7 @@ package grants
 import (
 	"context"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/posthog/posthog-go"
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -24,9 +25,9 @@ func NewServer(handler *Handler) *Server {
 	}
 }
 
-func NewServerFromEnvVariables(chainClient ChainClient, db Database) *Server {
+func NewServerFromEnvVariables(chainClient ChainClient, cdc codec.Codec, db Database) *Server {
 	return NewServer(
-		NewHandler(chainClient, db),
+		NewHandler(chainClient, cdc, db),
 	)
 }
 
@@ -37,7 +38,8 @@ func (s *Server) RequestFeeAllowance(ctx context.Context, request *RequestFeeAll
 	}
 
 	// Handle the request
-	err = s.handler.HandleFeeGrantRequest(NewRequestFeeGrantRequest(appData.AppID, request.UserDesmosAddress))
+	req := NewRequestFeeGrantRequest(appData.AppID, request.UserDesmosAddress, request.Allowance)
+	err = s.handler.HandleFeeGrantRequest(req)
 	if err != nil {
 		return nil, err
 	}

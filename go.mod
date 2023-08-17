@@ -10,6 +10,7 @@ require (
 	github.com/desmos-labs/cosmos-go-wallet v0.6.0
 	github.com/desmos-labs/desmos/v5 v5.2.0
 	github.com/go-co-op/gocron v1.31.0
+	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.53.3
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.5
@@ -18,6 +19,7 @@ require (
 	github.com/posthog/posthog-go v0.0.0-20230801140217-d607812dee69
 	github.com/rs/zerolog v1.29.1
 	github.com/stretchr/testify v1.8.4
+	go.uber.org/mock v0.2.0
 	google.golang.org/api v0.126.0
 	google.golang.org/grpc v1.57.0
 	google.golang.org/protobuf v1.31.0
@@ -140,7 +142,6 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/glog v1.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/golangci/check v0.0.0-20180506172741-cfe4005ccda2 // indirect

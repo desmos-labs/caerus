@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/desmos-labs/desmos/v5/app"
 	"github.com/go-co-op/gocron"
@@ -17,6 +15,8 @@ import (
 	"github.com/desmos-labs/caerus/routes/notifications"
 	"github.com/desmos-labs/caerus/routes/users"
 	"github.com/desmos-labs/caerus/runner"
+	"github.com/desmos-labs/caerus/scheduler"
+	"github.com/desmos-labs/caerus/scheduler/operations"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 	txConfig, cdc, amino := encodingCfg.TxConfig, encodingCfg.Codec, encodingCfg.Amino
 
 	// Build the database
-	db, err := database.NewDatabaseFromEnvVariables()
+	db, err := database.NewDatabaseFromEnvVariables(cdc)
 	if err != nil {
 		panic(err)
 	}
@@ -43,8 +43,17 @@ func main() {
 		panic(err)
 	}
 
-	// Build a scheduler
-	scheduler := gocron.NewScheduler(time.UTC)
+	// Build a scheduler - This will be started by the server runner instance
+	cronScheduler := scheduler.New(scheduler.Context{
+		ChainClient:    chainClient,
+		FirebaseClient: firebaseClient,
+		Database:       db,
+	})
+
+	// Register the scheduler operations
+	cronScheduler.SetOperationsRegistrar(func(context scheduler.Context, scheduler *gocron.Scheduler) {
+		operations.RegisterGrantsOperations(context, scheduler)
+	})
 
 	// Build the runner
 	serverRunner := runner.New(runner.Context{
@@ -52,7 +61,7 @@ func main() {
 		Amino:          amino,
 		ChainClient:    chainClient,
 		FirebaseClient: firebaseClient,
-		Scheduler:      scheduler,
+		Scheduler:      cronScheduler,
 		Database:       db,
 	})
 
@@ -60,11 +69,11 @@ func main() {
 	serverRunner.SetServiceRegistrar(func(context runner.Context, server *grpc.Server) {
 		applications.RegisterApplicationServiceServer(server, applications.NewServerFromEnvVariables(context.Database))
 		files.RegisterFilesServiceServer(server, files.NewServerFromEnvVariables(context.Database))
-		grants.RegisterGrantsServiceServer(server, grants.NewServerFromEnvVariables(context.ChainClient, context.Database))
+		grants.RegisterGrantsServiceServer(server, grants.NewServerFromEnvVariables(context.ChainClient, context.Codec, context.Database))
 		notifications.RegisterNotificationsServiceServer(server, notifications.NewServerFromEnvVariables(context.FirebaseClient, context.Database))
 		users.RegisterUsersServiceServer(server, users.NewServerFromEnvVariables(context.Codec, context.Amino, context.Database))
 	})
 
-	// Run your server instance
+	// Run the server instance
 	serverRunner.Run()
 }

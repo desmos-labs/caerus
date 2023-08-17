@@ -4,15 +4,23 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/feegrant"
+	"github.com/google/uuid"
 )
 
 // FeeGrantRequest contains the data of a fee grant allowance request that the user has made
 type FeeGrantRequest struct {
+	// Unique id that identifies the request
+	ID string
+
 	// AppID is the ID of the application that is requesting the fee grant for the user.
 	AppID string
 
 	// DesmosAddress is the Desmos address of the user requesting the fee grant allowance.
 	DesmosAddress string
+
+	// Allowance represents the fee allowance that should be granted
+	Allowance feegrant.FeeAllowanceI
 
 	// RequestTime is the time at which the user requested the fee grant allowance.
 	RequestTime time.Time
@@ -22,10 +30,12 @@ type FeeGrantRequest struct {
 	GrantTime *time.Time
 }
 
-func NewFeeGrantRequest(appID string, desmosAddress string, requestTime time.Time, grantTime *time.Time) FeeGrantRequest {
+func NewFeeGrantRequest(appID string, desmosAddress string, allowance feegrant.FeeAllowanceI, requestTime time.Time, grantTime *time.Time) FeeGrantRequest {
 	return FeeGrantRequest{
+		ID:            uuid.NewString(),
 		AppID:         appID,
 		DesmosAddress: desmosAddress,
+		Allowance:     allowance,
 		RequestTime:   requestTime,
 		GrantTime:     grantTime,
 	}

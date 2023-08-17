@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -94,7 +95,7 @@ func (suite *GrantsServerTestSuite) SetupSuite() {
 	suite.appWallet = appWallet
 
 	// Create the handler
-	suite.handler = grants.NewHandler(suite.serverChainClient, suite.db)
+	suite.handler = grants.NewHandler(suite.serverChainClient, suite.cdc, suite.db)
 
 	// Create the server
 	suite.server = testutils.CreateServer(suite.db)
@@ -291,8 +292,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			buildRequest: func() *grants.RequestFeeAllowanceRequest {
+				allowanceAny, err := codectypes.NewAnyWithValue(&feegrant.BasicAllowance{})
+				suite.Require().NoError(err)
+
 				return &grants.RequestFeeAllowanceRequest{
 					UserDesmosAddress: "desmos1jvzuh3vzket6hlsdus5kvq7ne3fpju9t3tp84y",
+					Allowance:         allowanceAny,
 				}
 			},
 			shouldErr: true,
@@ -334,8 +339,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			buildRequest: func() *grants.RequestFeeAllowanceRequest {
+				allowanceAny, err := codectypes.NewAnyWithValue(&feegrant.BasicAllowance{})
+				suite.Require().NoError(err)
+
 				return &grants.RequestFeeAllowanceRequest{
 					UserDesmosAddress: "desmos1jvzuh3vzket6hlsdus5kvq7ne3fpju9t3tp84y",
+					Allowance:         allowanceAny,
 				}
 			},
 			shouldErr: true,
@@ -384,7 +393,8 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				err = suite.db.SaveFeeGrantRequest(types.FeeGrantRequest{
 					AppID:         "1",
 					DesmosAddress: "desmos1cwfg6eknxz50efv2c0drnpj3dtghxfx905rzke",
-					RequestTime:   time.Date(2023, 1, 1, 12, 00, 00, 000, time.UTC),
+					Allowance:     &feegrant.BasicAllowance{},
+					RequestTime:   time.Now().Add(-5 * time.Minute),
 					GrantTime:     nil,
 				})
 				suite.Require().NoError(err)
@@ -393,8 +403,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			buildRequest: func() *grants.RequestFeeAllowanceRequest {
+				allowanceAny, err := codectypes.NewAnyWithValue(&feegrant.BasicAllowance{})
+				suite.Require().NoError(err)
+
 				return &grants.RequestFeeAllowanceRequest{
 					UserDesmosAddress: "desmos1jvzuh3vzket6hlsdus5kvq7ne3fpju9t3tp84y",
+					Allowance:         allowanceAny,
 				}
 			},
 			shouldErr: true,
@@ -443,6 +457,7 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				err = suite.db.SaveFeeGrantRequest(types.FeeGrantRequest{
 					AppID:         "1",
 					DesmosAddress: "desmos1jvzuh3vzket6hlsdus5kvq7ne3fpju9t3tp84y",
+					Allowance:     &feegrant.BasicAllowance{},
 					RequestTime:   time.Date(2023, 1, 1, 12, 00, 00, 000, time.UTC),
 					GrantTime:     testutils.GetTimePointer(time.Date(2023, 1, 1, 12, 10, 00, 000, time.UTC)),
 				})
@@ -452,8 +467,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			buildRequest: func() *grants.RequestFeeAllowanceRequest {
+				allowanceAny, err := codectypes.NewAnyWithValue(&feegrant.BasicAllowance{})
+				suite.Require().NoError(err)
+
 				return &grants.RequestFeeAllowanceRequest{
 					UserDesmosAddress: "desmos1jvzuh3vzket6hlsdus5kvq7ne3fpju9t3tp84y",
+					Allowance:         allowanceAny,
 				}
 			},
 			shouldErr: true,
@@ -505,8 +524,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			buildRequest: func() *grants.RequestFeeAllowanceRequest {
+				allowanceAny, err := codectypes.NewAnyWithValue(&feegrant.BasicAllowance{})
+				suite.Require().NoError(err)
+
 				return &grants.RequestFeeAllowanceRequest{
 					UserDesmosAddress: "desmos12emr8t2yw6y36vlh8qhsfh4m86xrur8m0ymatx",
+					Allowance:         allowanceAny,
 				}
 			},
 			shouldErr: true,
@@ -558,8 +581,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			buildRequest: func() *grants.RequestFeeAllowanceRequest {
+				allowanceAny, err := codectypes.NewAnyWithValue(&feegrant.BasicAllowance{})
+				suite.Require().NoError(err)
+
 				return &grants.RequestFeeAllowanceRequest{
 					UserDesmosAddress: "desmos1t0takal59h6djq8cceq8vh4x6q6398p6mtvp2n",
+					Allowance:         allowanceAny,
 				}
 			},
 			shouldErr: true,
@@ -606,8 +633,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				return authentication.SetupContextWithAuthorization(ctx, "token")
 			},
 			buildRequest: func() *grants.RequestFeeAllowanceRequest {
+				allowanceAny, err := codectypes.NewAnyWithValue(&feegrant.BasicAllowance{})
+				suite.Require().NoError(err)
+
 				return &grants.RequestFeeAllowanceRequest{
 					UserDesmosAddress: "desmos1ehva49d5ltaeszag20wepraf5j3dux2se95f8w",
+					Allowance:         allowanceAny,
 				}
 			},
 			shouldErr: false,

@@ -3,6 +3,8 @@ package grants
 import (
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	"google.golang.org/grpc/codes"
 
 	"github.com/desmos-labs/caerus/types"
@@ -10,13 +12,15 @@ import (
 )
 
 type Handler struct {
+	cdc         codec.Codec
 	chainClient ChainClient
 	db          Database
 }
 
 // NewHandler returns a new Handler instance
-func NewHandler(client ChainClient, db Database) *Handler {
+func NewHandler(client ChainClient, cdc codec.Codec, db Database) *Handler {
 	return &Handler{
+		cdc:         cdc,
 		chainClient: client,
 		db:          db,
 	}
@@ -26,6 +30,13 @@ func NewHandler(client ChainClient, db Database) *Handler {
 
 // HandleFeeGrantRequest handles the request of a fee grant from the user having the given token
 func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {
+	// Unmarshal the allowance
+	var allowance feegrant.FeeAllowanceI
+	err := h.cdc.UnpackAny(req.Allowance, &allowance)
+	if err != nil {
+		return err
+	}
+
 	// Get the app details
 	app, found, err := h.db.GetApp(req.AppID)
 	if err != nil {
@@ -93,5 +104,6 @@ func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) error {
 	}
 
 	// Store the request inside the database
-	return h.db.SaveFeeGrantRequest(types.NewFeeGrantRequest(req.AppID, req.DesmosAddress, time.Now(), grantTime))
+	request := types.NewFeeGrantRequest(req.AppID, req.DesmosAddress, allowance, time.Now(), grantTime)
+	return h.db.SaveFeeGrantRequest(request)
 }

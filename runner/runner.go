@@ -7,10 +7,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/go-co-op/gocron"
 	"github.com/rs/zerolog/log"
 
 	"github.com/desmos-labs/caerus/analytics"
+	"github.com/desmos-labs/caerus/scheduler"
 	"github.com/desmos-labs/caerus/server"
 	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
@@ -63,7 +63,7 @@ func (r *Runner) Run() {
 }
 
 // trapSignal traps the stops signals to gracefully shut down the server
-func (r *Runner) trapSignal(scheduler *gocron.Scheduler, netListener net.Listener) {
+func (r *Runner) trapSignal(scheduler *scheduler.Scheduler, netListener net.Listener) {
 	// Wait for interrupt signal to gracefully shut down the server with
 	// a timeout of 5 seconds.
 	quit := make(chan os.Signal, 1)
