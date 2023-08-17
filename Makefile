@@ -92,9 +92,9 @@ lint-fix:
 .PHONY: lint lint-fix
 
 format:
-	find . -name '*.go' -type f -not -path "*.git*" -not -name '*pb*.go' -not -name '*_mock.go' | xargs gofmt -w -s
-	find . -name '*.go' -type f -not -path "*.git*" -not -name '*pb*.go' -not -name '*_mock.go' | xargs misspell -w
-	find . -name '*.go' -type f -not -path "*.git*" -not -name '*pb*.go' -not -name '*_mock.go' | xargs goimports -w -local github.com/desmos-labs/caerus
+	find . -name '*.go' -type f -not -path "*.git*" -not -name '*pb*.go' -not -name '*mock*.go' | xargs gofmt -w -s
+	find . -name '*.go' -type f -not -path "*.git*" -not -name '*pb*.go' -not -name '*mock*.go' | xargs misspell -w
+	find . -name '*.go' -type f -not -path "*.git*" -not -name '*pb*.go' -not -name '*mock*.go' | xargs goimports -w -local github.com/desmos-labs/caerus
 .PHONY: format
 
 ###############################################################################
