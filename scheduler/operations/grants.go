@@ -32,6 +32,11 @@ func GrantAuthorizations(ctx scheduler.Context) error {
 		return err
 	}
 
+	// If there are no fee grant requests, return
+	if len(feeGrantRequests) == 0 {
+		return nil
+	}
+
 	// Group the authorizations based on the application that is associated to them
 	appsFeeGrantRequests := map[string][]types.FeeGrantRequest{}
 	for _, feeGrantRequest := range feeGrantRequests {
@@ -124,6 +129,11 @@ func GrantAuthorizations(ctx scheduler.Context) error {
 		msgExec := authz.NewMsgExec(authzGranteeAddress, grantAllowanceMsgs)
 
 		msgExecMsgs = append(msgExecMsgs, &msgExec)
+	}
+
+	// If there are no messages, just return
+	if len(msgExecMsgs) == 0 {
+		return nil
 	}
 
 	// Broadcast the transaction
