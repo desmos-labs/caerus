@@ -41,7 +41,9 @@ func (suite *GrantsOperationsTestSuite) SetupSuite() {
 	db, err := testutils.CreateDatabase(path.Join("..", "..", "database", "schema"))
 	suite.Require().NoError(err)
 	suite.db = db
+}
 
+func (suite *GrantsOperationsTestSuite) SetupTest() {
 	// Setup the mocks
 	ctrl := gomock.NewController(suite.T())
 	defer ctrl.Finish()
@@ -56,9 +58,7 @@ func (suite *GrantsOperationsTestSuite) SetupSuite() {
 		FirebaseClient: suite.firebase,
 		Database:       suite.db,
 	}
-}
 
-func (suite *GrantsOperationsTestSuite) SetupTest() {
 	// Truncate all the database data to make sure we have a clean database state
 	err := testutils.TruncateDatabase(suite.db)
 	suite.Require().NoError(err)
@@ -147,12 +147,10 @@ func (suite *GrantsOperationsTestSuite) TestGrantAuthorizations() {
 				// ----------------------------------
 				suite.chainClient.EXPECT().
 					HasGrantedMsgGrantAllowanceAuthorization(gomock.Any()).
-					AnyTimes().
 					Return(false, nil)
 
 				suite.firebase.EXPECT().
 					SendNotifications(gomock.Any(), gomock.Any(), gomock.Any()).
-					AnyTimes().
 					Return(nil)
 			},
 			shouldErr: false,
@@ -237,12 +235,10 @@ func (suite *GrantsOperationsTestSuite) TestGrantAuthorizations() {
 				// ----------------------------------
 				suite.chainClient.EXPECT().
 					AccAddress().
-					AnyTimes().
 					Return("desmos1sfklnhd5fu5jtgtmxpdm3dsg2l895rl95j8zvn")
 
 				suite.chainClient.EXPECT().
 					HasGrantedMsgGrantAllowanceAuthorization(gomock.Any()).
-					AnyTimes().
 					Return(true, nil)
 
 				suite.chainClient.EXPECT().
@@ -251,7 +247,6 @@ func (suite *GrantsOperationsTestSuite) TestGrantAuthorizations() {
 
 				suite.firebase.EXPECT().
 					SendNotifications(gomock.Any(), gomock.Any(), gomock.Any()).
-					AnyTimes().
 					Return(nil)
 			},
 			shouldErr: false,
