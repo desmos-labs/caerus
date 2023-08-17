@@ -7,6 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
 	"github.com/cosmos/gogoproto/proto"
+	"github.com/lib/pq"
 
 	"github.com/desmos-labs/caerus/types"
 )
@@ -84,8 +85,8 @@ WHERE application_id = $1
 
 // SetFeeGrantRequestsGranted sets the fee grant requests having the given ids as granted
 func (db *Database) SetFeeGrantRequestsGranted(ids []string) error {
-	stmt := `UPDATE fee_grant_requests SET grant_time = NOW() WHERE id IN $1`
-	_, err := db.SQL.Exec(stmt, ids)
+	stmt := `UPDATE fee_grant_requests SET grant_time = NOW() WHERE id = ANY($1::TEXT[])`
+	_, err := db.SQL.Exec(stmt, pq.StringArray(ids))
 	return err
 }
 
