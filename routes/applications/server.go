@@ -16,10 +16,16 @@ type ApplicationServer struct {
 	handler *Handler
 }
 
-func NewServer(db Database) *ApplicationServer {
+func NewServer(handler *Handler) *ApplicationServer {
 	return &ApplicationServer{
-		handler: NewHandler(db),
+		handler: handler,
 	}
+}
+
+func NewServerFromEnvVariables(db Database) *ApplicationServer {
+	return NewServer(
+		NewHandler(db),
+	)
 }
 
 func (a ApplicationServer) RegisterNotificationToken(ctx context.Context, request *RegisterNotificationTokenRequest) (*emptypb.Empty, error) {

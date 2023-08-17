@@ -58,7 +58,7 @@ func main() {
 
 	// Register the default routes
 	serverRunner.SetServiceRegistrar(func(context runner.Context, server *grpc.Server) {
-		applications.RegisterApplicationServiceServer(server, applications.NewServer(context.Database))
+		applications.RegisterApplicationServiceServer(server, applications.NewServerFromEnvVariables(context.Database))
 		files.RegisterFilesServiceServer(server, files.NewServerFromEnvVariables(context.Database))
 		grants.RegisterGrantsServiceServer(server, grants.NewServerFromEnvVariables(context.ChainClient, context.Database))
 		notifications.RegisterNotificationsServiceServer(server, notifications.NewServerFromEnvVariables(context.FirebaseClient, context.Database))
