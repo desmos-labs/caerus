@@ -6,7 +6,6 @@ import (
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/messaging"
 	"github.com/rs/zerolog/log"
-	"google.golang.org/api/firebasedynamiclinks/v1"
 	"google.golang.org/api/option"
 
 	caerus "github.com/desmos-labs/caerus/types"
@@ -14,7 +13,6 @@ import (
 
 type Client struct {
 	cfg               *Config
-	firebaseLinks     *firebasedynamiclinks.Service
 	firebaseMessaging *messaging.Client
 }
 
@@ -25,7 +23,6 @@ func NewClient(config *Config) (*Client, error) {
 		return nil, nil
 	}
 
-	var firebaseLinksService *firebasedynamiclinks.Service
 	var firebaseMessagingService *messaging.Client
 
 	if config.CredentialsFilePath != "" {
@@ -38,27 +35,15 @@ func NewClient(config *Config) (*Client, error) {
 			return nil, err
 		}
 
-		// Create Dynamic Links client
-		if config.Links != nil {
-			dynamicLinksService, err := firebasedynamiclinks.NewService(ctx, options)
-			if err != nil {
-				return nil, err
-			}
-			firebaseLinksService = dynamicLinksService
-		}
-
 		// Create Firebase Messaging client
-		if config.Notifications != nil {
-			messagingService, err := firebaseApp.Messaging(ctx)
-			if err != nil {
-				return nil, err
-			}
-			firebaseMessagingService = messagingService
+		messagingService, err := firebaseApp.Messaging(ctx)
+		if err != nil {
+			return nil, err
 		}
+		firebaseMessagingService = messagingService
 	}
 
 	return &Client{
-		firebaseLinks:     firebaseLinksService,
 		firebaseMessaging: firebaseMessagingService,
 	}, nil
 }
@@ -112,58 +97,4 @@ func (c *Client) SendNotifications(app *caerus.Application, deviceTokens []strin
 		APNS:         notification.APNS,
 	})
 	return err
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-// GetLinkDesktopInfo returns the Desktop info to be used when generating a new link
-func (c *Client) GetLinkDesktopInfo() *firebasedynamiclinks.DesktopInfo {
-	return &firebasedynamiclinks.DesktopInfo{
-		DesktopFallbackLink: c.cfg.Links.Desktop.FallbackLink,
-	}
-}
-
-// GetLinkAndroidInfo returns the Android info to be used when generating a new link
-func (c *Client) GetLinkAndroidInfo() *firebasedynamiclinks.AndroidInfo {
-	return &firebasedynamiclinks.AndroidInfo{
-		AndroidMinPackageVersionCode: c.cfg.Links.Android.MinPackageVersionCode,
-		AndroidPackageName:           c.cfg.Links.Android.PackageName,
-	}
-}
-
-// GetLinkIOSInfo returns the IOS info to be used when generating a new link
-func (c *Client) GetLinkIOSInfo() *firebasedynamiclinks.IosInfo {
-	return &firebasedynamiclinks.IosInfo{
-		IosAppStoreId:     c.cfg.Links.Ios.AppStoreID,
-		IosBundleId:       c.cfg.Links.Ios.BundleID,
-		IosMinimumVersion: c.cfg.Links.Ios.MinimumVersion,
-	}
-}
-
-// GenerateLink generates a new link using the given info
-func (c *Client) GenerateLink(info caerus.LinkInfo) (string, error) {
-	if c.firebaseLinks == nil {
-		return "", nil
-	}
-
-	// Generate the link
-	res, err := c.firebaseLinks.ShortLinks.Create(&firebasedynamiclinks.CreateShortDynamicLinkRequest{
-		DynamicLinkInfo: &firebasedynamiclinks.DynamicLinkInfo{
-			DynamicLinkDomain: c.cfg.Links.Domain,
-
-			DesktopInfo: c.GetLinkDesktopInfo(),
-			AndroidInfo: c.GetLinkAndroidInfo(),
-			IosInfo:     c.GetLinkIOSInfo(),
-
-			Link:              info.Link,
-			SocialMetaTagInfo: info.SocialMetaTagInfo,
-		},
-		Suffix: info.Suffix,
-	}).Do()
-	if err != nil {
-		return "", err
-	}
-
-	// Return the short link
-	return res.ShortLink, nil
 }
