@@ -21,8 +21,8 @@ func NewServer(handler *Handler) *Server {
 }
 
 // NewServerFromEnvVariables builds a new Server instance reading the config from the env variables
-func NewServerFromEnvVariables(client DeepLinksClient) *Server {
-	return NewServer(NewHandlerFromEnvVariables(client))
+func NewServerFromEnvVariables(client DeepLinksClient, db Database) *Server {
+	return NewServer(NewHandlerFromEnvVariables(client, db))
 }
 
 // --------------------------------------------------------------------------------------------------------------------

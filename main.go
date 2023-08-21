@@ -80,7 +80,7 @@ func main() {
 		grants.RegisterGrantsServiceServer(server, grants.NewServerFromEnvVariables(context.ChainClient, context.Codec, context.Database))
 		notifications.RegisterNotificationsServiceServer(server, notifications.NewServerFromEnvVariables(context.FirebaseClient, context.Database))
 		users.RegisterUsersServiceServer(server, users.NewServerFromEnvVariables(context.Codec, context.Amino, context.Database))
-		links.RegisterLinksServiceServer(server, links.NewServerFromEnvVariables(context.BranchClient))
+		links.RegisterLinksServiceServer(server, links.NewServerFromEnvVariables(context.BranchClient, context.Database))
 	})
 
 	// Run the server instance
