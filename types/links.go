@@ -1,27 +1,52 @@
 package types
 
 import (
-	"google.golang.org/api/firebasedynamiclinks/v1"
+	"encoding/json"
+	"time"
+
+	"github.com/google/uuid"
 )
 
-type LinkInfo struct {
-	// Link represents the link your app will open, You can specify any URL your app can handle.
-	// This link must be a well-formatted URL, be properly URL-encoded, and use the HTTP or
-	// HTTPS scheme. See 'link' parameters in the documentation
-	// (https://firebase.google.com/docs/dynamic-links/create-manually).
-	Link string
-
-	// Suffix represents the Short Dynamic Link suffix
-	Suffix *firebasedynamiclinks.Suffix
-
-	// SocialMetaTagInfo contains the parameters for social meta tag params. Used to set
-	// meta tag data for link previews on social sites.
-	SocialMetaTagInfo *firebasedynamiclinks.SocialMetaTagInfo
+// linkConfigJson represents the type that will be used to properly marshal the LinkConfig struct
+type linkConfigJson struct {
+	*OpenGraphConfig
+	*TwitterConfig
+	*RedirectionsConfig
+	*DeepLinkConfig
 }
 
-// ShortLinkSuffix returns a new Suffix instance that can be used to create a short link
-func ShortLinkSuffix() *firebasedynamiclinks.Suffix {
-	return &firebasedynamiclinks.Suffix{
-		Option: "SHORT",
+func (c *LinkConfig) MarshalJSON() ([]byte, error) {
+	data := linkConfigJson{
+		OpenGraphConfig:    c.OpenGraph,
+		TwitterConfig:      c.Twitter,
+		RedirectionsConfig: c.Redirections,
+		DeepLinkConfig:     c.DeepLinking,
 	}
+
+	// Serialize the link data to make sure everything is at the same level
+	dataWithoutCustomBz, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	// Read the link configuration data as a map to allow merging with the custom data
+	var linkData map[string]interface{}
+	err = json.Unmarshal(dataWithoutCustomBz, &linkData)
+	if err != nil {
+		return nil, err
+	}
+
+	// Read the custom data as a map
+	var customData map[string]interface{}
+	err = json.Unmarshal(c.CustomData, &customData)
+	if err != nil {
+		return nil, err
+	}
+
+	// Merge the custom data and link data together
+	for key, value := range customData {
+		linkData[key] = value
+	}
+
+	return json.Marshal(linkData)
 }
