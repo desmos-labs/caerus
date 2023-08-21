@@ -10,6 +10,13 @@ import (
 )
 
 func TestLinkConfig_MarshalJSON(t *testing.T) {
+	customDataBz, err := json.Marshal(map[string]interface{}{
+		"custom_key_string": "custom_value",
+		"custom_key_int":    123,
+		"custom_key_bool":   true,
+	})
+	require.NoError(t, err)
+
 	config := types.LinkConfig{
 		OpenGraph: &types.OpenGraphConfig{
 			Title:       "Custom OG Title",
@@ -20,18 +27,14 @@ func TestLinkConfig_MarshalJSON(t *testing.T) {
 			CardType:    "Custom Twitter Card Type",
 			Title:       "Custom Twitter Title",
 			Description: "Custom Twitter Description",
-			ImageURL:    "Custom Twitter Image URL",
+			ImageUrl:    "Custom Twitter Image URL",
 		},
-		CustomData: map[string]interface{}{
-			"custom_key_string": "custom_value",
-			"custom_key_int":    123,
-			"custom_key_bool":   true,
-		},
+		CustomData: customDataBz,
 		Redirections: &types.RedirectionsConfig{
-			FallbackURL:    "Custom Fallback URL",
-			DesktopURL:     "Custom Desktop URL",
-			IosURL:         "Custom iOS URL",
-			AndroidURL:     "Custom Android URL",
+			FallbackUrl:    "Custom Fallback URL",
+			DesktopUrl:     "Custom Desktop URL",
+			IosUrl:         "Custom iOS URL",
+			AndroidUrl:     "Custom Android URL",
 			WebOnly:        true,
 			DesktopWebOnly: true,
 			MobileWebOnly:  true,
