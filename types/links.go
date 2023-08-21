@@ -15,7 +15,7 @@ type linkConfigJson struct {
 	*DeepLinkConfig
 }
 
-func (c *LinkConfig) MarshalJSON() ([]byte, error) {
+func (c LinkConfig) MarshalJSON() ([]byte, error) {
 	data := linkConfigJson{
 		OpenGraphConfig:    c.OpenGraph,
 		TwitterConfig:      c.Twitter,

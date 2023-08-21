@@ -21,7 +21,7 @@ func TestLinkConfig_MarshalJSON(t *testing.T) {
 		OpenGraph: &types.OpenGraphConfig{
 			Title:       "Custom OG Title",
 			Description: "Custom OG Description",
-			ImageURL:    "Custom OG Image URL",
+			ImageUrl:    "Custom OG Image URL",
 		},
 		Twitter: &types.TwitterConfig{
 			CardType:    "Custom Twitter Card Type",
