@@ -95,7 +95,7 @@ func (c *Client) SendNotifications(app *caerus.Application, deviceTokens []strin
 
 	// Put the title and body of the notification inside the data if the config specify this
 	var notificationData = notification.Notification
-	if !c.cfg.Notifications.SendNotificationField {
+	if notification.MergeNotificationWithData {
 		notification.Data[NotificationTitleKey] = notificationData.Title
 		notification.Data[NotificationBodyKey] = notificationData.Body
 		notification.Data[NotificationImageKey] = notificationData.ImageURL

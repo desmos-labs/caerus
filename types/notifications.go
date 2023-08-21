@@ -50,6 +50,10 @@ type Notification struct {
 	// Data is any additional data that should be sent along with the notification
 	Data map[string]string `json:"data,omitempty"`
 
+	// Whether the data inside Notification should be merged inside the Data field.
+	// If set to true, the Notification will be set to nil when sending the notification to clients
+	MergeNotificationWithData bool `json:"merge_notification_with_data,omitempty"`
+
 	Android *messaging.AndroidConfig `json:"android_config,omitempty"`
 	WebPush *messaging.WebpushConfig `json:"web_push_config,omitempty"`
 	APNS    *messaging.APNSConfig    `json:"apns_config,omitempty"`
