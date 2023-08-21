@@ -50,3 +50,22 @@ func (c *LinkConfig) MarshalJSON() ([]byte, error) {
 
 	return json.Marshal(linkData)
 }
+
+// --------------------------------------------------------------------------------------------------------------------
+
+// CreatedDeepLink contains the data of a deep link created by an application
+type CreatedDeepLink struct {
+	ID           string
+	AppID        string
+	URL          string
+	CreationTime time.Time
+}
+
+func NewCreatedDeepLink(appID string, linkURL string) *CreatedDeepLink {
+	return &CreatedDeepLink{
+		ID:           uuid.NewString(),
+		AppID:        appID,
+		URL:          linkURL,
+		CreationTime: time.Now(),
+	}
+}

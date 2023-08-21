@@ -1,0 +1,26 @@
+syntax = "proto3";
+package caerus.links.v1;
+
+option go_package = "github.com/desmos-labs/caerus/routes/links";
+
+import "caerus/types/v1/links.proto";
+
+service LinksService {
+  // CreateLink allows to generated a new deep link based on the given configuration
+  rpc CreateLink(CreateLinkRequest)
+      returns (CreateLinkResponse);
+}
+
+message CreateLinkRequest {
+  // The configuration of the link to be created
+  caerus.types.v1.LinkConfig link_configuration = 1;
+
+  // (optional) API key used to create the link.
+  // If not specified, the default key of the server will be used instead.
+  string api_key = 2;
+}
+
+message CreateLinkResponse {
+  // URL of the generated link
+  string url = 1;
+}
