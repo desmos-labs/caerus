@@ -28,13 +28,14 @@ type LinkConfig struct {
 	OpenGraph *OpenGraphConfig `protobuf:"bytes,1,opt,name=open_graph,json=openGraph,proto3" json:"open_graph,omitempty"`
 	// Twitter contains custom Twitter properties
 	Twitter *TwitterConfig `protobuf:"bytes,2,opt,name=twitter,proto3" json:"twitter,omitempty"`
-	// CustomData should contain the custom data that will be added to the generated link.
-	// This should be a JSON-encoded map of key-pair values.
+	// CustomData should contain the custom data that will be added to the
+	// generated link. This should be a JSON-encoded map of key-pair values.
 	CustomData []byte `protobuf:"bytes,3,opt,name=custom_data,json=customData,proto3" json:"custom_data,omitempty"`
-	// Redirections allows to navigate to different locations based on device information.
-	// Note: Navigation URLs must be websites, not deep links
+	// Redirections allows to navigate to different locations based on device
+	// information. Note: Navigation URLs must be websites, not deep links
 	Redirections *RedirectionsConfig `protobuf:"bytes,4,opt,name=redirections,proto3" json:"redirections,omitempty"`
-	// DeepLinking allows to navigate to different locations based on device information
+	// DeepLinking allows to navigate to different locations based on device
+	// information
 	DeepLinking *DeepLinkConfig `protobuf:"bytes,5,opt,name=deep_linking,json=deepLinking,proto3" json:"deep_linking,omitempty"`
 }
 
@@ -106,7 +107,8 @@ func (m *LinkConfig) GetDeepLinking() *DeepLinkConfig {
 	return nil
 }
 
-// OpenGraphConfig contains the Open Graph properties that will be added to the generated link
+// OpenGraphConfig contains the Open Graph properties that will be added to the
+// generated link
 type OpenGraphConfig struct {
 	Title       string `protobuf:"bytes,1,opt,name=title,proto3" json:"$og_title,omitempty"`
 	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"$og_description,omitempty"`
@@ -167,7 +169,8 @@ func (m *OpenGraphConfig) GetImageUrl() string {
 	return ""
 }
 
-// TwitterConfig contains the Twitter properties that will be added to the generated link
+// TwitterConfig contains the Twitter properties that will be added to the
+// generated link
 type TwitterConfig struct {
 	CardType    string `protobuf:"bytes,1,opt,name=card_type,json=cardType,proto3" json:"$twitter_card,omitempty"`
 	Title       string `protobuf:"bytes,2,opt,name=title,proto3" json:"$twitter_title,omitempty"`
@@ -236,24 +239,30 @@ func (m *TwitterConfig) GetImageUrl() string {
 	return ""
 }
 
-// RedirectionsConfig contains the redirections that will be added to the generated link
+// RedirectionsConfig contains the redirections that will be added to the
+// generated link
 type RedirectionsConfig struct {
-	// Change the redirect endpoint for all platforms - so you don't have to enable it by platform.
-	// Note that Branch will forward all robots to this URL, which overrides any OG tags entered in the link.
-	// System-wide Default URL (set in Link Settings)
+	// Change the redirect endpoint for all platforms - so you don't have to
+	// enable it by platform. Note that Branch will forward all robots to this
+	// URL, which overrides any OG tags entered in the link. System-wide Default
+	// URL (set in Link Settings)
 	FallbackUrl string `protobuf:"bytes,1,opt,name=fallback_url,json=fallbackUrl,proto3" json:"$fallback_url,omitempty"`
-	// Redirect URL for desktop devices - mobile users will default to the app store.
+	// Redirect URL for desktop devices - mobile users will default to the app
+	// store.
 	DesktopUrl string `protobuf:"bytes,2,opt,name=desktop_url,json=desktopUrl,proto3" json:"$desktop_url,omitempty"`
-	// Change the redirect endpoint for iOS App Store page for your app (set in Link Settings)
+	// Change the redirect endpoint for iOS App Store page for your app (set in
+	// Link Settings)
 	IosUrl string `protobuf:"bytes,3,opt,name=ios_url,json=iosUrl,proto3" json:"$ios_url,omitempty"`
-	// Change the redirect endpoint for Android Play Store page for your app (set in Link Settings)
+	// Change the redirect endpoint for Android Play Store page for your app (set
+	// in Link Settings)
 	AndroidUrl string `protobuf:"bytes,4,opt,name=android_url,json=androidUrl,proto3" json:"$android_url,omitempty"`
 	// Force to open the $fallback_url instead of the app
 	WebOnly bool `protobuf:"varint,5,opt,name=web_only,json=webOnly,proto3" json:"$web_only,omitempty"`
-	// Force to open the $windows_desktop_url, $mac_desktop_url, $desktop_url, or $fallback_url in
-	// this order of precedence instead of the app
+	// Force to open the $windows_desktop_url, $mac_desktop_url, $desktop_url, or
+	// $fallback_url in this order of precedence instead of the app
 	DesktopWebOnly bool `protobuf:"varint,6,opt,name=desktop_web_only,json=desktopWebOnly,proto3" json:"$desktop_web_only,omitempty"`
-	// Force to open the $ios_url, $android_url, or $fallback_url in this order of precedence instead of the app
+	// Force to open the $ios_url, $android_url, or $fallback_url in this order of
+	// precedence instead of the app
 	MobileWebOnly bool `protobuf:"varint,7,opt,name=mobile_web_only,json=mobileWebOnly,proto3" json:"$mobile_web_only,omitempty"`
 }
 
@@ -339,20 +348,24 @@ func (m *RedirectionsConfig) GetMobileWebOnly() bool {
 	return false
 }
 
-// DeepLinkConfig contains the deep link properties that will be added to the generated link
+// DeepLinkConfig contains the deep link properties that will be added to the
+// generated link
 type DeepLinkConfig struct {
-	// Set the deep link path for all platforms - so you don't have to enable it by platform.
-	// When the Branch SDK receives a link with this parameter set, it will automatically load the
-	// custom URI path contained within.
-	// Default: open?link_click_id=1234
+	// Set the deep link path for all platforms - so you don't have to enable it
+	// by platform. When the Branch SDK receives a link with this parameter set,
+	// it will automatically load the custom URI path contained within. Default:
+	// open?link_click_id=1234
 	DeepLinkPath string `protobuf:"bytes,1,opt,name=deep_link_path,json=deepLinkPath,proto3" json:"$deeplink_path,omitempty"`
-	// Set the deep link path for Android apps. When the Branch SDK receives a link with this parameter set,
-	// it will automatically load the custom Android URI path contained within
+	// Set the deep link path for Android apps. When the Branch SDK receives a
+	// link with this parameter set, it will automatically load the custom Android
+	// URI path contained within
 	AndroidDeepLinkPath string `protobuf:"bytes,2,opt,name=android_deep_link_path,json=androidDeepLinkPath,proto3" json:"$android_deeplink_path,omitempty"`
-	// Set the deep link path for iOS apps. When the Branch SDK receives a link with this parameter set,
-	// it will automatically load the custom iOS URI path contained within
+	// Set the deep link path for iOS apps. When the Branch SDK receives a link
+	// with this parameter set, it will automatically load the custom iOS URI path
+	// contained within
 	IosDeepLinkPath string `protobuf:"bytes,3,opt,name=ios_deep_link_path,json=iosDeepLinkPath,proto3" json:"$ios_deeplink_path,omitempty"`
-	// Set the deep link path for Desktop apps. You will have to fetch this parameter and route the user accordingly
+	// Set the deep link path for Desktop apps. You will have to fetch this
+	// parameter and route the user accordingly
 	DesktopDeepLinkPath string `protobuf:"bytes,4,opt,name=desktop_deep_link_path,json=desktopDeepLinkPath,proto3" json:"$desktop_deeplink_path,omitempty"`
 }
 

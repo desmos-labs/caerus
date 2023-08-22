@@ -7,6 +7,16 @@ import (
 	"github.com/google/uuid"
 )
 
+const (
+	DeepLinkChainTypeKey = "chain_type"
+	DeepLinkActionKey    = "action"
+	DeepLinkAddressKey   = "address"
+	DeepLinkAmountKey    = "amount"
+
+	DeepLinkActionSendTokens  = "send_tokens"
+	DeepLinkActionViewProfile = "view_profile"
+)
+
 // linkConfigJson represents the type that will be used to properly marshal the LinkConfig struct
 type linkConfigJson struct {
 	*OpenGraphConfig

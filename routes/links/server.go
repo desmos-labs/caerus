@@ -3,7 +3,10 @@ package links
 import (
 	"context"
 
+	"google.golang.org/grpc/codes"
+
 	"github.com/desmos-labs/caerus/authentication"
+	"github.com/desmos-labs/caerus/utils"
 )
 
 var (
@@ -35,7 +38,66 @@ func (s *Server) CreateLink(ctx context.Context, request *CreateLinkRequest) (*C
 		return nil, err
 	}
 
-	// Build and handle the request
-	req := NewGenerateDeepLinkRequest(app.AppID, request.LinkConfiguration, request.ApiKey)
+	// Build and validate the request
+	req := NewGenerateGenericDeepLinkRequest(app.AppID, request.LinkConfiguration, request.ApiKey)
+	err = req.Validate()
+	if err != nil {
+		return nil, utils.WrapErr(codes.InvalidArgument, err.Error())
+	}
+
+	return s.handler.HandleGenerateGenericDeepLinkRequest(req)
+}
+
+// CreateAddressLink implements LinksServiceServer
+func (s *Server) CreateAddressLink(ctx context.Context, request *CreateAddressLinkRequest) (*CreateLinkResponse, error) {
+	// Get the app information
+	app, err := authentication.GetAuthenticatedAppData(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Build and validate the request
+	req := NewGenerateAddressLinkRequest(app.AppID, request.Address, request.Chain)
+	err = req.Validate()
+	if err != nil {
+		return nil, utils.WrapErr(codes.InvalidArgument, err.Error())
+	}
+
+	return s.handler.HandleGenerateDeepLinkRequest(req)
+}
+
+// CreateViewProfileLink implements LinksServiceServer
+func (s *Server) CreateViewProfileLink(ctx context.Context, request *CreateViewProfileLinkRequest) (*CreateLinkResponse, error) {
+	// Get the app information
+	app, err := authentication.GetAuthenticatedAppData(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Build and validate the request
+	req := NewGenerateViewProfileLinkRequest(app.AppID, request.Address, request.Chain)
+	err = req.Validate()
+	if err != nil {
+		return nil, utils.WrapErr(codes.InvalidArgument, err.Error())
+	}
+
+	return s.handler.HandleGenerateDeepLinkRequest(req)
+}
+
+// CreateSendLink implements LinksServiceServer
+func (s *Server) CreateSendLink(ctx context.Context, request *CreateSendLinkRequest) (*CreateLinkResponse, error) {
+	// Get the app information
+	app, err := authentication.GetAuthenticatedAppData(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Build and validate the request
+	req := NewGenerateSendTokensLinkRequest(app.AppID, request.Address, request.Chain, request.Amount)
+	err = req.Validate()
+	if err != nil {
+		return nil, utils.WrapErr(codes.InvalidArgument, err.Error())
+	}
+
 	return s.handler.HandleGenerateDeepLinkRequest(req)
 }

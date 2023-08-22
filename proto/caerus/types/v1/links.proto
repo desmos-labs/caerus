@@ -12,82 +12,102 @@ message LinkConfig {
   // Twitter contains custom Twitter properties
   TwitterConfig twitter = 2;
 
-  // CustomData should contain the custom data that will be added to the generated link.
-  // This should be a JSON-encoded map of key-pair values.
+  // CustomData should contain the custom data that will be added to the
+  // generated link. This should be a JSON-encoded map of key-pair values.
   bytes custom_data = 3;
 
-  // Redirections allows to navigate to different locations based on device information.
-  // Note: Navigation URLs must be websites, not deep links
+  // Redirections allows to navigate to different locations based on device
+  // information. Note: Navigation URLs must be websites, not deep links
   RedirectionsConfig redirections = 4;
 
-  // DeepLinking allows to navigate to different locations based on device information
+  // DeepLinking allows to navigate to different locations based on device
+  // information
   DeepLinkConfig deep_linking = 5;
 }
 
-// OpenGraphConfig contains the Open Graph properties that will be added to the generated link
+// OpenGraphConfig contains the Open Graph properties that will be added to the
+// generated link
 message OpenGraphConfig {
-  string title = 1 [(gogoproto.jsontag) = "$og_title,omitempty"];
-  string description = 2 [(gogoproto.jsontag) = "$og_description,omitempty"];
-  string image_url = 3 [(gogoproto.jsontag) = "$og_image_url,omitempty"];
+  string title = 1 [ (gogoproto.jsontag) = "$og_title,omitempty" ];
+  string description = 2 [ (gogoproto.jsontag) = "$og_description,omitempty" ];
+  string image_url = 3 [ (gogoproto.jsontag) = "$og_image_url,omitempty" ];
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// TwitterConfig contains the Twitter properties that will be added to the generated link
+// TwitterConfig contains the Twitter properties that will be added to the
+// generated link
 message TwitterConfig {
-  string card_type = 1     [(gogoproto.jsontag) = "$twitter_card,omitempty"];
-  string title = 2       [(gogoproto.jsontag) = "$twitter_title,omitempty"];
-  string description = 3  [(gogoproto.jsontag) = "$twitter_description,omitempty"];
-  string image_url = 4     [(gogoproto.jsontag) = "$twitter_image_url,omitempty"];
+  string card_type = 1 [ (gogoproto.jsontag) = "$twitter_card,omitempty" ];
+  string title = 2 [ (gogoproto.jsontag) = "$twitter_title,omitempty" ];
+  string description = 3
+      [ (gogoproto.jsontag) = "$twitter_description,omitempty" ];
+  string image_url = 4 [ (gogoproto.jsontag) = "$twitter_image_url,omitempty" ];
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// RedirectionsConfig contains the redirections that will be added to the generated link
+// RedirectionsConfig contains the redirections that will be added to the
+// generated link
 message RedirectionsConfig {
-  // Change the redirect endpoint for all platforms - so you don't have to enable it by platform.
-  // Note that Branch will forward all robots to this URL, which overrides any OG tags entered in the link.
-  // System-wide Default URL (set in Link Settings)
-  string fallback_url = 1  [(gogoproto.jsontag) = "$fallback_url,omitempty"];
+  // Change the redirect endpoint for all platforms - so you don't have to
+  // enable it by platform. Note that Branch will forward all robots to this
+  // URL, which overrides any OG tags entered in the link. System-wide Default
+  // URL (set in Link Settings)
+  string fallback_url = 1 [ (gogoproto.jsontag) = "$fallback_url,omitempty" ];
 
-  // Redirect URL for desktop devices - mobile users will default to the app store.
-  string desktop_url = 2  [(gogoproto.jsontag) = "$desktop_url,omitempty"];
+  // Redirect URL for desktop devices - mobile users will default to the app
+  // store.
+  string desktop_url = 2 [ (gogoproto.jsontag) = "$desktop_url,omitempty" ];
 
-  // Change the redirect endpoint for iOS App Store page for your app (set in Link Settings)
-  string ios_url = 3  [(gogoproto.jsontag) = "$ios_url,omitempty"];
+  // Change the redirect endpoint for iOS App Store page for your app (set in
+  // Link Settings)
+  string ios_url = 3 [ (gogoproto.jsontag) = "$ios_url,omitempty" ];
 
-  // Change the redirect endpoint for Android Play Store page for your app (set in Link Settings)
-  string android_url = 4  [(gogoproto.jsontag) = "$android_url,omitempty"];
+  // Change the redirect endpoint for Android Play Store page for your app (set
+  // in Link Settings)
+  string android_url = 4 [ (gogoproto.jsontag) = "$android_url,omitempty" ];
 
   // Force to open the $fallback_url instead of the app
-  bool web_only = 5  [(gogoproto.jsontag) = "$web_only,omitempty"];
+  bool web_only = 5 [ (gogoproto.jsontag) = "$web_only,omitempty" ];
 
-  // Force to open the $windows_desktop_url, $mac_desktop_url, $desktop_url, or $fallback_url in
-  // this order of precedence instead of the app
-  bool desktop_web_only = 6  [(gogoproto.jsontag) = "$desktop_web_only,omitempty"];
+  // Force to open the $windows_desktop_url, $mac_desktop_url, $desktop_url, or
+  // $fallback_url in this order of precedence instead of the app
+  bool desktop_web_only = 6
+      [ (gogoproto.jsontag) = "$desktop_web_only,omitempty" ];
 
-  // Force to open the $ios_url, $android_url, or $fallback_url in this order of precedence instead of the app
-  bool mobile_web_only = 7  [(gogoproto.jsontag) = "$mobile_web_only,omitempty"];
+  // Force to open the $ios_url, $android_url, or $fallback_url in this order of
+  // precedence instead of the app
+  bool mobile_web_only = 7
+      [ (gogoproto.jsontag) = "$mobile_web_only,omitempty" ];
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// DeepLinkConfig contains the deep link properties that will be added to the generated link
+// DeepLinkConfig contains the deep link properties that will be added to the
+// generated link
 message DeepLinkConfig {
-  // Set the deep link path for all platforms - so you don't have to enable it by platform.
-  // When the Branch SDK receives a link with this parameter set, it will automatically load the
-  // custom URI path contained within.
-  // Default: open?link_click_id=1234
-  string deep_link_path = 1  [(gogoproto.jsontag) = "$deeplink_path,omitempty"];
+  // Set the deep link path for all platforms - so you don't have to enable it
+  // by platform. When the Branch SDK receives a link with this parameter set,
+  // it will automatically load the custom URI path contained within. Default:
+  // open?link_click_id=1234
+  string deep_link_path = 1
+      [ (gogoproto.jsontag) = "$deeplink_path,omitempty" ];
 
-  // Set the deep link path for Android apps. When the Branch SDK receives a link with this parameter set,
-  // it will automatically load the custom Android URI path contained within
-  string android_deep_link_path = 2  [(gogoproto.jsontag) = "$android_deeplink_path,omitempty"];
+  // Set the deep link path for Android apps. When the Branch SDK receives a
+  // link with this parameter set, it will automatically load the custom Android
+  // URI path contained within
+  string android_deep_link_path = 2
+      [ (gogoproto.jsontag) = "$android_deeplink_path,omitempty" ];
 
-  // Set the deep link path for iOS apps. When the Branch SDK receives a link with this parameter set,
-  // it will automatically load the custom iOS URI path contained within
-  string ios_deep_link_path = 3  [(gogoproto.jsontag) = "$ios_deeplink_path,omitempty"];
+  // Set the deep link path for iOS apps. When the Branch SDK receives a link
+  // with this parameter set, it will automatically load the custom iOS URI path
+  // contained within
+  string ios_deep_link_path = 3
+      [ (gogoproto.jsontag) = "$ios_deeplink_path,omitempty" ];
 
-  // Set the deep link path for Desktop apps. You will have to fetch this parameter and route the user accordingly
-  string desktop_deep_link_path = 4  [(gogoproto.jsontag) = "$desktop_deeplink_path,omitempty"];
+  // Set the deep link path for Desktop apps. You will have to fetch this
+  // parameter and route the user accordingly
+  string desktop_deep_link_path = 4
+      [ (gogoproto.jsontag) = "$desktop_deeplink_path,omitempty" ];
 }
