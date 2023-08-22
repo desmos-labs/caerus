@@ -8,12 +8,12 @@ import (
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	types1 "github.com/cosmos/cosmos-sdk/types"
+	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
-	types "github.com/desmos-labs/caerus/types"
+	types1 "github.com/desmos-labs/caerus/types"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -62,107 +62,6 @@ func (ChainType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_0c64ad94c2176b16, []int{0}
 }
 
-// CreateLinkRequest contains the data used to create a generic deep link
-type CreateLinkRequest struct {
-	// The configuration of the link to be created
-	LinkConfiguration *types.LinkConfig `protobuf:"bytes,1,opt,name=link_configuration,json=linkConfiguration,proto3" json:"link_configuration,omitempty"`
-	// API key used to create the link.
-	ApiKey string `protobuf:"bytes,2,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
-}
-
-func (m *CreateLinkRequest) Reset()         { *m = CreateLinkRequest{} }
-func (m *CreateLinkRequest) String() string { return proto.CompactTextString(m) }
-func (*CreateLinkRequest) ProtoMessage()    {}
-func (*CreateLinkRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0c64ad94c2176b16, []int{0}
-}
-func (m *CreateLinkRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *CreateLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_CreateLinkRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *CreateLinkRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateLinkRequest.Merge(m, src)
-}
-func (m *CreateLinkRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *CreateLinkRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateLinkRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CreateLinkRequest proto.InternalMessageInfo
-
-func (m *CreateLinkRequest) GetLinkConfiguration() *types.LinkConfig {
-	if m != nil {
-		return m.LinkConfiguration
-	}
-	return nil
-}
-
-func (m *CreateLinkRequest) GetApiKey() string {
-	if m != nil {
-		return m.ApiKey
-	}
-	return ""
-}
-
-// CreateLinkResponse contains the data returned by the CreateLink method
-type CreateLinkResponse struct {
-	// URL of the generated link
-	Url string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
-}
-
-func (m *CreateLinkResponse) Reset()         { *m = CreateLinkResponse{} }
-func (m *CreateLinkResponse) String() string { return proto.CompactTextString(m) }
-func (*CreateLinkResponse) ProtoMessage()    {}
-func (*CreateLinkResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0c64ad94c2176b16, []int{1}
-}
-func (m *CreateLinkResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *CreateLinkResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_CreateLinkResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *CreateLinkResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreateLinkResponse.Merge(m, src)
-}
-func (m *CreateLinkResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *CreateLinkResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreateLinkResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_CreateLinkResponse proto.InternalMessageInfo
-
-func (m *CreateLinkResponse) GetUrl() string {
-	if m != nil {
-		return m.Url
-	}
-	return ""
-}
-
 // CreateAddressLinkRequest contains the data used to create a deep link for a
 // given address
 type CreateAddressLinkRequest struct {
@@ -177,7 +76,7 @@ func (m *CreateAddressLinkRequest) Reset()         { *m = CreateAddressLinkReque
 func (m *CreateAddressLinkRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateAddressLinkRequest) ProtoMessage()    {}
 func (*CreateAddressLinkRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0c64ad94c2176b16, []int{2}
+	return fileDescriptor_0c64ad94c2176b16, []int{0}
 }
 func (m *CreateAddressLinkRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -235,7 +134,7 @@ func (m *CreateSendLinkRequest) Reset()         { *m = CreateSendLinkRequest{} }
 func (m *CreateSendLinkRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateSendLinkRequest) ProtoMessage()    {}
 func (*CreateSendLinkRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0c64ad94c2176b16, []int{3}
+	return fileDescriptor_0c64ad94c2176b16, []int{1}
 }
 func (m *CreateSendLinkRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -298,7 +197,7 @@ func (m *CreateViewProfileLinkRequest) Reset()         { *m = CreateViewProfileL
 func (m *CreateViewProfileLinkRequest) String() string { return proto.CompactTextString(m) }
 func (*CreateViewProfileLinkRequest) ProtoMessage()    {}
 func (*CreateViewProfileLinkRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0c64ad94c2176b16, []int{4}
+	return fileDescriptor_0c64ad94c2176b16, []int{2}
 }
 func (m *CreateViewProfileLinkRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -341,56 +240,157 @@ func (m *CreateViewProfileLinkRequest) GetChain() ChainType {
 	return ChainType_UNDEFINED
 }
 
+// CreateLinkRequest contains the data used to create a generic deep link
+type CreateLinkRequest struct {
+	// The configuration of the link to be created
+	LinkConfiguration *types1.LinkConfig `protobuf:"bytes,1,opt,name=link_configuration,json=linkConfiguration,proto3" json:"link_configuration,omitempty"`
+	// API key used to create the link.
+	ApiKey string `protobuf:"bytes,2,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
+}
+
+func (m *CreateLinkRequest) Reset()         { *m = CreateLinkRequest{} }
+func (m *CreateLinkRequest) String() string { return proto.CompactTextString(m) }
+func (*CreateLinkRequest) ProtoMessage()    {}
+func (*CreateLinkRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0c64ad94c2176b16, []int{3}
+}
+func (m *CreateLinkRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CreateLinkRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CreateLinkRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CreateLinkRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateLinkRequest.Merge(m, src)
+}
+func (m *CreateLinkRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *CreateLinkRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateLinkRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateLinkRequest proto.InternalMessageInfo
+
+func (m *CreateLinkRequest) GetLinkConfiguration() *types1.LinkConfig {
+	if m != nil {
+		return m.LinkConfiguration
+	}
+	return nil
+}
+
+func (m *CreateLinkRequest) GetApiKey() string {
+	if m != nil {
+		return m.ApiKey
+	}
+	return ""
+}
+
+// CreateLinkResponse contains the data returned by the CreateLink method
+type CreateLinkResponse struct {
+	// URL of the generated link
+	Url string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
+}
+
+func (m *CreateLinkResponse) Reset()         { *m = CreateLinkResponse{} }
+func (m *CreateLinkResponse) String() string { return proto.CompactTextString(m) }
+func (*CreateLinkResponse) ProtoMessage()    {}
+func (*CreateLinkResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0c64ad94c2176b16, []int{4}
+}
+func (m *CreateLinkResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CreateLinkResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CreateLinkResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CreateLinkResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateLinkResponse.Merge(m, src)
+}
+func (m *CreateLinkResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *CreateLinkResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateLinkResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CreateLinkResponse proto.InternalMessageInfo
+
+func (m *CreateLinkResponse) GetUrl() string {
+	if m != nil {
+		return m.Url
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterEnum("caerus.links.v1.ChainType", ChainType_name, ChainType_value)
-	proto.RegisterType((*CreateLinkRequest)(nil), "caerus.links.v1.CreateLinkRequest")
-	proto.RegisterType((*CreateLinkResponse)(nil), "caerus.links.v1.CreateLinkResponse")
 	proto.RegisterType((*CreateAddressLinkRequest)(nil), "caerus.links.v1.CreateAddressLinkRequest")
 	proto.RegisterType((*CreateSendLinkRequest)(nil), "caerus.links.v1.CreateSendLinkRequest")
 	proto.RegisterType((*CreateViewProfileLinkRequest)(nil), "caerus.links.v1.CreateViewProfileLinkRequest")
+	proto.RegisterType((*CreateLinkRequest)(nil), "caerus.links.v1.CreateLinkRequest")
+	proto.RegisterType((*CreateLinkResponse)(nil), "caerus.links.v1.CreateLinkResponse")
 }
 
 func init() { proto.RegisterFile("caerus/links/v1/service.proto", fileDescriptor_0c64ad94c2176b16) }
 
 var fileDescriptor_0c64ad94c2176b16 = []byte{
-	// 589 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0xcf, 0x6e, 0x12, 0x41,
-	0x1c, 0x66, 0x4b, 0x2c, 0x61, 0xa8, 0x15, 0x26, 0x1a, 0x29, 0xd5, 0x2d, 0x59, 0x93, 0x06, 0x49,
-	0x3a, 0x2b, 0xe8, 0x0b, 0xb4, 0x40, 0x93, 0xfa, 0x87, 0x98, 0x85, 0x7a, 0x30, 0x31, 0x64, 0x58,
-	0x06, 0x3a, 0xb2, 0xec, 0xac, 0x3b, 0xbb, 0xe8, 0xbe, 0x85, 0x27, 0x0f, 0x3e, 0x81, 0xf1, 0xd4,
-	0xc7, 0xe8, 0xb1, 0x47, 0x4f, 0xd5, 0xc0, 0xa1, 0xaf, 0x61, 0x76, 0x66, 0xa8, 0x48, 0xc5, 0x70,
-	0xe9, 0x05, 0x7e, 0xbf, 0xf9, 0x7e, 0xdf, 0x7c, 0x3b, 0xfb, 0x7d, 0x3b, 0xe0, 0xa1, 0x8d, 0x89,
-	0x1f, 0x72, 0xd3, 0xa1, 0xee, 0x90, 0x9b, 0xe3, 0x8a, 0xc9, 0x89, 0x3f, 0xa6, 0x36, 0x41, 0x9e,
-	0xcf, 0x02, 0x06, 0xef, 0x48, 0x18, 0x09, 0x18, 0x8d, 0x2b, 0x85, 0x1c, 0x1e, 0x51, 0x97, 0x99,
-	0xe2, 0x57, 0xce, 0x14, 0xee, 0x0e, 0xd8, 0x80, 0x89, 0xd2, 0x8c, 0x2b, 0xb5, 0xba, 0x65, 0x33,
-	0x3e, 0x62, 0xbc, 0x23, 0x01, 0xd9, 0x28, 0x68, 0x5b, 0x69, 0x06, 0x91, 0x47, 0x84, 0xa6, 0xdc,
-	0x5d, 0x82, 0xba, 0x1c, 0x35, 0xbb, 0x98, 0x13, 0x73, 0x5c, 0xe9, 0x92, 0x00, 0x57, 0x4c, 0x9b,
-	0x51, 0x57, 0xe2, 0xc6, 0x27, 0x90, 0xab, 0xf9, 0x04, 0x07, 0xe4, 0x25, 0x75, 0x87, 0x16, 0xf9,
-	0x10, 0x12, 0x1e, 0xc0, 0xe7, 0x00, 0xc6, 0x7b, 0x74, 0x6c, 0xe6, 0xf6, 0xe9, 0x20, 0xf4, 0x71,
-	0x40, 0x99, 0x9b, 0xd7, 0x8a, 0x5a, 0x29, 0x53, 0xdd, 0x46, 0xea, 0x0c, 0x42, 0x0e, 0x8d, 0x2b,
-	0x28, 0x66, 0xd6, 0xc4, 0xa4, 0x95, 0x73, 0xae, 0x6a, 0xc5, 0x82, 0xf7, 0x41, 0x0a, 0x7b, 0xb4,
-	0x33, 0x24, 0x51, 0x7e, 0xad, 0xa8, 0x95, 0xd2, 0xd6, 0x3a, 0xf6, 0xe8, 0x0b, 0x12, 0x19, 0xbb,
-	0x00, 0xce, 0x2b, 0x73, 0x8f, 0xb9, 0x9c, 0xc0, 0x2c, 0x48, 0x86, 0xbe, 0x23, 0xb4, 0xd2, 0x56,
-	0x5c, 0x1a, 0x7d, 0x90, 0x97, 0x73, 0xfb, 0xbd, 0x9e, 0x4f, 0x38, 0x9f, 0x7f, 0xd0, 0x3c, 0x48,
-	0x61, 0xb9, 0xaa, 0x18, 0xb3, 0x16, 0x3e, 0x01, 0xb7, 0xec, 0x13, 0x4c, 0x5d, 0x21, 0xba, 0x59,
-	0x2d, 0xa0, 0x85, 0x37, 0x8f, 0x6a, 0x31, 0xda, 0x8e, 0x3c, 0x62, 0xc9, 0x41, 0xe3, 0x42, 0x03,
-	0xf7, 0xa4, 0x50, 0x8b, 0xb8, 0xbd, 0x1b, 0x52, 0x81, 0x11, 0x58, 0xc7, 0x23, 0x16, 0xba, 0x41,
-	0x3e, 0x59, 0x4c, 0x96, 0x32, 0xd5, 0x2d, 0xa4, 0xbc, 0x8c, 0x0d, 0x42, 0xca, 0x20, 0x54, 0x63,
-	0xd4, 0x3d, 0x38, 0x3c, 0xbb, 0xd8, 0x49, 0x7c, 0xff, 0xb9, 0x53, 0x1a, 0xd0, 0xe0, 0x24, 0xec,
-	0x22, 0x9b, 0x8d, 0x94, 0xf1, 0xea, 0x6f, 0x8f, 0xf7, 0x86, 0xd2, 0x75, 0x41, 0xe0, 0x5f, 0x2f,
-	0x4f, 0xcb, 0x1b, 0x0e, 0x19, 0x60, 0x3b, 0xea, 0xc4, 0x16, 0xf3, 0x6f, 0x97, 0xa7, 0x65, 0xcd,
-	0x52, 0x82, 0xc6, 0x7b, 0xf0, 0x40, 0x9e, 0xef, 0x0d, 0x25, 0x1f, 0x5f, 0xfb, 0xac, 0x4f, 0x1d,
-	0x72, 0x43, 0xc7, 0x2c, 0x3f, 0x03, 0xe9, 0xab, 0x35, 0x78, 0x1b, 0xa4, 0x8f, 0x9b, 0xf5, 0xc6,
-	0xe1, 0x51, 0xb3, 0x51, 0xcf, 0x26, 0x60, 0x06, 0xa4, 0x5e, 0xed, 0x1f, 0x35, 0x9b, 0x8d, 0x76,
-	0x56, 0x8b, 0x9b, 0x76, 0xa3, 0xd5, 0x8e, 0x9b, 0xb5, 0xea, 0x97, 0x24, 0xd8, 0x88, 0x9f, 0x88,
-	0xb7, 0xe4, 0x57, 0x03, 0x8f, 0x01, 0xf8, 0x93, 0x11, 0x68, 0x5c, 0xd7, 0x5d, 0x8c, 0x6e, 0xe1,
-	0xd1, 0x7f, 0x67, 0x54, 0xc8, 0xec, 0x59, 0xe8, 0xe7, 0x22, 0x05, 0x1f, 0x2f, 0x61, 0x5e, 0x8f,
-	0xdd, 0x6a, 0x22, 0xc3, 0x59, 0x9c, 0x16, 0x5e, 0x37, 0xdc, 0x5b, 0xc2, 0xfe, 0xb7, 0x2d, 0xab,
-	0x89, 0xbd, 0x03, 0x9b, 0x7f, 0x67, 0x17, 0xee, 0x2e, 0xa1, 0x2d, 0x84, 0x7b, 0xa5, 0xed, 0x0f,
-	0xea, 0x67, 0x13, 0x5d, 0x3b, 0x9f, 0xe8, 0xda, 0xaf, 0x89, 0xae, 0x7d, 0x9e, 0xea, 0x89, 0xf3,
-	0xa9, 0x9e, 0xf8, 0x31, 0xd5, 0x13, 0x6f, 0xcb, 0x73, 0xe1, 0xec, 0x11, 0x91, 0x4a, 0x07, 0x77,
-	0xb9, 0xa9, 0xee, 0x24, 0x9f, 0x85, 0x01, 0x51, 0xd7, 0x61, 0x77, 0x5d, 0x5c, 0x39, 0x4f, 0x7f,
-	0x07, 0x00, 0x00, 0xff, 0xff, 0x0a, 0x69, 0xd0, 0xc6, 0x25, 0x05, 0x00, 0x00,
+	// 587 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0x4f, 0x6f, 0x12, 0x41,
+	0x14, 0x67, 0x4b, 0x6c, 0xc3, 0xb4, 0x56, 0x98, 0x68, 0xa4, 0x54, 0xb7, 0x04, 0x93, 0x06, 0x49,
+	0xba, 0x2b, 0xe8, 0x17, 0x68, 0x81, 0x26, 0xf5, 0x0f, 0x31, 0x0b, 0xf5, 0x60, 0x62, 0xc8, 0xb0,
+	0x3c, 0xe8, 0xc8, 0x32, 0xb3, 0xee, 0xec, 0xa2, 0xfb, 0x2d, 0x3c, 0x79, 0xf0, 0x13, 0x18, 0x4f,
+	0xfd, 0x18, 0x3d, 0xf6, 0xe8, 0xa9, 0x1a, 0x38, 0xf4, 0x6b, 0x98, 0xdd, 0x19, 0x2a, 0x45, 0x31,
+	0x5c, 0x7a, 0xd9, 0x7d, 0x6f, 0xde, 0xfb, 0xbd, 0xdf, 0xfc, 0xde, 0xcc, 0x1b, 0xf4, 0xd0, 0x26,
+	0xe0, 0x05, 0xc2, 0x74, 0x28, 0x1b, 0x08, 0x73, 0x54, 0x36, 0x05, 0x78, 0x23, 0x6a, 0x83, 0xe1,
+	0x7a, 0xdc, 0xe7, 0xf8, 0x8e, 0x0c, 0x1b, 0x71, 0xd8, 0x18, 0x95, 0x73, 0x19, 0x32, 0xa4, 0x8c,
+	0x9b, 0xf1, 0x57, 0xe6, 0xe4, 0xee, 0xf6, 0x79, 0x9f, 0xc7, 0xa6, 0x19, 0x59, 0x6a, 0x75, 0xcb,
+	0xe6, 0x62, 0xc8, 0x45, 0x5b, 0x06, 0xa4, 0xa3, 0x42, 0xdb, 0x8a, 0xd3, 0x0f, 0x5d, 0x88, 0x39,
+	0x65, 0x75, 0x19, 0xd4, 0x65, 0xaa, 0xd9, 0x21, 0x02, 0xcc, 0x51, 0xb9, 0x03, 0x3e, 0x29, 0x9b,
+	0x36, 0xa7, 0x4c, 0xc6, 0x0b, 0x3d, 0x94, 0xad, 0x7a, 0x40, 0x7c, 0xd8, 0xef, 0x76, 0x3d, 0x10,
+	0xe2, 0x25, 0x65, 0x03, 0x0b, 0x3e, 0x04, 0x20, 0x7c, 0x9c, 0x45, 0x6b, 0x44, 0xae, 0x66, 0xb5,
+	0xbc, 0x56, 0x4c, 0x59, 0x53, 0x17, 0x3f, 0x41, 0xb7, 0xec, 0x13, 0x42, 0x59, 0x76, 0x25, 0xaf,
+	0x15, 0x37, 0x2b, 0x39, 0x63, 0x4e, 0x97, 0x51, 0x8d, 0xa2, 0xad, 0xd0, 0x05, 0x4b, 0x26, 0x16,
+	0x2e, 0x34, 0x74, 0x4f, 0x12, 0x35, 0x81, 0x75, 0x6f, 0x88, 0x05, 0x87, 0x68, 0x95, 0x0c, 0x79,
+	0xc0, 0xfc, 0x6c, 0x32, 0x9f, 0x2c, 0xae, 0x57, 0xb6, 0x0c, 0xd5, 0xa9, 0x48, 0xbe, 0xa1, 0xe4,
+	0x1b, 0x55, 0x4e, 0xd9, 0xc1, 0xe1, 0xd9, 0xc5, 0x4e, 0xe2, 0xfb, 0xcf, 0x9d, 0x62, 0x9f, 0xfa,
+	0x27, 0x41, 0xc7, 0xb0, 0xf9, 0x50, 0xb5, 0x55, 0xfd, 0xf6, 0x44, 0x77, 0x20, 0x7b, 0x1a, 0x03,
+	0xc4, 0xd7, 0xcb, 0xd3, 0xd2, 0x86, 0x03, 0x7d, 0x62, 0x87, 0xed, 0xa8, 0x81, 0xe2, 0xdb, 0xe5,
+	0x69, 0x49, 0xb3, 0x14, 0x61, 0xe1, 0x3d, 0x7a, 0x20, 0xf5, 0xbd, 0xa1, 0xf0, 0xf1, 0xb5, 0xc7,
+	0x7b, 0xd4, 0x81, 0x9b, 0x6a, 0xe6, 0x27, 0x94, 0x91, 0x5c, 0xb3, 0x04, 0xcf, 0x11, 0x8e, 0x10,
+	0x6d, 0x9b, 0xb3, 0x1e, 0xed, 0x07, 0x1e, 0xf1, 0x29, 0x67, 0x31, 0xd7, 0x7a, 0x65, 0x7b, 0x5a,
+	0x53, 0xea, 0x19, 0x95, 0x8d, 0x08, 0x59, 0x8d, 0x33, 0xad, 0x8c, 0x73, 0x65, 0x2b, 0x14, 0xbe,
+	0x8f, 0xd6, 0x88, 0x4b, 0xdb, 0x03, 0x08, 0xe3, 0x4d, 0xa5, 0xac, 0x55, 0xe2, 0xd2, 0x17, 0x10,
+	0x16, 0x76, 0x11, 0x9e, 0x65, 0x16, 0x2e, 0x67, 0x02, 0x70, 0x1a, 0x25, 0x03, 0xcf, 0x51, 0xba,
+	0x22, 0xb3, 0xf4, 0x0c, 0xa5, 0xae, 0x76, 0x8d, 0x6f, 0xa3, 0xd4, 0x71, 0xa3, 0x56, 0x3f, 0x3c,
+	0x6a, 0xd4, 0x6b, 0xe9, 0x04, 0x5e, 0x47, 0x6b, 0xaf, 0xf6, 0x8f, 0x1a, 0x8d, 0x7a, 0x2b, 0xad,
+	0x45, 0x4e, 0xab, 0xde, 0x6c, 0x45, 0xce, 0x4a, 0xe5, 0x4b, 0x12, 0x6d, 0x44, 0x85, 0x45, 0x53,
+	0x4e, 0x0d, 0xb6, 0xa7, 0x42, 0x67, 0x6e, 0x27, 0x7e, 0xfc, 0x77, 0x83, 0x16, 0xdc, 0xe0, 0xdc,
+	0xa3, 0x05, 0xa9, 0xd7, 0x76, 0x3f, 0x98, 0xde, 0xcc, 0xb9, 0x93, 0xc3, 0x7b, 0x0b, 0xd0, 0xff,
+	0x3e, 0xe1, 0xe5, 0xc8, 0xde, 0xa1, 0xcd, 0xeb, 0x63, 0x80, 0x77, 0x17, 0xc0, 0xe6, 0xe6, 0x64,
+	0xb9, 0xf2, 0xc7, 0x08, 0xfd, 0x59, 0xc5, 0x85, 0xff, 0x42, 0x96, 0x2f, 0x7b, 0x50, 0x3b, 0x1b,
+	0xeb, 0xda, 0xf9, 0x58, 0xd7, 0x7e, 0x8d, 0x75, 0xed, 0xf3, 0x44, 0x4f, 0x9c, 0x4f, 0xf4, 0xc4,
+	0x8f, 0x89, 0x9e, 0x78, 0x5b, 0x9a, 0x19, 0x9f, 0x2e, 0xc4, 0x73, 0xe3, 0x90, 0x8e, 0x30, 0xd5,
+	0x9b, 0xe4, 0xf1, 0xc0, 0x07, 0xf5, 0x1c, 0x76, 0x56, 0xe3, 0x27, 0xe7, 0xe9, 0xef, 0x00, 0x00,
+	0x00, 0xff, 0xff, 0xec, 0xd1, 0x93, 0xe7, 0x25, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -405,9 +405,6 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type LinksServiceClient interface {
-	// CreateLink allows to generated a new deep link based on the given
-	// configuration
-	CreateLink(ctx context.Context, in *CreateLinkRequest, opts ...grpc.CallOption) (*CreateLinkResponse, error)
 	// CreateAddressLink allows to generate a new deep link that allows to open
 	// the given address on the given chain and perform the action decided by the
 	// user
@@ -418,6 +415,9 @@ type LinksServiceClient interface {
 	// CreateSendLink allows to generate a new deep link that allows to send
 	// tokens to the given address
 	CreateSendLink(ctx context.Context, in *CreateSendLinkRequest, opts ...grpc.CallOption) (*CreateLinkResponse, error)
+	// CreateLink allows to generated a new deep link based on the given
+	// configuration
+	CreateLink(ctx context.Context, in *CreateLinkRequest, opts ...grpc.CallOption) (*CreateLinkResponse, error)
 }
 
 type linksServiceClient struct {
@@ -426,15 +426,6 @@ type linksServiceClient struct {
 
 func NewLinksServiceClient(cc grpc1.ClientConn) LinksServiceClient {
 	return &linksServiceClient{cc}
-}
-
-func (c *linksServiceClient) CreateLink(ctx context.Context, in *CreateLinkRequest, opts ...grpc.CallOption) (*CreateLinkResponse, error) {
-	out := new(CreateLinkResponse)
-	err := c.cc.Invoke(ctx, "/caerus.links.v1.LinksService/CreateLink", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *linksServiceClient) CreateAddressLink(ctx context.Context, in *CreateAddressLinkRequest, opts ...grpc.CallOption) (*CreateLinkResponse, error) {
@@ -464,11 +455,17 @@ func (c *linksServiceClient) CreateSendLink(ctx context.Context, in *CreateSendL
 	return out, nil
 }
 
+func (c *linksServiceClient) CreateLink(ctx context.Context, in *CreateLinkRequest, opts ...grpc.CallOption) (*CreateLinkResponse, error) {
+	out := new(CreateLinkResponse)
+	err := c.cc.Invoke(ctx, "/caerus.links.v1.LinksService/CreateLink", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LinksServiceServer is the server API for LinksService service.
 type LinksServiceServer interface {
-	// CreateLink allows to generated a new deep link based on the given
-	// configuration
-	CreateLink(context.Context, *CreateLinkRequest) (*CreateLinkResponse, error)
 	// CreateAddressLink allows to generate a new deep link that allows to open
 	// the given address on the given chain and perform the action decided by the
 	// user
@@ -479,15 +476,15 @@ type LinksServiceServer interface {
 	// CreateSendLink allows to generate a new deep link that allows to send
 	// tokens to the given address
 	CreateSendLink(context.Context, *CreateSendLinkRequest) (*CreateLinkResponse, error)
+	// CreateLink allows to generated a new deep link based on the given
+	// configuration
+	CreateLink(context.Context, *CreateLinkRequest) (*CreateLinkResponse, error)
 }
 
 // UnimplementedLinksServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedLinksServiceServer struct {
 }
 
-func (*UnimplementedLinksServiceServer) CreateLink(ctx context.Context, req *CreateLinkRequest) (*CreateLinkResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateLink not implemented")
-}
 func (*UnimplementedLinksServiceServer) CreateAddressLink(ctx context.Context, req *CreateAddressLinkRequest) (*CreateLinkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAddressLink not implemented")
 }
@@ -497,27 +494,12 @@ func (*UnimplementedLinksServiceServer) CreateViewProfileLink(ctx context.Contex
 func (*UnimplementedLinksServiceServer) CreateSendLink(ctx context.Context, req *CreateSendLinkRequest) (*CreateLinkResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateSendLink not implemented")
 }
+func (*UnimplementedLinksServiceServer) CreateLink(ctx context.Context, req *CreateLinkRequest) (*CreateLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateLink not implemented")
+}
 
 func RegisterLinksServiceServer(s grpc1.Server, srv LinksServiceServer) {
 	s.RegisterService(&_LinksService_serviceDesc, srv)
-}
-
-func _LinksService_CreateLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateLinkRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LinksServiceServer).CreateLink(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/caerus.links.v1.LinksService/CreateLink",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LinksServiceServer).CreateLink(ctx, req.(*CreateLinkRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _LinksService_CreateAddressLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -574,14 +556,28 @@ func _LinksService_CreateSendLink_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LinksService_CreateLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateLinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LinksServiceServer).CreateLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/caerus.links.v1.LinksService/CreateLink",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LinksServiceServer).CreateLink(ctx, req.(*CreateLinkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _LinksService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "caerus.links.v1.LinksService",
 	HandlerType: (*LinksServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "CreateLink",
-			Handler:    _LinksService_CreateLink_Handler,
-		},
 		{
 			MethodName: "CreateAddressLink",
 			Handler:    _LinksService_CreateAddressLink_Handler,
@@ -594,81 +590,13 @@ var _LinksService_serviceDesc = grpc.ServiceDesc{
 			MethodName: "CreateSendLink",
 			Handler:    _LinksService_CreateSendLink_Handler,
 		},
+		{
+			MethodName: "CreateLink",
+			Handler:    _LinksService_CreateLink_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "caerus/links/v1/service.proto",
-}
-
-func (m *CreateLinkRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *CreateLinkRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *CreateLinkRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.ApiKey) > 0 {
-		i -= len(m.ApiKey)
-		copy(dAtA[i:], m.ApiKey)
-		i = encodeVarintService(dAtA, i, uint64(len(m.ApiKey)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.LinkConfiguration != nil {
-		{
-			size, err := m.LinkConfiguration.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintService(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *CreateLinkResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *CreateLinkResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *CreateLinkResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Url) > 0 {
-		i -= len(m.Url)
-		copy(dAtA[i:], m.Url)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Url)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
 }
 
 func (m *CreateAddressLinkRequest) Marshal() (dAtA []byte, err error) {
@@ -790,6 +718,78 @@ func (m *CreateViewProfileLinkRequest) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
+func (m *CreateLinkRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CreateLinkRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CreateLinkRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ApiKey) > 0 {
+		i -= len(m.ApiKey)
+		copy(dAtA[i:], m.ApiKey)
+		i = encodeVarintService(dAtA, i, uint64(len(m.ApiKey)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.LinkConfiguration != nil {
+		{
+			size, err := m.LinkConfiguration.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintService(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CreateLinkResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CreateLinkResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CreateLinkResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Url) > 0 {
+		i -= len(m.Url)
+		copy(dAtA[i:], m.Url)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Url)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintService(dAtA []byte, offset int, v uint64) int {
 	offset -= sovService(v)
 	base := offset
@@ -801,36 +801,6 @@ func encodeVarintService(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *CreateLinkRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.LinkConfiguration != nil {
-		l = m.LinkConfiguration.Size()
-		n += 1 + l + sovService(uint64(l))
-	}
-	l = len(m.ApiKey)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
-	}
-	return n
-}
-
-func (m *CreateLinkResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Url)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
-	}
-	return n
-}
-
 func (m *CreateAddressLinkRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -885,211 +855,41 @@ func (m *CreateViewProfileLinkRequest) Size() (n int) {
 	return n
 }
 
+func (m *CreateLinkRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.LinkConfiguration != nil {
+		l = m.LinkConfiguration.Size()
+		n += 1 + l + sovService(uint64(l))
+	}
+	l = len(m.ApiKey)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	return n
+}
+
+func (m *CreateLinkResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Url)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	return n
+}
+
 func sovService(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozService(x uint64) (n int) {
 	return sovService(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *CreateLinkRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: CreateLinkRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CreateLinkRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field LinkConfiguration", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.LinkConfiguration == nil {
-				m.LinkConfiguration = &types.LinkConfig{}
-			}
-			if err := m.LinkConfiguration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ApiKey", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ApiKey = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *CreateLinkResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: CreateLinkResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: CreateLinkResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Url", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Url = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
 }
 func (m *CreateAddressLinkRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -1301,7 +1101,7 @@ func (m *CreateSendLinkRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Amount = append(m.Amount, types1.Coin{})
+			m.Amount = append(m.Amount, types.Coin{})
 			if err := m.Amount[len(m.Amount)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -1407,6 +1207,206 @@ func (m *CreateViewProfileLinkRequest) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CreateLinkRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CreateLinkRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CreateLinkRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LinkConfiguration", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.LinkConfiguration == nil {
+				m.LinkConfiguration = &types1.LinkConfig{}
+			}
+			if err := m.LinkConfiguration.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ApiKey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ApiKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CreateLinkResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CreateLinkResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CreateLinkResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Url", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Url = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipService(dAtA[iNdEx:])
