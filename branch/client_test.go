@@ -2,6 +2,7 @@ package branch_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -42,7 +43,7 @@ func (suite *ClientTestSuite) TestCreateLink() {
 		check           func(url string)
 	}{
 		{
-			name: "link should be created properly",
+			name: "link with full data is created properly",
 			buildLinkConfig: func() *types.LinkConfig {
 				customDataBz, err := json.Marshal(map[string]interface{}{
 					"custom_key_string": "custom_value",
@@ -83,6 +84,29 @@ func (suite *ClientTestSuite) TestCreateLink() {
 			},
 			shouldErr: false,
 			check: func(url string) {
+				suite.Require().NotEmpty(url)
+			},
+		},
+		{
+			name: "link with partial data is created properly",
+			buildLinkConfig: func() *types.LinkConfig {
+				customDataBz, err := json.Marshal(map[string]interface{}{
+					types.DeepLinkActionKey:    types.DeepLinkActionViewProfile,
+					types.DeepLinkAddressKey:   "desmos1aph74nw42mk7330pftwwmj7lxr7j3drgmlu3zc",
+					types.DeepLinkChainTypeKey: "mainnet",
+				})
+				suite.Require().NoError(err)
+
+				return &types.LinkConfig{
+					CustomData: customDataBz,
+					DeepLinking: &types.DeepLinkConfig{
+						DeepLinkPath: "/view_profile?address=desmos1aph74nw42mk7330pftwwmj7lxr7j3drgmlu3zc&chain_type=mainnet",
+					},
+				}
+			},
+			shouldErr: false,
+			check: func(url string) {
+				fmt.Println(url)
 				suite.Require().NotEmpty(url)
 			},
 		},
