@@ -15,7 +15,11 @@ CREATE TABLE application_subscriptions
 
     -- Number of notifications that can be sent per day
     -- If set to 0, no limit is applied
-    notifications_rate_limit INTEGER NOT NULL
+    notifications_rate_limit INTEGER NOT NULL,
+
+    -- Number of deep links that can be created per day
+    -- If set to 0, no limit is applied
+    deep_links_rate_limit    INTEGER NOT NULL
 );
 
 /**

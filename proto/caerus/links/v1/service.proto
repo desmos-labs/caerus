@@ -1,0 +1,91 @@
+syntax = "proto3";
+package caerus.links.v1;
+
+option go_package = "github.com/desmos-labs/caerus/routes/links";
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "caerus/types/v1/links.proto";
+import "cosmos/base/v1beta1/coin.proto";
+
+service LinksService {
+  // CreateAddressLink allows to generate a new deep link that allows to open
+  // the given address on the given chain and perform the action decided by the
+  // user
+  rpc CreateAddressLink(CreateAddressLinkRequest) returns (CreateLinkResponse);
+
+  // CreateViewProfileLink allows to generate a new deep link that allows to
+  // view the profile of the given user
+  rpc CreateViewProfileLink(CreateViewProfileLinkRequest)
+      returns (CreateLinkResponse);
+
+  // CreateSendLink allows to generate a new deep link that allows to send
+  // tokens to the given address
+  rpc CreateSendLink(CreateSendLinkRequest) returns (CreateLinkResponse);
+
+  // CreateLink allows to generated a new deep link based on the given
+  // configuration
+  rpc CreateLink(CreateLinkRequest) returns (CreateLinkResponse);
+}
+
+// ChainType represents the types of chain supported while creating links
+enum ChainType {
+  UNDEFINED = 0;
+  MAINNET = 1;
+  TESTNET = 2;
+}
+
+// CreateAddressLinkRequest contains the data used to create a deep link for a
+// given address
+message CreateAddressLinkRequest {
+  // Address of the user for which the link should be created
+  string address = 1;
+
+  // Chain that the receiving user should use when performing operations
+  // associated to the given address
+  ChainType chain = 2;
+}
+
+// CreateSendLinkRequest contains the data used to create a deep link to send
+// tokens to a user
+message CreateSendLinkRequest {
+  // Address of the user that should receive the tokens
+  string address = 1;
+
+  // Chain on which the tokens should be sent
+  ChainType chain = 2;
+
+  // Optional amount to be sent to the user when opening the link
+  repeated cosmos.base.v1beta1.Coin amount = 3 [
+    (gogoproto.nullable) = false,
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (amino.encoding) = "legacy_coins",
+    (amino.dont_omitempty) = true
+  ];
+}
+
+// CreateViewProfileLinkRequest contains the data used to create a deep link to
+// view a user's profile
+message CreateViewProfileLinkRequest {
+  // Address of the user whose profile should be viewed
+  string address = 1;
+
+  // Chain on which the profile should be viewed
+  ChainType chain = 2;
+}
+
+// CreateLinkRequest contains the data used to create a generic deep link
+message CreateLinkRequest {
+  // The configuration of the link to be created
+  caerus.types.v1.LinkConfig link_configuration = 1;
+
+  // API key used to create the link.
+  string api_key = 2;
+}
+
+// CreateLinkResponse contains the data returned by the CreateLink method
+message CreateLinkResponse {
+  // URL of the generated link
+  string url = 1;
+}

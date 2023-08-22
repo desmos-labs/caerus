@@ -12,13 +12,21 @@ import (
 // SaveAppSubscription allows to save the given application subscription inside the database.
 func (db *Database) SaveAppSubscription(subscription types.ApplicationSubscription) error {
 	stmt := `
-INSERT INTO application_subscriptions (id, subscription_name, fee_grant_rate_limit, notifications_rate_limit) 
-VALUES ($1, $2, $3, $4)
+INSERT INTO application_subscriptions (id, subscription_name, fee_grant_rate_limit, notifications_rate_limit, deep_links_rate_limit) 
+VALUES ($1, $2, $3, $4, $5)
 ON CONFLICT (id) DO UPDATE 
     SET subscription_name = excluded.subscription_name, 
         fee_grant_rate_limit = excluded.fee_grant_rate_limit, 
-        notifications_rate_limit = excluded.notifications_rate_limit`
-	_, err := db.SQL.Exec(stmt, subscription.ID, subscription.Name, subscription.FeeGrantLimit, subscription.NotificationsRateLimit)
+        notifications_rate_limit = excluded.notifications_rate_limit,
+        deep_links_rate_limit = excluded.deep_links_rate_limit`
+
+	_, err := db.SQL.Exec(stmt,
+		subscription.ID,
+		subscription.Name,
+		subscription.FeeGrantLimit,
+		subscription.NotificationsRateLimit,
+		subscription.DeepLinksRateLimit,
+	)
 	return err
 }
 

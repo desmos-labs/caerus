@@ -111,12 +111,13 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 				// ----------------------------------
 				// --- Save the app
 				// ----------------------------------
-				err := suite.db.SaveAppSubscription(types.ApplicationSubscription{
-					ID:                     1,
-					Name:                   "Test App Subscription",
-					FeeGrantLimit:          10,
-					NotificationsRateLimit: 10,
-				})
+				err := suite.db.SaveAppSubscription(types.NewApplicationSubscription(
+					1,
+					"Test App Subscription",
+					10,
+					10,
+					10,
+				))
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
@@ -155,12 +156,13 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 				// ----------------------------------
 				// --- Save the app
 				// ----------------------------------
-				err := suite.db.SaveAppSubscription(types.ApplicationSubscription{
-					ID:                     1,
-					Name:                   "Test App Subscription",
-					FeeGrantLimit:          10,
-					NotificationsRateLimit: 1,
-				})
+				err := suite.db.SaveAppSubscription(types.NewApplicationSubscription(
+					1,
+					"Test App Subscription",
+					10,
+					1,
+					10,
+				))
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
@@ -227,12 +229,13 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 				// ----------------------------------
 				// --- Save the app
 				// ----------------------------------
-				err := suite.db.SaveAppSubscription(types.ApplicationSubscription{
-					ID:                     1,
-					Name:                   "Test App Subscription",
-					FeeGrantLimit:          10,
-					NotificationsRateLimit: 10,
-				})
+				err := suite.db.SaveAppSubscription(types.NewApplicationSubscription(
+					1,
+					"Test App Subscription",
+					10,
+					10,
+					10,
+				))
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
@@ -301,12 +304,13 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 				// ----------------------------------
 				// --- Save the app
 				// ----------------------------------
-				err := suite.db.SaveAppSubscription(types.ApplicationSubscription{
-					ID:                     1,
-					Name:                   "Test App Subscription",
-					FeeGrantLimit:          10,
-					NotificationsRateLimit: 10,
-				})
+				err := suite.db.SaveAppSubscription(types.NewApplicationSubscription(
+					1,
+					"Test App Subscription",
+					10,
+					10,
+					10,
+				))
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{

@@ -4,6 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"google.golang.org/grpc"
 
+	"github.com/desmos-labs/caerus/branch"
 	"github.com/desmos-labs/caerus/chain"
 	"github.com/desmos-labs/caerus/database"
 	"github.com/desmos-labs/caerus/firebase"
@@ -17,6 +18,7 @@ type Context struct {
 
 	ChainClient    *chain.Client
 	FirebaseClient *firebase.Client
+	BranchClient   *branch.Client
 	Scheduler      *scheduler.Scheduler
 	Database       *database.Database
 }

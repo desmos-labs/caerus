@@ -11,14 +11,16 @@ type ApplicationSubscription struct {
 	Name                   string
 	FeeGrantLimit          uint64
 	NotificationsRateLimit uint64
+	DeepLinksRateLimit     uint64
 }
 
-func NewApplicationSubscription(id uint64, name string, feeGrantLimit uint64, notificationsRateLimit uint64) *ApplicationSubscription {
-	return &ApplicationSubscription{
+func NewApplicationSubscription(id uint64, name string, feeGrantLimit uint64, notificationsRateLimit uint64, deepLinksRateLimit uint64) ApplicationSubscription {
+	return ApplicationSubscription{
 		ID:                     id,
 		Name:                   name,
 		FeeGrantLimit:          feeGrantLimit,
 		NotificationsRateLimit: notificationsRateLimit,
+		DeepLinksRateLimit:     deepLinksRateLimit,
 	}
 }
 

@@ -1,10 +1,12 @@
 package testutils
 
 import (
+	"context"
 	"net"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/test/bufconn"
 
 	"github.com/desmos-labs/caerus/authentication"
 	"github.com/desmos-labs/caerus/server"
@@ -19,13 +21,11 @@ func CreateServer(db authentication.Database) *grpc.Server {
 // instance that can be used to create clients
 func StartServerAndConnect(server *grpc.Server) (*grpc.ClientConn, error) {
 	// Start the server
-	//nolint:gosec // It is wanted to bind to all interfaces since it's just a test server
-	netListener, err := net.Listen("tcp", ":19090")
-	if err != nil {
-		return nil, err
-	}
+	netListener := bufconn.Listen(1028 * 1024)
 	go server.Serve(netListener)
 
 	// Create the connection
-	return grpc.Dial("localhost:19090", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	return grpc.DialContext(context.Background(), "bufnet", grpc.WithContextDialer(func(ctx context.Context, s string) (net.Conn, error) {
+		return netListener.Dial()
+	}), grpc.WithTransportCredentials(insecure.NewCredentials()))
 }

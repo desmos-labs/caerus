@@ -63,4 +63,5 @@ commands to generate the stubs:
 
 ```
 mockgen -source routes/notifications/expected_interfaces.go -destination routes/notifications/testutils/expected_interfaces.mock.go -package testutils
+mockgen -source routes/links/expected_interfaces.go -destination routes/links/testutils/expected_interfaces.mock.go -package testutils
 ```

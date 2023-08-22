@@ -47,6 +47,8 @@ jobs:
 
       - name: Run tests 🧪
         if: "env.GIT_DIFF != ''"
+        env:
+          BRANCH_KEY: ${{ secrets.BRANCH_KEY }}
         run: make test-unit
 
       - name: Upload cove coverage 📤

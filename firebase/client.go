@@ -12,7 +12,6 @@ import (
 )
 
 type Client struct {
-	cfg               *Config
 	firebaseMessaging *messaging.Client
 }
 
