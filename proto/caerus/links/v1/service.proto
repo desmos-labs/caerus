@@ -10,10 +10,6 @@ import "caerus/types/v1/links.proto";
 import "cosmos/base/v1beta1/coin.proto";
 
 service LinksService {
-  // CreateLink allows to generated a new deep link based on the given
-  // configuration
-  rpc CreateLink(CreateLinkRequest) returns (CreateLinkResponse);
-
   // CreateAddressLink allows to generate a new deep link that allows to open
   // the given address on the given chain and perform the action decided by the
   // user
@@ -27,21 +23,10 @@ service LinksService {
   // CreateSendLink allows to generate a new deep link that allows to send
   // tokens to the given address
   rpc CreateSendLink(CreateSendLinkRequest) returns (CreateLinkResponse);
-}
 
-// CreateLinkRequest contains the data used to create a generic deep link
-message CreateLinkRequest {
-  // The configuration of the link to be created
-  caerus.types.v1.LinkConfig link_configuration = 1;
-
-  // API key used to create the link.
-  string api_key = 2;
-}
-
-// CreateLinkResponse contains the data returned by the CreateLink method
-message CreateLinkResponse {
-  // URL of the generated link
-  string url = 1;
+  // CreateLink allows to generated a new deep link based on the given
+  // configuration
+  rpc CreateLink(CreateLinkRequest) returns (CreateLinkResponse);
 }
 
 // ChainType represents the types of chain supported while creating links
@@ -88,4 +73,19 @@ message CreateViewProfileLinkRequest {
 
   // Chain on which the profile should be viewed
   ChainType chain = 2;
+}
+
+// CreateLinkRequest contains the data used to create a generic deep link
+message CreateLinkRequest {
+  // The configuration of the link to be created
+  caerus.types.v1.LinkConfig link_configuration = 1;
+
+  // API key used to create the link.
+  string api_key = 2;
+}
+
+// CreateLinkResponse contains the data returned by the CreateLink method
+message CreateLinkResponse {
+  // URL of the generated link
+  string url = 1;
 }
