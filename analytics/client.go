@@ -24,7 +24,7 @@ func init() {
 	}
 
 	postHogClient, err := posthog.NewWithConfig(apiKey, posthog.Config{
-		Endpoint: utils.GetEnvOr(EnvAnalyticsPostHogEndpoint, "https://eu.posthog.com"),
+		Endpoint: utils.GetEnvOr(EnvAnalyticsPostHogHost, "https://eu.posthog.com"),
 	})
 	if err != nil {
 		panic(err)

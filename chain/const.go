@@ -7,8 +7,4 @@ const (
 	EnvChainRPCUrl                = "CHAIN_RPC_URL"
 	EnvChainGRPCUrl               = "CHAIN_GRPC_URL"
 	EnvChainGasPrice              = "CHAIN_GAS_PRICE"
-
-	EnvFeeGrantAmountLimit   = "FEE_GRANT_AMOUNT_LIMIT"
-	EnvFeeGrantMessagesTypes = "FEE_GRANT_MESSAGES_TYPES"
-	EnvFeeGrantExpiration    = "FEE_GRANT_EXPIRATION"
 )

@@ -10,12 +10,11 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
 )
 
 func init() {
-	logLevelStr := utils.GetEnvOr(types.EnvLoggingLevel, zerolog.TraceLevel.String())
+	logLevelStr := utils.GetEnvOr(EnvLoggingLevel, zerolog.InfoLevel.String())
 	logLevel, err := zerolog.ParseLevel(logLevelStr)
 	if err != nil {
 		panic(err)

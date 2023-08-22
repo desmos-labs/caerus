@@ -12,7 +12,6 @@ import (
 	"github.com/desmos-labs/caerus/analytics"
 	"github.com/desmos-labs/caerus/scheduler"
 	"github.com/desmos-labs/caerus/server"
-	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
 )
 
@@ -42,8 +41,8 @@ func (r *Runner) Run() {
 	}
 
 	// Build the HTTP server to be able to shut it down if needed
-	runningAddress := utils.GetEnvOr(types.EnvAPIsAddress, "0.0.0.0")
-	runningPort := utils.GetEnvOr(types.EnvAPIsPort, "3000")
+	runningAddress := utils.GetEnvOr(EnvServerAddress, "0.0.0.0")
+	runningPort := utils.GetEnvOr(EnvServerPort, "3000")
 	netListener, err := net.Listen("tcp", fmt.Sprintf("%s:%s", runningAddress, runningPort))
 	if err != nil {
 		panic(err)
