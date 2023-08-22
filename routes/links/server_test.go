@@ -273,7 +273,13 @@ func (suite *LinksServerTestSuite) TestCreateAddressLink() {
 				suite.deepLinksClient.
 					EXPECT().
 					CreateDynamicLink(gomock.Any(), gomock.Any()).
-					Return("https://example.com", nil)
+					DoAndReturn(func(apiKey string, config *types.LinkConfig) (string, error) {
+						// Verify the arguments used
+						expectedPath := "/?address=desmos1aph74nw42mk7330pftwwmj7lxr7j3drgmlu3zc&chain_type=mainnet"
+						suite.Require().Equal(expectedPath, config.DeepLinking.DeepLinkPath)
+
+						return "https://example.com", nil
+					})
 			},
 			setupContext: func(ctx context.Context) context.Context {
 				return authentication.SetupContextWithAuthorization(ctx, "token")
@@ -286,12 +292,6 @@ func (suite *LinksServerTestSuite) TestCreateAddressLink() {
 			},
 			shouldErr: false,
 			check: func(res *links.CreateLinkResponse) {
-				// Make sure the mocks were called
-				suite.deepLinksClient.
-					EXPECT().
-					CreateDynamicLink(gomock.Any(), gomock.Any()).
-					Times(1)
-
 				// Make sure the returned response is correct
 				suite.Require().Equal("https://example.com", res.Url)
 

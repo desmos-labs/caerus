@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
@@ -77,8 +78,8 @@ func (h *Handler) HandleGenerateDeepLinkRequest(request GenerateDeepLinkRequest)
 
 	// Build the custom data to use in order to generate the link
 	customData := request.GetCustomData()
-	customData[types.DeepLinkActionSendTokens] = request.GetAction()
-	customData[types.DeepLinkChainTypeKey] = request.GetChainType().String()
+	customData[types.DeepLinkActionKey] = request.GetAction()
+	customData[types.DeepLinkChainTypeKey] = strings.ToLower(request.GetChainType().String())
 
 	customDataBz, err := json.Marshal(customData)
 	if err != nil {
@@ -88,15 +89,16 @@ func (h *Handler) HandleGenerateDeepLinkRequest(request GenerateDeepLinkRequest)
 	// Build the path to use in order to generate the link
 	values := url.Values{}
 	for key, value := range customData {
-		values.Add(key, value)
+		if key != types.DeepLinkActionKey {
+			values.Add(key, value)
+		}
 	}
 
 	deepLinkPath := fmt.Sprintf("/%s?%s", request.GetAction(), values.Encode())
 
 	// Generate the link
 	deepLink, err := h.deepLinksClient.CreateDynamicLink("", &types.LinkConfig{
-		CustomData:   customDataBz,
-		Redirections: nil,
+		CustomData: customDataBz,
 		DeepLinking: &types.DeepLinkConfig{
 			DeepLinkPath: deepLinkPath,
 		},
