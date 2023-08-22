@@ -49,6 +49,71 @@ just reach out to our team at `development@desmos.network`. Let us know that you
 developer. We'll handle the process of setting up an account for you and giving you an authorization token. This token
 will allow you to make requests to our server seamlessly.
 
+## Running an instance
+
+If you want to run your own Caerus instance, you can do so by running the Docker image or building the binary yourself.
+In both cases, you are required to set some environment variables.
+
+### Environment variables
+
+#### Analytics
+
+| Name                        | Description                                              | Required | Default |
+|-----------------------------|----------------------------------------------------------|----------|---------|
+| `ANALYTICS_ENABLED`         | Enables or disables the analytics                        | No       | `false` |
+| `ANALYTICS_POSTHOG_API_KEY` | The API key of the PostHog instance to use for analytics | Yes      |         |
+| `ANALYTICS_POSTHOG_HOST`    | The host of the PostHog instance to use for analytics    | Yes      |         |
+
+#### Deep Links
+
+| Name         | Description                                                             | Required |
+|--------------|-------------------------------------------------------------------------|----------|
+| `BRANCH_KEY` | The [Branch.io](https://branch.io) key to use for generating deep links | Yes      |
+
+#### Chain
+
+| Name                            | Description                                                                      | Required | Default                                    |
+|---------------------------------|----------------------------------------------------------------------------------|----------|--------------------------------------------|
+| `CHAIN_ACCOUNT_RECOVERY_PHRASE` | The BIP39 recovery phrase of the account to use to perform on-chain transactions | Yes      |                                            |
+| `CHAIN_BECH32_PREFIX`           | The Bech32 prefix of the chain to use                                            | No       | `desmos`                                   |
+| `CHAIN_ACCOUNT_DERIVATION_PATH` | The derivation path of the account to use to perform on-chain transactions       | No       | `m/44'/852'/0'/0/0`                        |
+| `CHAIN_RPC_URL`                 | The address of the RPC endpoint to use                                           | No       | `https://rpc.morpheus.desmos.network:443`  |
+| `CHAIN_GRPC_URL`                | The address of the gRPC endpoint to use                                          | No       | `https://grpc.morpheus.desmos.network:443` |
+| `CHAIN_GAS_PRICE`               | The gas price to use for on-chain transactions                                   | No       | `0.01udaric`                               |
+
+#### Database
+
+| Name           | Description                                                              | Required | Default |
+|----------------|--------------------------------------------------------------------------|----------|---------|
+| `DATABASE_URI` | The PostgreSQL connection URI used to connect to the database to be used | Yes      |         |
+
+#### Notifications
+
+| Name                             | Description                                                                | Required | Default |
+|----------------------------------|----------------------------------------------------------------------------|----------|---------|
+| `FIREBASE_CREDENTIALS_FILE_PATH` | The path to the Firebase credentials file to use for sending notifications | Yes      |         |
+
+#### Logging
+
+| Name        | Description          | Required | Default |
+|-------------|----------------------|----------|---------|
+| `LOG_LEVEL` | The log level to use | No       | `info`  |
+
+#### File storing
+
+| Name                         | Description                                                          | Required | Default                       |
+|------------------------------|----------------------------------------------------------------------|----------|-------------------------------|
+| `FILE_STORAGE_BASE_FOLDER`   | The base folder where to store temporary files uploaded by the users | No       | User home directory           |
+| `FILE_STORAGE_TYPE`          | The type of storage to use for storing files                         | No       | `IPFS`                        |
+| `FILE_STORAGE_IPFS_ENDPOINT` | The endpoint of the IPFS node to use for storing files               | No       | `https://ipfs.desmos.network` |
+
+#### Server
+
+| Name             | Description                                                         | Required | Default   |
+|------------------|---------------------------------------------------------------------|----------|-----------|
+| `SERVER_ADDRESS` | The address where the server should listen for incoming connections | No       | `0.0.0.0` |
+| `SERVER_PORT`    | The port where the server should listen for incoming connections    | No       | `3000`    |
+
 ## Development
 
 While developing Caerus we use some external tools and libraries to make our life easier.
