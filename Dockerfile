@@ -1,10 +1,10 @@
-# This Docker allows running the Bondscape APIs binary.
+# This Docker allows running a Caerus server instance.
 #
 # How to build the image:
-# > docker build --tag desmoslabs/bondscape-apis .
+# > docker build --tag desmoslabs/caerus .
 #
 # How to run the image:
-# > docker run desmoslabs/bondscape-apis
+# > docker run desmoslabs/caerus
 
 FROM golang:1.20-alpine
 ARG arch=x86_64
