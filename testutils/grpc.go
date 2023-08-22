@@ -21,7 +21,6 @@ func CreateServer(db authentication.Database) *grpc.Server {
 // instance that can be used to create clients
 func StartServerAndConnect(server *grpc.Server) (*grpc.ClientConn, error) {
 	// Start the server
-	//nolint:gosec // It is wanted to bind to all interfaces since it's just a test server
 	netListener := bufconn.Listen(1028 * 1024)
 	go server.Serve(netListener)
 
