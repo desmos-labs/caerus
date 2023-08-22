@@ -96,8 +96,9 @@ func (r *GenerateAddressLinkRequest) GetCustomData() map[string]string {
 }
 
 func (r *GenerateAddressLinkRequest) Validate() error {
-	if r.Address == "" {
-		return fmt.Errorf("missing address")
+	_, err := sdk.AccAddressFromBech32(r.Address)
+	if err != nil {
+		return fmt.Errorf("invalid address: %s", err)
 	}
 
 	if r.Chain == ChainType_UNDEFINED {
@@ -147,8 +148,9 @@ func (r *GenerateViewProfileLinkRequest) GetCustomData() map[string]string {
 }
 
 func (r *GenerateViewProfileLinkRequest) Validate() error {
-	if r.Address == "" {
-		return fmt.Errorf("missing address")
+	_, err := sdk.AccAddressFromBech32(r.Address)
+	if err != nil {
+		return fmt.Errorf("invalid address: %s", err)
 	}
 
 	if r.Chain == ChainType_UNDEFINED {
@@ -203,15 +205,16 @@ func (r *GenerateSendTokensLinkRequest) GetCustomData() map[string]string {
 }
 
 func (r *GenerateSendTokensLinkRequest) Validate() error {
-	if r.Address == "" {
-		return fmt.Errorf("missing address")
+	_, err := sdk.AccAddressFromBech32(r.Address)
+	if err != nil {
+		return fmt.Errorf("invalid address: %s", err)
 	}
 
 	if r.Chain == ChainType_UNDEFINED {
 		return fmt.Errorf("invalid chain type")
 	}
 
-	err := r.Amount.Validate()
+	err = r.Amount.Validate()
 	if err != nil {
 		return fmt.Errorf("invalid amount: %s", err)
 	}
