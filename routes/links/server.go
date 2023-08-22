@@ -30,24 +30,6 @@ func NewServerFromEnvVariables(client DeepLinksClient, db Database) *Server {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// CreateLink implements LinksServiceServer
-func (s *Server) CreateLink(ctx context.Context, request *CreateLinkRequest) (*CreateLinkResponse, error) {
-	// Get the app information
-	app, err := authentication.GetAuthenticatedAppData(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	// Build and validate the request
-	req := NewGenerateGenericDeepLinkRequest(app.AppID, request.LinkConfiguration, request.ApiKey)
-	err = req.Validate()
-	if err != nil {
-		return nil, utils.WrapErr(codes.InvalidArgument, err.Error())
-	}
-
-	return s.handler.HandleGenerateGenericDeepLinkRequest(req)
-}
-
 // CreateAddressLink implements LinksServiceServer
 func (s *Server) CreateAddressLink(ctx context.Context, request *CreateAddressLinkRequest) (*CreateLinkResponse, error) {
 	// Get the app information
@@ -100,4 +82,22 @@ func (s *Server) CreateSendLink(ctx context.Context, request *CreateSendLinkRequ
 	}
 
 	return s.handler.HandleGenerateDeepLinkRequest(req)
+}
+
+// CreateLink implements LinksServiceServer
+func (s *Server) CreateLink(ctx context.Context, request *CreateLinkRequest) (*CreateLinkResponse, error) {
+	// Get the app information
+	app, err := authentication.GetAuthenticatedAppData(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Build and validate the request
+	req := NewGenerateGenericDeepLinkRequest(app.AppID, request.LinkConfiguration, request.ApiKey)
+	err = req.Validate()
+	if err != nil {
+		return nil, utils.WrapErr(codes.InvalidArgument, err.Error())
+	}
+
+	return s.handler.HandleGenerateGenericDeepLinkRequest(req)
 }
