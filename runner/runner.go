@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/rs/zerolog/log"
+	"google.golang.org/grpc/reflection"
 
 	"github.com/desmos-labs/caerus/analytics"
 	"github.com/desmos-labs/caerus/scheduler"
@@ -35,6 +36,9 @@ func (r *Runner) SetServiceRegistrar(registrar ServiceRegistrar) {
 
 func (r *Runner) Run() {
 	serverInstance := server.New(r.ctx.Database)
+
+	// Register the reflection service to allow listing methods provided by the server
+	reflection.Register(serverInstance)
 
 	if r.serviceRegistrar != nil {
 		r.serviceRegistrar(r.ctx, serverInstance)
