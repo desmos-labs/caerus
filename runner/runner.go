@@ -34,6 +34,7 @@ func (r *Runner) SetServiceRegistrar(registrar ServiceRegistrar) {
 	r.serviceRegistrar = registrar
 }
 
+// Run runs the server blocking the current goroutine until the server is shut down
 func (r *Runner) Run() {
 	serverInstance := server.New(r.ctx.Database)
 
@@ -52,17 +53,16 @@ func (r *Runner) Run() {
 		panic(err)
 	}
 
-	err = serverInstance.Serve(netListener)
-	if err != nil {
-		panic(err)
-	}
-
 	// Listen for and trap any OS signal to gracefully shutdown and exit
 	go r.trapSignal(r.ctx.Scheduler, netListener)
 
 	// Start the scheduler
 	log.Info().Msg("Starting scheduler")
 	r.ctx.Scheduler.StartAsync()
+
+	// Start the serer (as this is blocking)
+	log.Info().Str("address", runningAddress).Str("port", runningPort).Msg("Starting API server")
+	serverInstance.Serve(netListener)
 }
 
 // trapSignal traps the stops signals to gracefully shut down the server
