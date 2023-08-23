@@ -22,6 +22,7 @@ services:
   server:
     build: .
     container_name: "caerus-server"
+    user: "${UID}:${GID}"
     ports:
       - "3000:3000"
     depends_on:
