@@ -16,7 +16,6 @@ import (
 	wallettypes "github.com/desmos-labs/cosmos-go-wallet/types"
 	"github.com/desmos-labs/cosmos-go-wallet/wallet"
 	desmosapp "github.com/desmos-labs/desmos/v5/app"
-	profilestypes "github.com/desmos-labs/desmos/v5/x/profiles/types"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
 
@@ -74,11 +73,6 @@ func (suite *GrantsServerTestSuite) SetupSuite() {
 			HDPath:   "m/44'/852'/0'/0/0",
 		},
 		Chain: chainCfg,
-		FeeGrant: &chain.FeeGrantConfig{
-			MsgTypes:   []string{sdk.MsgTypeURL(&profilestypes.MsgSaveProfile{})},
-			GrantLimit: sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1000000))),
-			Expiration: 1 * time.Hour,
-		},
 	}, txConfig, cdc)
 	suite.Require().NoError(err)
 	suite.serverChainClient = serverClient
