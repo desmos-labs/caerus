@@ -39,7 +39,7 @@ If you prefer not to maintain your own Caerus server instance, you can use our o
 following address:
 
 ```
-T.B.D
+https://grpc-caerus.mainnet.desmos.network:443
 ```
 
 ### Registering as an application
