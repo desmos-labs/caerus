@@ -61,7 +61,7 @@ func (h *Handler) checkAppLinksRateLimit(appID string) error {
 		return err
 	}
 
-	if deepLinksCount >= deepLinksRateLimit {
+	if deepLinksRateLimit > 0 && deepLinksCount >= deepLinksRateLimit {
 		return utils.NewTooManyRequestsError("deep links rate limit exceeded")
 	}
 
