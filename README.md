@@ -39,7 +39,7 @@ If you prefer not to maintain your own Caerus server instance, you can use our o
 following address:
 
 ```
-https://caerus.desmos.network
+T.B.D
 ```
 
 ### Registering as an application
