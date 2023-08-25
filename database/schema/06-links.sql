@@ -9,7 +9,10 @@ CREATE TABLE deep_links
     application_id TEXT                     NOT NULL,
 
     -- Link that has been generated
-    link           TEXT                     NOT NULL,
+    link_url       TEXT                     NOT NULL,
+
+    -- Configuration used to generate the link
+    link_config    JSONB                    NOT NULL,
 
     -- Time when the link was created
     creation_time  TIMESTAMP WITH TIME ZONE NOT NULL             DEFAULT NOW()

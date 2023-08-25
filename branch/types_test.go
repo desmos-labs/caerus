@@ -1,4 +1,4 @@
-package types_test
+package branch_test
 
 import (
 	"encoding/json"
@@ -6,10 +6,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/desmos-labs/caerus/branch"
 	"github.com/desmos-labs/caerus/types"
 )
 
-func TestLinkConfig_MarshalJSON(t *testing.T) {
+func TestCreateLinkConfig_MarshalJSON(t *testing.T) {
 	customDataBz, err := json.Marshal(map[string]interface{}{
 		"custom_key_string": "custom_value",
 		"custom_key_int":    123,
@@ -17,7 +18,7 @@ func TestLinkConfig_MarshalJSON(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	config := types.LinkConfig{
+	config := branch.NewCreateLinkConfig(&types.LinkConfig{
 		OpenGraph: &types.OpenGraphConfig{
 			Title:       "Custom OG Title",
 			Description: "Custom OG Description",
@@ -45,7 +46,7 @@ func TestLinkConfig_MarshalJSON(t *testing.T) {
 			IosDeepLinkPath:     "Custom iOS Deep Link Path",
 			DesktopDeepLinkPath: "Custom Desktop Deep Link Path",
 		},
-	}
+	})
 
 	configBz, err := json.Marshal(config)
 	require.NoError(t, err)

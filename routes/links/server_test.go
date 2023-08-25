@@ -2,6 +2,7 @@ package links_test
 
 import (
 	"context"
+	"encoding/json"
 	"path"
 	"testing"
 	"time"
@@ -875,6 +876,88 @@ func (suite *LinksServerTestSuite) TestCreateSendLink() {
 			}
 
 			res, err := suite.client.CreateSendLink(ctx, tc.buildRequest())
+			if tc.shouldErr {
+				suite.Require().Error(err)
+			} else {
+				suite.Require().NoError(err)
+			}
+
+			if tc.check != nil {
+				tc.check(res)
+			}
+		})
+	}
+}
+
+func (suite *LinksServerTestSuite) TestGetLinkConfig() {
+	testCases := []struct {
+		name         string
+		setup        func()
+		buildRequest func() *links.GetLinkConfigRequest
+		shouldErr    bool
+		check        func(res *types.LinkConfig)
+	}{
+		{
+			name: "link not found returns error",
+			buildRequest: func() *links.GetLinkConfigRequest {
+				return &links.GetLinkConfigRequest{
+					Url: "https://example.com",
+				}
+			},
+			shouldErr: true,
+		},
+		{
+			name: "valid request works properly",
+			setup: func() {
+				// Store the link
+				customDataBz, err := json.Marshal(map[string]interface{}{
+					types.DeepLinkActionKey:    types.DeepLinkActionSendTokens,
+					types.DeepLinkAddressKey:   "desmos1aph74nw42mk7330pftwwmj7lxr7j3drgmlu3zc",
+					types.DeepLinkAmountKey:    "100udaric",
+					types.DeepLinkChainTypeKey: "mainnet",
+				})
+				suite.Require().NoError(err)
+
+				err = suite.db.SaveCreatedDeepLink(&types.CreatedDeepLink{
+					ID:    "1",
+					AppID: "1",
+					URL:   "https://example.com",
+					Config: &types.LinkConfig{
+						CustomData: customDataBz,
+					},
+					CreationTime: time.Now(),
+				})
+				suite.Require().NoError(err)
+			},
+			buildRequest: func() *links.GetLinkConfigRequest {
+				return &links.GetLinkConfigRequest{
+					Url: "https://example.com",
+				}
+			},
+			shouldErr: false,
+			check: func(res *types.LinkConfig) {
+				var customData map[string]interface{}
+				err := json.Unmarshal(res.CustomData, &customData)
+				suite.Require().NoError(err)
+
+				// Make sure the config is the same one that was saved
+				suite.Require().Equal(types.DeepLinkActionSendTokens, customData[types.DeepLinkActionKey])
+				suite.Require().Equal("desmos1aph74nw42mk7330pftwwmj7lxr7j3drgmlu3zc", customData[types.DeepLinkAddressKey])
+				suite.Require().Equal("100udaric", customData[types.DeepLinkAmountKey])
+				suite.Require().Equal("mainnet", customData[types.DeepLinkChainTypeKey])
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		suite.Run(tc.name, func() {
+			suite.SetupTest()
+			if tc.setup != nil {
+				tc.setup()
+			}
+
+			res, err := suite.client.GetLinkConfig(context.Background(), tc.buildRequest())
 			if tc.shouldErr {
 				suite.Require().Error(err)
 			} else {

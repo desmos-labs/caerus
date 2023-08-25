@@ -1,18 +1,55 @@
 package database
 
 import (
+	"database/sql"
+	"encoding/json"
+	"errors"
+
 	"github.com/desmos-labs/caerus/types"
 )
 
 // SaveCreatedDeepLink allows to save the given link inside the database
 func (db *Database) SaveCreatedDeepLink(link *types.CreatedDeepLink) error {
 	stmt := `
-INSERT INTO deep_links (id, application_id, link, creation_time)
-VALUES ($1, $2, $3, $4)
+INSERT INTO deep_links (id, application_id, link_url, link_config, creation_time)
+VALUES ($1, $2, $3, $4, $5)
 ON CONFLICT DO NOTHING`
 
-	_, err := db.SQL.Exec(stmt, link.ID, link.AppID, link.URL, link.CreationTime)
+	configBz, err := json.Marshal(link.Config)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.SQL.Exec(stmt,
+		link.ID,
+		link.AppID,
+		link.URL,
+		string(configBz),
+		link.CreationTime,
+	)
 	return err
+}
+
+// GetDeepLinkConfig allows to return the types.LinkConfig associated to the link having the given URL, if any
+func (db *Database) GetDeepLinkConfig(url string) (*types.LinkConfig, error) {
+	stmt := `SELECT link_config FROM deep_links WHERE link_url = $1`
+
+	var configBz []byte
+	err := db.SQL.Get(&configBz, stmt, url)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	var config types.LinkConfig
+	err = json.Unmarshal(configBz, &config)
+	if err != nil {
+		return nil, err
+	}
+
+	return &config, nil
 }
 
 // --------------------------------------------------------------------------------------------------------------------

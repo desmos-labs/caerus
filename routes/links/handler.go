@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"strings"
 
+	"google.golang.org/grpc/codes"
+
 	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
 )
@@ -39,7 +41,7 @@ func (h *Handler) HandleGenerateGenericDeepLinkRequest(request *GenerateGenericD
 	}
 
 	// Store the created deep link
-	err = h.db.SaveCreatedDeepLink(types.NewCreatedDeepLink(request.AppID, deepLink))
+	err = h.db.SaveCreatedDeepLink(types.NewCreatedDeepLink(request.AppID, deepLink, request.LinkConfig))
 	if err != nil {
 		return nil, err
 	}
@@ -95,23 +97,38 @@ func (h *Handler) HandleGenerateDeepLinkRequest(request GenerateDeepLinkRequest)
 	}
 
 	deepLinkPath := fmt.Sprintf("/%s?%s", request.GetAction(), values.Encode())
-
-	// Generate the link
-	deepLink, err := h.deepLinksClient.CreateDynamicLink("", &types.LinkConfig{
+	linkConfig := &types.LinkConfig{
 		CustomData: customDataBz,
 		DeepLinking: &types.DeepLinkConfig{
 			DeepLinkPath: deepLinkPath,
 		},
-	})
+	}
+
+	// Generate the link
+	deepLink, err := h.deepLinksClient.CreateDynamicLink("", linkConfig)
 	if err != nil {
 		return nil, err
 	}
 
 	// Store the created deep link
-	err = h.db.SaveCreatedDeepLink(types.NewCreatedDeepLink(request.GetAppID(), deepLink))
+	err = h.db.SaveCreatedDeepLink(types.NewCreatedDeepLink(request.GetAppID(), deepLink, linkConfig))
 	if err != nil {
 		return nil, err
 	}
 
 	return &CreateLinkResponse{Url: deepLink}, nil
+}
+
+// HandleGetLinkConfigRequest handles the given GetLinkConfigRequest
+func (h *Handler) HandleGetLinkConfigRequest(request *GetLinkConfigRequest) (*types.LinkConfig, error) {
+	config, err := h.db.GetDeepLinkConfig(request.Url)
+	if err != nil {
+		return nil, err
+	}
+
+	if config == nil {
+		return nil, utils.WrapErr(codes.NotFound, "link not found")
+	}
+
+	return config, nil
 }

@@ -7,22 +7,22 @@ import "gogoproto/gogo.proto";
 
 message LinkConfig {
   // OpenGraph allows to handle Facebook properties
-  OpenGraphConfig open_graph = 1;
+  OpenGraphConfig open_graph = 1 [ (gogoproto.jsontag) = "open_graph" ];
 
   // Twitter contains custom Twitter properties
-  TwitterConfig twitter = 2;
+  TwitterConfig twitter = 2 [ (gogoproto.jsontag) = "twitter" ];
 
   // CustomData should contain the custom data that will be added to the
   // generated link. This should be a JSON-encoded map of key-pair values.
-  bytes custom_data = 3;
+  bytes custom_data = 3 [ (gogoproto.jsontag) = "custom_data" ];
 
   // Redirections allows to navigate to different locations based on device
   // information. Note: Navigation URLs must be websites, not deep links
-  RedirectionsConfig redirections = 4;
+  RedirectionsConfig redirections = 4 [ (gogoproto.jsontag) = "redirections" ];
 
   // DeepLinking allows to navigate to different locations based on device
   // information
-  DeepLinkConfig deep_linking = 5;
+  DeepLinkConfig deep_linking = 5 [ (gogoproto.jsontag) = "deep_linking" ];
 }
 
 // OpenGraphConfig contains the Open Graph properties that will be added to the

@@ -27,6 +27,9 @@ service LinksService {
   // CreateLink allows to generated a new deep link based on the given
   // configuration
   rpc CreateLink(CreateLinkRequest) returns (CreateLinkResponse);
+
+  // GetLinkConfig allows to get the configuration used to generate a link
+  rpc GetLinkConfig(GetLinkConfigRequest) returns (caerus.types.v1.LinkConfig);
 }
 
 // ChainType represents the types of chain supported while creating links
@@ -87,5 +90,12 @@ message CreateLinkRequest {
 // CreateLinkResponse contains the data returned by the CreateLink method
 message CreateLinkResponse {
   // URL of the generated link
+  string url = 1;
+}
+
+// GetLinkConfigRequest contains the data used to get the configuration used to
+// generate a given link
+message GetLinkConfigRequest {
+  // URL of the link to get the details of
   string url = 1;
 }
