@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 
 	"github.com/desmos-labs/caerus/authentication"
+	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
 )
 
@@ -100,4 +101,9 @@ func (s *Server) CreateLink(ctx context.Context, request *CreateLinkRequest) (*C
 	}
 
 	return s.handler.HandleGenerateGenericDeepLinkRequest(req)
+}
+
+// GetLinkConfig implements LinksServiceServer
+func (s *Server) GetLinkConfig(_ context.Context, request *GetLinkConfigRequest) (*types.LinkConfig, error) {
+	return s.handler.HandleGetLinkConfigRequest(request)
 }

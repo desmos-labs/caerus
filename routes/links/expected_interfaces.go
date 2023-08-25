@@ -9,6 +9,7 @@ type Database interface {
 	GetAppDeepLinksCount(appID string) (uint64, error)
 
 	SaveCreatedDeepLink(link *types.CreatedDeepLink) error
+	GetDeepLinkConfig(link string) (*types.LinkConfig, error)
 }
 
 type DeepLinksClient interface {

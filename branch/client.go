@@ -39,8 +39,8 @@ func NewClientFromEnvVariables() (*Client, error) {
 // --------------------------------------------------------------------------------------------------------------------
 
 type createLinkRequest struct {
-	BranchKey string      `json:"branch_key"`
-	Data      interface{} `json:"data"`
+	BranchKey string           `json:"branch_key"`
+	Config    CreateLinkConfig `json:"data"`
 }
 
 type createLinkResponse struct {
@@ -48,7 +48,7 @@ type createLinkResponse struct {
 }
 
 // CreateDynamicLink allows to create a new dynamic link using the given link and request configurations
-func (c *Client) CreateDynamicLink(apiKey string, linkConfig *types.LinkConfig) (string, error) {
+func (c *Client) CreateDynamicLink(apiKey string, config *types.LinkConfig) (string, error) {
 	// Get the data to be used
 	branchKey := c.apiKey
 	if apiKey != "" {
@@ -58,7 +58,7 @@ func (c *Client) CreateDynamicLink(apiKey string, linkConfig *types.LinkConfig) 
 	// Build the request body
 	requestBody := createLinkRequest{
 		BranchKey: branchKey,
-		Data:      linkConfig,
+		Config:    NewCreateLinkConfig(config),
 	}
 
 	// Marshal the request body to JSON
