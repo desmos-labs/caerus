@@ -2,6 +2,7 @@ package users
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -106,7 +107,7 @@ func (r *AuthorizedSessionResponse) MarshalJSON() ([]byte, error) {
 // a new device token to receive notifications
 type RegisterUserDeviceTokenRequest struct {
 	UserAddress string
-	DeviceToken string `json:"token"`
+	DeviceToken string
 }
 
 func NewRegisterUserDeviceTokenRequest(userAddress string, token string) *RegisterUserDeviceTokenRequest {
@@ -114,4 +115,12 @@ func NewRegisterUserDeviceTokenRequest(userAddress string, token string) *Regist
 		UserAddress: userAddress,
 		DeviceToken: token,
 	}
+}
+
+func (r RegisterUserDeviceTokenRequest) Validate() error {
+	if r.DeviceToken == "" {
+		return fmt.Errorf("invalid device token")
+	}
+
+	return nil
 }

@@ -3,9 +3,11 @@ package applications
 import (
 	"context"
 
+	"google.golang.org/grpc/codes"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/desmos-labs/caerus/authentication"
+	"github.com/desmos-labs/caerus/utils"
 )
 
 var (
@@ -34,7 +36,13 @@ func (a ApplicationServer) RegisterNotificationToken(ctx context.Context, reques
 		return nil, err
 	}
 
-	err = a.handler.HandleRegisterAppDeviceTokenRequest(NewRegisterAppDeviceTokenRequest(appData.AppID, request.Token))
+	// Build and validate the request
+	req := NewRegisterAppDeviceTokenRequest(appData.AppID, request.Token)
+	if err = req.Validate(); err != nil {
+		return nil, utils.WrapErr(codes.InvalidArgument, err.Error())
+	}
+
+	err = a.handler.HandleRegisterAppDeviceTokenRequest(req)
 	if err != nil {
 		return nil, err
 	}

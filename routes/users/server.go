@@ -5,11 +5,13 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/posthog/posthog-go"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/desmos-labs/caerus/analytics"
 	"github.com/desmos-labs/caerus/authentication"
 	"github.com/desmos-labs/caerus/types"
+	"github.com/desmos-labs/caerus/utils"
 )
 
 var (
@@ -82,8 +84,13 @@ func (s *Server) RegisterDeviceNotificationToken(ctx context.Context, request *R
 		return nil, err
 	}
 
-	// Handle the request
+	// Build and validate the request
 	req := NewRegisterUserDeviceTokenRequest(userData.DesmosAddress, request.DeviceToken)
+	if err := req.Validate(); err != nil {
+		return nil, utils.WrapErr(codes.InvalidArgument, err.Error())
+	}
+
+	// Handle the request
 	err = s.handler.HandleRegisterUserDeviceTokenRequest(req)
 	if err != nil {
 		return nil, err
