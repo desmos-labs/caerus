@@ -15,7 +15,7 @@ import (
 	"github.com/desmos-labs/cosmos-go-wallet/client"
 	wallettypes "github.com/desmos-labs/cosmos-go-wallet/types"
 	"github.com/desmos-labs/cosmos-go-wallet/wallet"
-	desmosapp "github.com/desmos-labs/desmos/v5/app"
+	desmosapp "github.com/desmos-labs/desmos/v6/app"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
 

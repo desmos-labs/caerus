@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/desmos-labs/desmos/v5/app"
+	"github.com/desmos-labs/desmos/v6/app"
 	_ "github.com/lib/pq"
 
 	"github.com/desmos-labs/caerus/database"

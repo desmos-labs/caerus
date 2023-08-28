@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/feegrant"
-	desmosapp "github.com/desmos-labs/desmos/v5/app"
+	desmosapp "github.com/desmos-labs/desmos/v6/app"
 	"github.com/stretchr/testify/suite"
 	"go.uber.org/mock/gomock"
 

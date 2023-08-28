@@ -7,7 +7,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	desmosapp "github.com/desmos-labs/desmos/v5/app"
+	desmosapp "github.com/desmos-labs/desmos/v6/app"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"

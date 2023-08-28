@@ -2,7 +2,7 @@ package main
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/desmos-labs/desmos/v5/app"
+	"github.com/desmos-labs/desmos/v6/app"
 	"github.com/go-co-op/gocron"
 	"google.golang.org/grpc"
 
