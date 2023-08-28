@@ -1,1 +1,11 @@
+.github
 build/
+proto
+scripts
+tools
+.codecov.yml
+.gitignore
+.golangci.yml
+.mergify.yml
+coverage.txt
+README.md
