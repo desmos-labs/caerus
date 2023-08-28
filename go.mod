@@ -340,8 +340,4 @@ replace (
 
 	// Our cosmos-sdk branch is: https://github.com/desmos-labs/cosmos-sdk v0.47.x-desmos
 	github.com/cosmos/cosmos-sdk => github.com/desmos-labs/cosmos-sdk v0.47.3-desmos
-
-	// This is done to avoid the following error:
-	// https://github.com/desmos-labs/desmos/pull/1131#discussion_r1194090419
-	github.com/cosmos/gogoproto => github.com/cosmos/gogoproto v1.4.8
 )
