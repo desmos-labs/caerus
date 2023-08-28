@@ -242,6 +242,8 @@ github.com/BurntSushi/toml v1.3.2/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbi
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d h1:nalkkPQcITbvhmL4+C4cKA87NW0tfm3Kl9VXRoPywFg=
 github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d/go.mod h1:URdX5+vg25ts3aCh8H5IFZybJYKWhJHYMTnf+ULtoC4=
+github.com/CosmWasm/wasmd v0.40.0-rc.1 h1:prIM2vP1jNh0zgs9seua5BgKdayBgp3FiHtwxFcZSGs=
+github.com/CosmWasm/wasmd v0.40.0-rc.1/go.mod h1:uacdue6EGn9JA1TqBNHB3iCe4PCIChuFT23AzIl2VME=
 github.com/CosmWasm/wasmvm v1.2.3 h1:OKYlobwmVGbl0eSn0mXoAAjE5hIuXnQCLPjbNd91sVY=
 github.com/CosmWasm/wasmvm v1.2.3/go.mod h1:vW/E3h8j9xBQs9bCoijDuawKo9kCtxOaS8N8J7KFtkc=
 github.com/DATA-DOG/go-sqlmock v1.3.3/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
@@ -479,12 +481,10 @@ github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f h1:U5y3Y5UE0w7amNe
 github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f/go.mod h1:xH/i4TFMt8koVQZ6WFms69WAsDWr2XsYL3Hkl7jkoLE=
 github.com/desmos-labs/cosmos-go-wallet v0.7.0 h1:eby89IrpAjfIqVBxcMILx+kXN4usSYN4XutFFk8P7R0=
 github.com/desmos-labs/cosmos-go-wallet v0.7.0/go.mod h1:a/TgGD19Iuovcbl1erO7JCLi+LawNshXKgAVqpWAHn4=
-github.com/desmos-labs/cosmos-sdk v0.47.3-desmos h1:/MKKvyu+tPhYk4MPzoELc2KFeUZ7zHWvn6/TS6qbujc=
-github.com/desmos-labs/cosmos-sdk v0.47.3-desmos/go.mod h1:c4OfLdAykA9zsj1CqrxBRqXzVz48I++JSvIMPSPcEmk=
+github.com/desmos-labs/cosmos-sdk v0.47.4-desmos h1:+pknvZ4fy4tlmN2+pVfXcKP2dO2Co6w6D5FmY0jBbnw=
+github.com/desmos-labs/cosmos-sdk v0.47.4-desmos/go.mod h1:R5n+uM7vguVPFap4pgkdvQCT1nVo/OtPwrlAU40rvok=
 github.com/desmos-labs/desmos/v5 v5.2.0 h1:G0fxZ89KKtgzShDEomzWy8uWO1aryyHLg/nhGta1xzA=
 github.com/desmos-labs/desmos/v5 v5.2.0/go.mod h1:QndDsyQn+LJn7reFRm+dn7jrUwD09rvO67uloXj5YmE=
-github.com/desmos-labs/wasmd v0.40.0-rc.1-desmos h1:kMD6Z0bw5kmi9t59y6smn1xoHEz/k3atXOI2Eyd10iI=
-github.com/desmos-labs/wasmd v0.40.0-rc.1-desmos/go.mod h1:AgWQP8z5NQ71tqboXvmA5WaCJuoNj+rZA4tNwvAaGBw=
 github.com/dgraph-io/badger/v2 v2.2007.4 h1:TRWBQg8UrlUhaFdco01nO2uXwzKS7zd+HVdwV/GHc4o=
 github.com/dgraph-io/badger/v2 v2.2007.4/go.mod h1:vSw/ax2qojzbN6eXHIx6KPKtCSHJN/Uz0X0VPruTIhk=
 github.com/dgraph-io/ristretto v0.0.3-0.20200630154024-f66de99634de/go.mod h1:KPxhHT9ZxKefz+PCeOGsrHpl1qZ7i70dGTu2u+Ahh6E=
