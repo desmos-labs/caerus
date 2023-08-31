@@ -64,6 +64,21 @@ func (mr *MockDatabaseMockRecorder) GetAppDeepLinksRateLimit(appID interface{}) 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAppDeepLinksRateLimit", reflect.TypeOf((*MockDatabase)(nil).GetAppDeepLinksRateLimit), appID)
 }
 
+// GetDeepLinkConfig mocks base method.
+func (m *MockDatabase) GetDeepLinkConfig(link string) (*types.LinkConfig, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDeepLinkConfig", link)
+	ret0, _ := ret[0].(*types.LinkConfig)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDeepLinkConfig indicates an expected call of GetDeepLinkConfig.
+func (mr *MockDatabaseMockRecorder) GetDeepLinkConfig(link interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDeepLinkConfig", reflect.TypeOf((*MockDatabase)(nil).GetDeepLinkConfig), link)
+}
+
 // SaveCreatedDeepLink mocks base method.
 func (m *MockDatabase) SaveCreatedDeepLink(link *types.CreatedDeepLink) error {
 	m.ctrl.T.Helper()

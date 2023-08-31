@@ -36,14 +36,24 @@ ON CONFLICT (id) DO UPDATE
 func (db *Database) SaveApp(app types.Application) error {
 	// Save the application
 	stmt := `
-INSERT INTO applications (id, name, wallet_address, subscription_id, creation_time) 
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO applications (id, name, wallet_address, subscription_id, secret_key, notifications_webhook_url, creation_time) 
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 ON CONFLICT (id) DO UPDATE
 	SET name = excluded.name,
 	    wallet_address = excluded.wallet_address,
 	    subscription_id = excluded.subscription_id,
+	    secret_key = excluded.secret_key,
+	    notifications_webhook_url = excluded.notifications_webhook_url,
 	    creation_time = excluded.creation_time`
-	_, err := db.SQL.Exec(stmt, app.ID, app.Name, app.WalletAddress, app.SubscriptionID, app.CreationTime)
+	_, err := db.SQL.Exec(stmt,
+		app.ID,
+		app.Name,
+		StringToNullString(app.WalletAddress),
+		Uint64toNullInt(app.SubscriptionID),
+		app.SecretKey,
+		StringToNullString(app.NotificationsWebhookURL),
+		app.CreationTime,
+	)
 	if err != nil {
 		return err
 	}
@@ -71,11 +81,13 @@ func (db *Database) SetAppAdmin(appID string, userAddress string) error {
 }
 
 type applicationRow struct {
-	ID             string         `db:"id"`
-	Name           string         `db:"name"`
-	WalletAddress  sql.NullString `db:"wallet_address"`
-	SubscriptionID sql.NullInt64  `db:"subscription_id"`
-	CreationTime   time.Time      `db:"creation_time"`
+	ID                      string         `db:"id"`
+	Name                    string         `db:"name"`
+	WalletAddress           sql.NullString `db:"wallet_address"`
+	SubscriptionID          sql.NullInt64  `db:"subscription_id"`
+	SecretKey               string         `db:"secret_key"`
+	NotificationsWebhookURL sql.NullString `db:"notifications_webhook_url"`
+	CreationTime            time.Time      `db:"creation_time"`
 }
 
 // GetApp returns the application having the given id, if any.
@@ -104,6 +116,8 @@ func (db *Database) GetApp(appID string) (*types.Application, bool, error) {
 		row.Name,
 		NullStringToString(row.WalletAddress),
 		NullIntToUint64(row.SubscriptionID),
+		row.SecretKey,
+		NullStringToString(row.NotificationsWebhookURL),
 		admins,
 		row.CreationTime,
 	), true, nil

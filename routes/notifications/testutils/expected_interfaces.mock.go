@@ -80,35 +80,6 @@ func (mr *MockDatabaseMockRecorder) GetAppNotificationsRateLimit(appID interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAppNotificationsRateLimit", reflect.TypeOf((*MockDatabase)(nil).GetAppNotificationsRateLimit), appID)
 }
 
-// GetUserNotificationTokens mocks base method.
-func (m *MockDatabase) GetUserNotificationTokens(address string) ([]string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUserNotificationTokens", address)
-	ret0, _ := ret[0].([]string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetUserNotificationTokens indicates an expected call of GetUserNotificationTokens.
-func (mr *MockDatabaseMockRecorder) GetUserNotificationTokens(address interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserNotificationTokens", reflect.TypeOf((*MockDatabase)(nil).GetUserNotificationTokens), address)
-}
-
-// SaveSentNotification mocks base method.
-func (m *MockDatabase) SaveSentNotification(notification *types.SentNotification) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveSentNotification", notification)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// SaveSentNotification indicates an expected call of SaveSentNotification.
-func (mr *MockDatabaseMockRecorder) SaveSentNotification(notification interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveSentNotification", reflect.TypeOf((*MockDatabase)(nil).SaveSentNotification), notification)
-}
-
 // MockFirebase is a mock of Firebase interface.
 type MockFirebase struct {
 	ctrl     *gomock.Controller
@@ -132,16 +103,16 @@ func (m *MockFirebase) EXPECT() *MockFirebaseMockRecorder {
 	return m.recorder
 }
 
-// SendNotifications mocks base method.
-func (m *MockFirebase) SendNotifications(application *types.Application, deviceTokens []string, notification *types.Notification) error {
+// SendNotificationToUsers mocks base method.
+func (m *MockFirebase) SendNotificationToUsers(application *types.Application, usersAddresses []string, notification *types.Notification) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SendNotifications", application, deviceTokens, notification)
+	ret := m.ctrl.Call(m, "SendNotificationToUsers", application, usersAddresses, notification)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SendNotifications indicates an expected call of SendNotifications.
-func (mr *MockFirebaseMockRecorder) SendNotifications(application, deviceTokens, notification interface{}) *gomock.Call {
+// SendNotificationToUsers indicates an expected call of SendNotificationToUsers.
+func (mr *MockFirebaseMockRecorder) SendNotificationToUsers(application, usersAddresses, notification interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendNotifications", reflect.TypeOf((*MockFirebase)(nil).SendNotifications), application, deviceTokens, notification)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendNotificationToUsers", reflect.TypeOf((*MockFirebase)(nil).SendNotificationToUsers), application, usersAddresses, notification)
 }

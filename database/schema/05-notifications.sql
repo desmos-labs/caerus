@@ -1,18 +1,5 @@
 /**
  * Table that holds the notification tokens that can be used in order to send
- * push notifications to applications.
- */
-CREATE TABLE application_notifications_tokens
-(
-    id             SERIAL                   NOT NULL PRIMARY KEY,
-    application_id TEXT                     NOT NULL REFERENCES applications (id) ON DELETE CASCADE,
-    device_token   TEXT                     NOT NULL,
-    timestamp      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    CONSTRAINT unique_application_notification_token UNIQUE (application_id, device_token)
-);
-
-/**
- * Table that holds the notification tokens that can be used in order to send
  * push notifications to the users.
  */
 CREATE TABLE user_notifications_tokens

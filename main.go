@@ -9,7 +9,7 @@ import (
 	"github.com/desmos-labs/caerus/branch"
 	client "github.com/desmos-labs/caerus/chain"
 	"github.com/desmos-labs/caerus/database"
-	"github.com/desmos-labs/caerus/firebase"
+	notificationsclient "github.com/desmos-labs/caerus/notifications"
 	"github.com/desmos-labs/caerus/routes/applications"
 	"github.com/desmos-labs/caerus/routes/files"
 	"github.com/desmos-labs/caerus/routes/grants"
@@ -40,7 +40,7 @@ func main() {
 	}
 
 	// Build the various clients
-	firebaseClient, err := firebase.NewClientFromEnvVariables()
+	firebaseClient, err := notificationsclient.NewClientFromEnvVariables(db)
 	if err != nil {
 		panic(err)
 	}
@@ -64,13 +64,13 @@ func main() {
 
 	// Build the runner
 	serverRunner := runner.New(runner.Context{
-		Codec:          cdc,
-		Amino:          amino,
-		ChainClient:    chainClient,
-		FirebaseClient: firebaseClient,
-		BranchClient:   branchClient,
-		Scheduler:      cronScheduler,
-		Database:       db,
+		Codec:               cdc,
+		Amino:               amino,
+		ChainClient:         chainClient,
+		NotificationsClient: firebaseClient,
+		BranchClient:        branchClient,
+		Scheduler:           cronScheduler,
+		Database:            db,
 	})
 
 	// Register the default routes
@@ -78,7 +78,7 @@ func main() {
 		applications.RegisterApplicationServiceServer(server, applications.NewServerFromEnvVariables(context.Database))
 		files.RegisterFilesServiceServer(server, files.NewServerFromEnvVariables(context.Database))
 		grants.RegisterGrantsServiceServer(server, grants.NewServerFromEnvVariables(context.ChainClient, context.Codec, context.Database))
-		notifications.RegisterNotificationsServiceServer(server, notifications.NewServerFromEnvVariables(context.FirebaseClient, context.Database))
+		notifications.RegisterNotificationsServiceServer(server, notifications.NewServerFromEnvVariables(context.NotificationsClient, context.Database))
 		users.RegisterUsersServiceServer(server, users.NewServerFromEnvVariables(context.Codec, context.Amino, context.Database))
 		links.RegisterLinksServiceServer(server, links.NewServerFromEnvVariables(context.BranchClient, context.Database))
 	})

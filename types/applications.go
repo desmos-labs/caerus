@@ -27,22 +27,35 @@ func NewApplicationSubscription(id uint64, name string, feeGrantLimit uint64, no
 // --------------------------------------------------------------------------------------------------------------------
 
 type Application struct {
-	ID             string
-	Name           string
-	WalletAddress  string
-	SubscriptionID uint64
-	Admins         []string
-	CreationTime   time.Time
+	ID                      string
+	Name                    string
+	WalletAddress           string
+	SubscriptionID          uint64
+	SecretKey               string
+	NotificationsWebhookURL string
+	Admins                  []string
+	CreationTime            time.Time
 }
 
-func NewApplication(id string, name string, walletAddress string, subscriptionID uint64, admins []string, creationTime time.Time) *Application {
+func NewApplication(
+	id string,
+	name string,
+	walletAddress string,
+	subscriptionID uint64,
+	secretKey string,
+	notificationsWebhookURL string,
+	admins []string,
+	creationTime time.Time,
+) *Application {
 	return &Application{
-		ID:             id,
-		Name:           name,
-		WalletAddress:  walletAddress,
-		SubscriptionID: subscriptionID,
-		Admins:         admins,
-		CreationTime:   creationTime,
+		ID:                      id,
+		Name:                    name,
+		WalletAddress:           walletAddress,
+		SubscriptionID:          subscriptionID,
+		SecretKey:               secretKey,
+		NotificationsWebhookURL: notificationsWebhookURL,
+		Admins:                  admins,
+		CreationTime:            creationTime,
 	}
 }
 

@@ -1,5 +1,5 @@
 //nolint:gosec
-package firebase
+package notifications
 
 const (
 	EnvCredentialsFilePath = "FIREBASE_CREDENTIALS_FILE_PATH"

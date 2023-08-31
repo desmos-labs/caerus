@@ -312,10 +312,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  suite.appWallet.AccAddress(),
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           suite.appWallet.AccAddress(),
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						suite.appWallet.AccAddress(),
 					},
@@ -360,10 +362,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  suite.appWallet.AccAddress(),
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           suite.appWallet.AccAddress(),
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						suite.appWallet.AccAddress(),
 					},
@@ -425,10 +429,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  suite.appWallet.AccAddress(),
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           suite.appWallet.AccAddress(),
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						suite.appWallet.AccAddress(),
 					},
@@ -490,10 +496,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  suite.appWallet.AccAddress(),
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           suite.appWallet.AccAddress(),
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						suite.appWallet.AccAddress(),
 					},
@@ -548,10 +556,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  suite.appWallet.AccAddress(),
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           suite.appWallet.AccAddress(),
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						suite.appWallet.AccAddress(),
 					},
@@ -606,10 +616,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  suite.appWallet.AccAddress(),
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           suite.appWallet.AccAddress(),
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						suite.appWallet.AccAddress(),
 					},

@@ -64,102 +64,6 @@ func (suite *ApplicationsServerTestSuite) SetupTest() {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-func (suite *ApplicationsServerTestSuite) TestRegisterNotificationToken() {
-	testCases := []struct {
-		name         string
-		setup        func()
-		setupContext func(ctx context.Context) context.Context
-		buildRequest func() *applications.RegisterNotificationTokenRequest
-		shouldErr    bool
-		check        func()
-	}{
-		{
-			name: "invalid session returns error",
-			buildRequest: func() *applications.RegisterNotificationTokenRequest {
-				return &applications.RegisterNotificationTokenRequest{
-					Token: "device-token",
-				}
-			},
-			shouldErr: true,
-		},
-		{
-			name: "valid request returns no error",
-			setup: func() {
-				err := suite.db.SaveAppSubscription(types.NewApplicationSubscription(
-					1,
-					"Test App Subscription",
-					10,
-					10,
-					10,
-				))
-				suite.Require().NoError(err)
-
-				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
-					Admins: []string{
-						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					},
-					CreationTime: time.Now(),
-				})
-				suite.Require().NoError(err)
-
-				err = suite.db.SaveAppToken(types.AppToken{
-					AppID: "1",
-					Name:  "Test token",
-					Value: "token",
-				})
-				suite.Require().NoError(err)
-			},
-			setupContext: func(ctx context.Context) context.Context {
-				return authentication.SetupContextWithAuthorization(ctx, "token")
-			},
-			buildRequest: func() *applications.RegisterNotificationTokenRequest {
-				return &applications.RegisterNotificationTokenRequest{
-					Token: "device-token",
-				}
-			},
-			shouldErr: false,
-			check: func() {
-				// Make sure the token is stored properly
-				var count int
-				err := suite.db.SQL.Get(&count, "SELECT COUNT(*) FROM application_notifications_tokens WHERE application_id = $1", "1")
-				suite.Require().NoError(err)
-				suite.Require().Equal(1, count)
-			},
-		},
-	}
-
-	for _, tc := range testCases {
-		tc := tc
-		suite.Run(tc.name, func() {
-			suite.SetupTest()
-			if tc.setup != nil {
-				tc.setup()
-			}
-
-			ctx := context.Background()
-			if tc.setupContext != nil {
-				ctx = tc.setupContext(ctx)
-			}
-
-			_, err := suite.client.RegisterNotificationToken(ctx, tc.buildRequest())
-
-			if tc.shouldErr {
-				suite.Require().Error(err)
-			} else {
-				suite.Require().NoError(err)
-			}
-
-			if tc.check != nil {
-				tc.check()
-			}
-		})
-	}
-}
-
 func (suite *ApplicationsServerTestSuite) TestDeleteApp() {
 	testCases := []struct {
 		name         string
@@ -226,10 +130,12 @@ func (suite *ApplicationsServerTestSuite) TestDeleteApp() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1c7ms9zhtgwmv5jy6ztj2vq0jj67zenw3gdl2gr",
 					},

@@ -83,7 +83,7 @@ func (suite *GrantsOperationsTestSuite) TestGrantAuthorizations() {
 					Times(0)
 
 				suite.firebase.EXPECT().
-					SendNotifications(gomock.Any(), gomock.Any(), gomock.Any()).
+					SendNotificationToApp(gomock.Any(), gomock.Any()).
 					Times(0)
 			},
 		},
@@ -110,12 +110,6 @@ func (suite *GrantsOperationsTestSuite) TestGrantAuthorizations() {
 						"desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
 					},
 					CreationTime: time.Now(),
-				})
-				suite.Require().NoError(err)
-
-				err = suite.db.SaveAppNotificationDeviceToken(&types.AppNotificationDeviceToken{
-					AppID:       "1",
-					DeviceToken: "DeviceToken",
 				})
 				suite.Require().NoError(err)
 
@@ -150,7 +144,7 @@ func (suite *GrantsOperationsTestSuite) TestGrantAuthorizations() {
 					Return(false, nil)
 
 				suite.firebase.EXPECT().
-					SendNotifications(gomock.Any(), gomock.Any(), gomock.Any()).
+					SendNotificationToApp(gomock.Any(), gomock.Any()).
 					Return(nil)
 			},
 			shouldErr: false,
@@ -161,7 +155,7 @@ func (suite *GrantsOperationsTestSuite) TestGrantAuthorizations() {
 					Times(1)
 
 				suite.firebase.EXPECT().
-					SendNotifications(gomock.Any(), gomock.Any(), gomock.Any()).
+					SendNotificationToApp(gomock.Any(), gomock.Any()).
 					Times(1)
 
 				suite.chainClient.EXPECT().
@@ -190,20 +184,16 @@ func (suite *GrantsOperationsTestSuite) TestGrantAuthorizations() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
 					},
 					CreationTime: time.Now(),
-				})
-				suite.Require().NoError(err)
-
-				err = suite.db.SaveAppNotificationDeviceToken(&types.AppNotificationDeviceToken{
-					AppID:       "1",
-					DeviceToken: "DeviceToken",
 				})
 				suite.Require().NoError(err)
 
@@ -246,7 +236,7 @@ func (suite *GrantsOperationsTestSuite) TestGrantAuthorizations() {
 					Return(&sdk.TxResponse{Code: 0}, nil)
 
 				suite.firebase.EXPECT().
-					SendNotifications(gomock.Any(), gomock.Any(), gomock.Any()).
+					SendNotificationToApp(gomock.Any(), gomock.Any()).
 					Return(nil)
 			},
 			shouldErr: false,
@@ -261,7 +251,7 @@ func (suite *GrantsOperationsTestSuite) TestGrantAuthorizations() {
 					Times(1)
 
 				suite.firebase.EXPECT().
-					SendNotifications(gomock.Any(), gomock.Any(), gomock.Any()).
+					SendNotificationToApp(gomock.Any(), gomock.Any()).
 					Times(1)
 
 				// Make sure the grant requests are set as granted

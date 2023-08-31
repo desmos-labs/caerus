@@ -3,7 +3,6 @@ package applications
 import (
 	"google.golang.org/grpc/codes"
 
-	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
 )
 
@@ -19,11 +18,6 @@ func NewHandler(db Database) *Handler {
 }
 
 // --------------------------------------------------------------------------------------------------------------------
-
-// HandleRegisterAppDeviceTokenRequest handles the request to register a new application device token
-func (h *Handler) HandleRegisterAppDeviceTokenRequest(req *RegisterAppDeviceTokenRequest) error {
-	return h.db.SaveAppNotificationDeviceToken(types.NewAppNotificationDeviceToken(req.AppID, req.DeviceToken))
-}
 
 // HandleDeleteApplicationRequest handles the request to delete an application
 func (h *Handler) HandleDeleteApplicationRequest(req *DeleteApplicationRequest) error {

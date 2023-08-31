@@ -7,7 +7,7 @@ import (
 	"github.com/desmos-labs/caerus/branch"
 	"github.com/desmos-labs/caerus/chain"
 	"github.com/desmos-labs/caerus/database"
-	"github.com/desmos-labs/caerus/firebase"
+	"github.com/desmos-labs/caerus/notifications"
 	"github.com/desmos-labs/caerus/scheduler"
 )
 
@@ -16,11 +16,11 @@ type Context struct {
 	Codec codec.Codec
 	Amino *codec.LegacyAmino
 
-	ChainClient    *chain.Client
-	FirebaseClient *firebase.Client
-	BranchClient   *branch.Client
-	Scheduler      *scheduler.Scheduler
-	Database       *database.Database
+	ChainClient         *chain.Client
+	NotificationsClient *notifications.Client
+	BranchClient        *branch.Client
+	Scheduler           *scheduler.Scheduler
+	Database            *database.Database
 }
 
 type ServiceRegistrar func(context Context, server *grpc.Server)

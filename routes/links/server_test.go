@@ -108,10 +108,12 @@ func (suite *LinksServerTestSuite) TestCreateAddressLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -150,10 +152,12 @@ func (suite *LinksServerTestSuite) TestCreateAddressLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -194,10 +198,12 @@ func (suite *LinksServerTestSuite) TestCreateAddressLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -250,10 +256,12 @@ func (suite *LinksServerTestSuite) TestCreateAddressLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -364,10 +372,12 @@ func (suite *LinksServerTestSuite) TestCreateViewProfileLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -406,10 +416,12 @@ func (suite *LinksServerTestSuite) TestCreateViewProfileLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -450,10 +462,12 @@ func (suite *LinksServerTestSuite) TestCreateViewProfileLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -506,10 +520,12 @@ func (suite *LinksServerTestSuite) TestCreateViewProfileLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -620,10 +636,12 @@ func (suite *LinksServerTestSuite) TestCreateSendLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -662,10 +680,12 @@ func (suite *LinksServerTestSuite) TestCreateSendLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -703,10 +723,12 @@ func (suite *LinksServerTestSuite) TestCreateSendLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -749,10 +771,12 @@ func (suite *LinksServerTestSuite) TestCreateSendLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},
@@ -806,10 +830,12 @@ func (suite *LinksServerTestSuite) TestCreateSendLink() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ca3pzxx65z7duwxearhxmt8cg93849vn97fmar",
 					},

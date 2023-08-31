@@ -28,10 +28,10 @@ CREATE TABLE application_subscriptions
  */
 CREATE TABLE applications
 (
-    id              TEXT                     NOT NULL PRIMARY KEY UNIQUE DEFAULT gen_random_uuid(),
+    id                        TEXT                     NOT NULL PRIMARY KEY UNIQUE DEFAULT gen_random_uuid(),
 
     -- Name of the application
-    name            TEXT                     NOT NULL,
+    name                      TEXT                     NOT NULL,
 
     -- Address of the wallet associated to the application.
     --
@@ -40,13 +40,21 @@ CREATE TABLE applications
     -- MsgGrantAllowance transactions on its behalf.
     -- If its not set, or an on-chain authorization does not exist, the application will not be
     -- able to request fee grants.
-    wallet_address  TEXT,
+    wallet_address            TEXT,
 
     -- ID of the subscription plan that the application is subscribed to
-    subscription_id INTEGER REFERENCES application_subscriptions (id),
+    subscription_id           INTEGER REFERENCES application_subscriptions (id),
+
+    -- Secret key associated with the application
+    secret_key                TEXT                     NOT NULL                    DEFAULT gen_random_uuid(),
+
+    -- URL of the webhook used to send notifications to the application.
+    -- This must accept POST requests that will be authenticated using the Authorization header and passing
+    -- the application secret key.
+    notifications_webhook_url TEXT,
 
     -- Time at which the application was created
-    creation_time   TIMESTAMP WITH TIME ZONE NOT NULL                    DEFAULT NOW()
+    creation_time             TIMESTAMP WITH TIME ZONE NOT NULL                    DEFAULT NOW()
 );
 
 /**

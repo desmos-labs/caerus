@@ -121,10 +121,12 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
 					},
@@ -166,10 +168,12 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
 					},
@@ -239,10 +243,12 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
 					},
@@ -261,7 +267,7 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 				// --- Setup the mocks
 				// ----------------------------------
 				suite.firebase.EXPECT().
-					SendNotifications(gomock.Any(), gomock.Any(), gomock.Any()).
+					SendNotificationToUsers(gomock.Any(), gomock.Any(), gomock.Any()).
 					AnyTimes().
 					Return(nil)
 			},
@@ -288,14 +294,8 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 			check: func() {
 				// Expect firebase to not be called
 				suite.firebase.EXPECT().
-					SendNotifications(gomock.Any(), gomock.Any(), gomock.Any()).
-					Times(0)
-
-				// Make sure the database contains the sent notification
-				var count int
-				err := suite.db.SQL.Get(&count, `SELECT COUNT(*) FROM notifications`)
-				suite.Require().NoError(err)
-				suite.Require().Equal(1, count)
+					SendNotificationToUsers(gomock.Any(), gomock.Any(), gomock.Any()).
+					Times(1)
 			},
 		},
 		{
@@ -314,10 +314,12 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 				suite.Require().NoError(err)
 
 				err = suite.db.SaveApp(types.Application{
-					ID:             "1",
-					Name:           "Test Application",
-					WalletAddress:  "desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
-					SubscriptionID: 1,
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           "desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
 					Admins: []string{
 						"desmos1ncxvkdpq3fl7rlj625s433a7xaraskv0pvmlwp",
 					},
@@ -344,7 +346,7 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 				// --- Setup the mocks
 				// ----------------------------------
 				suite.firebase.EXPECT().
-					SendNotifications(gomock.Any(), gomock.Any(), gomock.Any()).
+					SendNotificationToUsers(gomock.Any(), gomock.Any(), gomock.Any()).
 					AnyTimes().
 					Return(nil)
 			},
@@ -371,14 +373,8 @@ func (suite *NotificationsServerTestSuite) TestSendNotification() {
 			check: func() {
 				// Expect firebase to be called once
 				suite.firebase.EXPECT().
-					SendNotifications(gomock.Any(), gomock.Any(), gomock.Any()).
+					SendNotificationToUsers(gomock.Any(), gomock.Any(), gomock.Any()).
 					Times(1)
-
-				// Make sure the database contains the sent notification
-				var count int
-				err := suite.db.SQL.Get(&count, `SELECT COUNT(*) FROM notifications`)
-				suite.Require().NoError(err)
-				suite.Require().Equal(1, count)
 			},
 		},
 	}
