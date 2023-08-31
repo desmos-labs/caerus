@@ -3,7 +3,6 @@ package notifications
 import (
 	"google.golang.org/grpc/codes"
 
-	"github.com/desmos-labs/caerus/types"
 	"github.com/desmos-labs/caerus/utils"
 )
 
@@ -47,25 +46,6 @@ func (h *Handler) HandleSendNotificationRequest(req *SendAppNotificationRequest)
 		return utils.NewTooManyRequestsError("notifications rate limit reached")
 	}
 
-	// Get the notification tokens for each address
-	var notificationTokens []string
-	for _, address := range req.UserAddresses {
-		tokens, err := h.db.GetUserNotificationTokens(address)
-		if err != nil {
-			return err
-		}
-
-		notificationTokens = append(notificationTokens, tokens...)
-	}
-
 	// Send the notification if there are some tokens to which to send it
-	if len(notificationTokens) > 0 {
-		err = h.firebase.SendNotifications(app, notificationTokens, req.Notification)
-		if err != nil {
-			return err
-		}
-	}
-
-	// Store the sent notification
-	return h.db.SaveSentNotification(types.NewSentNotification(req.AppID, req.UserAddresses, req.Notification))
+	return h.firebase.SendNotificationToUsers(app, req.UserAddresses, req.Notification)
 }

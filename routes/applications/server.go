@@ -3,11 +3,9 @@ package applications
 import (
 	"context"
 
-	"google.golang.org/grpc/codes"
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/desmos-labs/caerus/authentication"
-	"github.com/desmos-labs/caerus/utils"
 )
 
 var (
@@ -28,26 +26,6 @@ func NewServerFromEnvVariables(db Database) *ApplicationServer {
 	return NewServer(
 		NewHandler(db),
 	)
-}
-
-func (a ApplicationServer) RegisterNotificationToken(ctx context.Context, request *RegisterNotificationTokenRequest) (*emptypb.Empty, error) {
-	appData, err := authentication.GetAuthenticatedAppData(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	// Build and validate the request
-	req := NewRegisterAppDeviceTokenRequest(appData.AppID, request.Token)
-	if err = req.Validate(); err != nil {
-		return nil, utils.WrapErr(codes.InvalidArgument, err.Error())
-	}
-
-	err = a.handler.HandleRegisterAppDeviceTokenRequest(req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &emptypb.Empty{}, nil
 }
 
 func (a ApplicationServer) DeleteApp(ctx context.Context, request *DeleteAppRequest) (*emptypb.Empty, error) {

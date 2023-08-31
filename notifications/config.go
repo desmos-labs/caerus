@@ -1,4 +1,4 @@
-package firebase
+package notifications
 
 import (
 	"github.com/desmos-labs/caerus/utils"

@@ -68,34 +68,6 @@ WHERE application_id = $1
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// SaveAppNotificationDeviceToken allows to save the given device token inside the database
-func (db *Database) SaveAppNotificationDeviceToken(token *types.AppNotificationDeviceToken) error {
-	stmt := `
-INSERT INTO application_notifications_tokens (application_id, device_token)
-VALUES ($1, $2) ON CONFLICT DO NOTHING`
-	_, err := db.SQL.Exec(stmt, token.AppID, token.DeviceToken)
-	return err
-}
-
-// GetAppNotificationTokens returns all the device notification tokens for the application having the given ID
-func (db *Database) GetAppNotificationTokens(appID string) ([]string, error) {
-	stmt := `SELECT device_token FROM application_notifications_tokens WHERE application_id = $1`
-
-	var tokens []string
-	err := db.SQL.Select(&tokens, stmt, appID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil
-		} else {
-			return nil, err
-		}
-	}
-
-	return tokens, nil
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
 // SaveUserNotificationDeviceToken allows to save the given device token inside the database
 func (db *Database) SaveUserNotificationDeviceToken(token *types.UserNotificationDeviceToken) error {
 	stmt := `

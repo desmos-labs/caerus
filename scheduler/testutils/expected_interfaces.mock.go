@@ -52,21 +52,6 @@ func (mr *MockDatabaseMockRecorder) GetApp(appID interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetApp", reflect.TypeOf((*MockDatabase)(nil).GetApp), appID)
 }
 
-// GetAppNotificationTokens mocks base method.
-func (m *MockDatabase) GetAppNotificationTokens(appID string) ([]string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAppNotificationTokens", appID)
-	ret0, _ := ret[0].([]string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetAppNotificationTokens indicates an expected call of GetAppNotificationTokens.
-func (mr *MockDatabaseMockRecorder) GetAppNotificationTokens(appID interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAppNotificationTokens", reflect.TypeOf((*MockDatabase)(nil).GetAppNotificationTokens), appID)
-}
-
 // GetNotGrantedFeeGrantRequests mocks base method.
 func (m *MockDatabase) GetNotGrantedFeeGrantRequests(limit int) ([]types0.FeeGrantRequest, error) {
 	m.ctrl.T.Helper()
@@ -119,18 +104,18 @@ func (m *MockFirebase) EXPECT() *MockFirebaseMockRecorder {
 	return m.recorder
 }
 
-// SendNotifications mocks base method.
-func (m *MockFirebase) SendNotifications(app *types0.Application, deviceTokens []string, notification *types0.Notification) error {
+// SendNotificationToApp mocks base method.
+func (m *MockFirebase) SendNotificationToApp(appID string, notification *types0.Notification) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SendNotifications", app, deviceTokens, notification)
+	ret := m.ctrl.Call(m, "SendNotificationToApp", appID, notification)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SendNotifications indicates an expected call of SendNotifications.
-func (mr *MockFirebaseMockRecorder) SendNotifications(app, deviceTokens, notification interface{}) *gomock.Call {
+// SendNotificationToApp indicates an expected call of SendNotificationToApp.
+func (mr *MockFirebaseMockRecorder) SendNotificationToApp(appID, notification interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendNotifications", reflect.TypeOf((*MockFirebase)(nil).SendNotifications), app, deviceTokens, notification)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendNotificationToApp", reflect.TypeOf((*MockFirebase)(nil).SendNotificationToApp), appID, notification)
 }
 
 // MockChainClient is a mock of ChainClient interface.

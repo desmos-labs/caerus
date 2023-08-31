@@ -9,14 +9,13 @@ import (
 
 type Database interface {
 	GetApp(appID string) (*types.Application, bool, error)
-	GetAppNotificationTokens(appID string) ([]string, error)
 
 	GetNotGrantedFeeGrantRequests(limit int) ([]types.FeeGrantRequest, error)
 	SetFeeGrantRequestsGranted(ids []string) error
 }
 
 type Firebase interface {
-	SendNotifications(app *types.Application, deviceTokens []string, notification *types.Notification) error
+	SendNotificationToApp(appID string, notification *types.Notification) error
 }
 
 type ChainClient interface {
