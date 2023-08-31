@@ -22,3 +22,18 @@ func NewRequestFeeGrantRequest(appID string, desmosAddress string, allowance *co
 		Allowance:     allowance,
 	}
 }
+
+type RequestFeeGrantDetailsRequest struct {
+	// AppID represents the ID of the application that is requesting the fee grant details
+	AppID string
+
+	// FeeGrantAllowanceRequestID represents the id of the fee grant request for which to get the details
+	FeeGrantAllowanceRequestID string
+}
+
+func NewRequestFeeGrantDetailsRequest(appID string, feeGrantAllowanceRequestID string) *RequestFeeGrantDetailsRequest {
+	return &RequestFeeGrantDetailsRequest{
+		AppID:                      appID,
+		FeeGrantAllowanceRequestID: feeGrantAllowanceRequestID,
+	}
+}

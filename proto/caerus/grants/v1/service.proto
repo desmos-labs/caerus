@@ -3,13 +3,19 @@ package caerus.grants.v1;
 
 option go_package = "github.com/desmos-labs/caerus/routes/grants";
 
+import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 import "google/protobuf/any.proto";
-import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 service GrantsService {
+  // RequestFeeAllowance allows to request a new fee allowance for a given user
   rpc RequestFeeAllowance(RequestFeeAllowanceRequest)
-      returns (google.protobuf.Empty);
+      returns (RequestFeeAllowanceResponse);
+
+  // GetFeeAllowanceDetails allows to get the details of a fee allowance request
+  rpc GetFeeAllowanceDetails(GetFeeAllowanceDetailsRequest)
+      returns (GetFeeAllowanceDetailsResponse);
 }
 
 message RequestFeeAllowanceRequest {
@@ -22,4 +28,35 @@ message RequestFeeAllowanceRequest {
   google.protobuf.Any allowance = 2
       [ (cosmos_proto.accepts_interface) =
             "cosmos.feegrant.v1beta1.AllowanceI" ];
+}
+
+message RequestFeeAllowanceResponse {
+  // ID represents the ID of the fee allowance request
+  string request_id = 1;
+}
+
+message GetFeeAllowanceDetailsRequest {
+  // ID represents the ID of the fee allowance request to query
+  string request_id = 1;
+}
+
+message GetFeeAllowanceDetailsResponse {
+  // UserDesmosAddress represents the Desmos address of the user that
+  // already has (or will be) granted the fee allowance
+  string user_desmos_address = 1;
+
+  // Allowance represents the fee allowance that has been granted to the user
+  // with the specified ID
+  google.protobuf.Any allowance = 2
+      [ (cosmos_proto.accepts_interface) =
+            "cosmos.feegrant.v1beta1.AllowanceI" ];
+
+  // RequestTime represents the time at which the fee allowance has been
+  // requested
+  google.protobuf.Timestamp request_time = 3
+      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+
+  // GrantTime represents the time at which the fee allowance has been granted.
+  // If nil, it means that the allowance has not been granted yet
+  google.protobuf.Timestamp grant_time = 4 [ (gogoproto.stdtime) = true ];
 }
