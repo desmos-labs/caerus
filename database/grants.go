@@ -144,3 +144,34 @@ func (db *Database) GetNotGrantedFeeGrantRequests(limit int) ([]types.FeeGrantRe
 
 	return requests, nil
 }
+
+// GetFeeGrantRequest returns the fee grant request having the given id and application id
+func (db *Database) GetFeeGrantRequest(appID string, requestID string) (*types.FeeGrantRequest, bool, error) {
+	stmt := `SELECT * FROM fee_grant_requests WHERE application_id = $1 AND id = $2`
+
+	var rows []feeGrantRequestRow
+	err := db.SQL.Select(&rows, stmt, appID, requestID)
+	if err != nil {
+		return nil, false, err
+	}
+
+	if len(rows) == 0 {
+		return nil, false, nil
+	}
+
+	row := rows[0]
+	var allowance feegrant.FeeAllowanceI
+	err = db.cdc.UnmarshalInterfaceJSON(row.Allowance, &allowance)
+	if err != nil {
+		return nil, false, fmt.Errorf("cannot unmarshal allowance: %s", err)
+	}
+
+	return &types.FeeGrantRequest{
+		ID:            row.ID,
+		AppID:         row.AppID,
+		DesmosAddress: row.GranteeAddress,
+		Allowance:     allowance,
+		RequestTime:   row.RequestTime,
+		GrantTime:     NullTimeToTime(row.GrantTime),
+	}, true, nil
+}

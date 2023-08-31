@@ -278,7 +278,7 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 		setupContext func(ctx context.Context) context.Context
 		buildRequest func() *grants.RequestFeeAllowanceRequest
 		shouldErr    bool
-		check        func()
+		check        func(res *grants.RequestFeeAllowanceResponse)
 	}{
 		{
 			name: "invalid app token returns error",
@@ -654,12 +654,12 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				}
 			},
 			shouldErr: false,
-			check: func() {
+			check: func(res *grants.RequestFeeAllowanceResponse) {
 				// Make sure the request is stored in the database
-				var count int
-				err := suite.db.SQL.Get(&count, `SELECT COUNT(*) FROM fee_grant_requests WHERE grantee_address = $1`, "desmos1ehva49d5ltaeszag20wepraf5j3dux2se95f8w")
+				request, found, err := suite.db.GetFeeGrantRequest("1", res.RequestId)
 				suite.Require().NoError(err)
-				suite.Require().Equal(1, count)
+				suite.Require().True(found)
+				suite.Require().Equal("desmos1ehva49d5ltaeszag20wepraf5j3dux2se95f8w", request.DesmosAddress)
 			},
 		},
 	}
@@ -677,7 +677,7 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 				ctx = tc.setupContext(ctx)
 			}
 
-			_, err := suite.client.RequestFeeAllowance(ctx, tc.buildRequest())
+			res, err := suite.client.RequestFeeAllowance(ctx, tc.buildRequest())
 
 			if tc.shouldErr {
 				suite.Require().Error(err)
@@ -686,7 +686,175 @@ func (suite *GrantsServerTestSuite) TestRequestFeeAllowance() {
 			}
 
 			if tc.check != nil {
-				tc.check()
+				tc.check(res)
+			}
+		})
+	}
+}
+
+func (suite *GrantsServerTestSuite) TestGetFeeAllowanceDetails() {
+	testCases := []struct {
+		name         string
+		setup        func()
+		setupContext func(ctx context.Context) context.Context
+		buildRequest func() *grants.GetFeeAllowanceDetailsRequest
+		shouldErr    bool
+		check        func(res *grants.GetFeeAllowanceDetailsResponse)
+	}{
+		{
+			name: "invalid app token returns error",
+			setupContext: func(ctx context.Context) context.Context {
+				return authentication.SetupContextWithAuthorization(ctx, "token")
+			},
+			buildRequest: func() *grants.GetFeeAllowanceDetailsRequest {
+				return &grants.GetFeeAllowanceDetailsRequest{
+					RequestId: "1",
+				}
+			},
+			shouldErr: true,
+		},
+		{
+			name: "not found request returns error",
+			setup: func() {
+				// ----------------------------------
+				// --- Save the app
+				// ----------------------------------
+				err := suite.db.SaveAppSubscription(types.NewApplicationSubscription(
+					1,
+					"Test App Subscription",
+					1,
+					10,
+					10,
+				))
+				suite.Require().NoError(err)
+
+				err = suite.db.SaveApp(types.Application{
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           suite.appWallet.AccAddress(),
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
+					Admins: []string{
+						suite.appWallet.AccAddress(),
+					},
+					CreationTime: time.Now(),
+				})
+				suite.Require().NoError(err)
+
+				err = suite.db.SaveAppToken(types.AppToken{
+					AppID: "1",
+					Name:  "Test token",
+					Value: "token",
+				})
+				suite.Require().NoError(err)
+			},
+			setupContext: func(ctx context.Context) context.Context {
+				return authentication.SetupContextWithAuthorization(ctx, "token")
+			},
+			buildRequest: func() *grants.GetFeeAllowanceDetailsRequest {
+				return &grants.GetFeeAllowanceDetailsRequest{
+					RequestId: "1",
+				}
+			},
+			shouldErr: true,
+		},
+		{
+			name: "valid request works properly",
+			setup: func() {
+				// ----------------------------------
+				// --- Save the app
+				// ----------------------------------
+				err := suite.db.SaveAppSubscription(types.NewApplicationSubscription(
+					1,
+					"Test App Subscription",
+					1,
+					10,
+					10,
+				))
+				suite.Require().NoError(err)
+
+				err = suite.db.SaveApp(types.Application{
+					ID:                      "1",
+					Name:                    "Test Application",
+					WalletAddress:           suite.appWallet.AccAddress(),
+					SubscriptionID:          1,
+					SecretKey:               "secret",
+					NotificationsWebhookURL: "https://example.com",
+					Admins: []string{
+						suite.appWallet.AccAddress(),
+					},
+					CreationTime: time.Now(),
+				})
+				suite.Require().NoError(err)
+
+				err = suite.db.SaveAppToken(types.AppToken{
+					AppID: "1",
+					Name:  "Test token",
+					Value: "token",
+				})
+				suite.Require().NoError(err)
+
+				// ----------------------------------
+				// --- Save past grants
+				// ----------------------------------
+				err = suite.db.SaveFeeGrantRequest(types.FeeGrantRequest{
+					ID:            "1",
+					AppID:         "1",
+					DesmosAddress: "desmos1cwfg6eknxz50efv2c0drnpj3dtghxfx905rzke",
+					Allowance:     &feegrant.BasicAllowance{},
+					RequestTime:   time.Date(2023, 1, 1, 12, 00, 00, 000, time.UTC),
+					GrantTime:     nil,
+				})
+				suite.Require().NoError(err)
+			},
+			setupContext: func(ctx context.Context) context.Context {
+				return authentication.SetupContextWithAuthorization(ctx, "token")
+			},
+			buildRequest: func() *grants.GetFeeAllowanceDetailsRequest {
+				return &grants.GetFeeAllowanceDetailsRequest{
+					RequestId: "1",
+				}
+			},
+			shouldErr: false,
+			check: func(res *grants.GetFeeAllowanceDetailsResponse) {
+				var allowance feegrant.FeeAllowanceI
+				err := suite.cdc.UnpackAny(res.Allowance, &allowance)
+				suite.Require().NoError(err)
+
+				_, isBasicAllowance := allowance.(*feegrant.BasicAllowance)
+				suite.Require().True(isBasicAllowance)
+
+				suite.Require().Equal("desmos1cwfg6eknxz50efv2c0drnpj3dtghxfx905rzke", res.UserDesmosAddress)
+				suite.Require().Equal(time.Date(2023, 1, 1, 12, 00, 00, 000, time.UTC), res.RequestTime)
+				suite.Require().Nil(res.GrantTime)
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		suite.Run(tc.name, func() {
+			suite.SetupTest()
+			if tc.setup != nil {
+				tc.setup()
+			}
+
+			ctx := context.Background()
+			if tc.setupContext != nil {
+				ctx = tc.setupContext(ctx)
+			}
+
+			res, err := suite.client.GetFeeAllowanceDetails(ctx, tc.buildRequest())
+
+			if tc.shouldErr {
+				suite.Require().Error(err)
+			} else {
+				suite.Require().NoError(err)
+			}
+
+			if tc.check != nil {
+				tc.check(res)
 			}
 		})
 	}

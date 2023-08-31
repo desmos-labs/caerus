@@ -5,7 +5,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/posthog/posthog-go"
-	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/desmos-labs/caerus/analytics"
 	"github.com/desmos-labs/caerus/authentication"
@@ -31,15 +30,9 @@ func NewServerFromEnvVariables(chainClient ChainClient, cdc codec.Codec, db Data
 	)
 }
 
-func (s *Server) RequestFeeAllowance(ctx context.Context, request *RequestFeeAllowanceRequest) (*emptypb.Empty, error) {
+// RequestFeeAllowance implements GrantsServiceServer
+func (s *Server) RequestFeeAllowance(ctx context.Context, request *RequestFeeAllowanceRequest) (*RequestFeeAllowanceResponse, error) {
 	appData, err := authentication.GetAuthenticatedAppData(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	// Handle the request
-	req := NewRequestFeeGrantRequest(appData.AppID, request.UserDesmosAddress, request.Allowance)
-	err = s.handler.HandleFeeGrantRequest(req)
 	if err != nil {
 		return nil, err
 	}
@@ -52,5 +45,19 @@ func (s *Server) RequestFeeAllowance(ctx context.Context, request *RequestFeeAll
 			Set(analytics.KeyUserAddress, request.UserDesmosAddress),
 	})
 
-	return &emptypb.Empty{}, nil
+	// Handle the request
+	req := NewRequestFeeGrantRequest(appData.AppID, request.UserDesmosAddress, request.Allowance)
+	return s.handler.HandleFeeGrantRequest(req)
+}
+
+// GetFeeAllowanceDetails implements GrantsServiceServer
+func (s *Server) GetFeeAllowanceDetails(ctx context.Context, request *GetFeeAllowanceDetailsRequest) (*GetFeeAllowanceDetailsResponse, error) {
+	appData, err := authentication.GetAuthenticatedAppData(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Handle the request
+	req := NewRequestFeeGrantDetailsRequest(appData.AppID, request.RequestId)
+	return s.handler.HandleRequestFeeGrantDetailsRequest(req)
 }

@@ -12,6 +12,8 @@ type Database interface {
 
 	SaveFeeGrantRequest(request types.FeeGrantRequest) error
 	HasFeeGrantBeenGrantedToUser(appID string, user string) (bool, error)
+
+	GetFeeGrantRequest(appID string, requestID string) (*types.FeeGrantRequest, bool, error)
 }
 
 type ChainClient interface {
