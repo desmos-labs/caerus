@@ -46,7 +46,7 @@ CREATE TABLE applications
     subscription_id           INTEGER REFERENCES application_subscriptions (id),
 
     -- Secret key associated with the application
-    secret_key                TEXT                     NOT NULL,
+    secret_key                TEXT                     NOT NULL                    DEFAULT gen_random_uuid(),
 
     -- URL of the webhook used to send notifications to the application.
     -- This must accept POST requests that will be authenticated using the Authorization header and passing
