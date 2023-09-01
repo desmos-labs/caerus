@@ -105,7 +105,7 @@ func (m *MockFirebase) EXPECT() *MockFirebaseMockRecorder {
 }
 
 // SendNotificationToApp mocks base method.
-func (m *MockFirebase) SendNotificationToApp(appID string, notification *types0.Notification) error {
+func (m *MockFirebase) SendNotificationToApp(appID string, notification types0.Notification) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SendNotificationToApp", appID, notification)
 	ret0, _ := ret[0].(error)
