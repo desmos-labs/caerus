@@ -75,7 +75,7 @@ func GrantAuthorizations(ctx scheduler.Context) error {
 		}
 
 		if !hasOnChainAuthorization {
-			err = ctx.FirebaseClient.SendNotificationToApp(appID, &types.Notification{
+			err = ctx.FirebaseClient.SendNotificationToApp(appID, types.Notification{
 				Data: map[string]string{
 					types.NotificationTypeKey:    "missing_authorization",
 					types.NotificationMessageKey: "Your application is missing the on-chain authorization to be able to send fee allowances",
@@ -154,7 +154,7 @@ func GrantAuthorizations(ctx scheduler.Context) error {
 
 	// Send a notification to the applications
 	for appID, usersAddresses := range grantedUsers {
-		err = ctx.FirebaseClient.SendNotificationToApp(appID, &types.Notification{
+		err = ctx.FirebaseClient.SendNotificationToApp(appID, types.Notification{
 			Data: map[string]string{
 				types.NotificationTypeKey:    "fee_allowances_granted",
 				types.NotificationMessageKey: "Your fee allowances have been granted",

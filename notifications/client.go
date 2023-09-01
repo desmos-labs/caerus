@@ -13,7 +13,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/api/option"
 
-	caerus "github.com/desmos-labs/caerus/types"
+	"github.com/desmos-labs/caerus/types"
 )
 
 type Client struct {
@@ -67,7 +67,7 @@ func NewClientFromEnvVariables(db Database) (*Client, error) {
 // --------------------------------------------------------------------------------------------------------------------
 
 // SendNotificationToUsers sends the given notification to the devices of the users having the given addresses
-func (c *Client) SendNotificationToUsers(app *caerus.Application, usersAddresses []string, notification *caerus.Notification) error {
+func (c *Client) SendNotificationToUsers(app *types.Application, usersAddresses []string, notification *types.Notification) error {
 	// Do nothing if the client is not configured
 	if c.firebaseMessaging == nil {
 		return nil
@@ -116,11 +116,11 @@ func (c *Client) SendNotificationToUsers(app *caerus.Application, usersAddresses
 	}
 
 	// Store the sent notification
-	return c.db.SaveSentNotification(caerus.NewSentNotification(app.ID, usersAddresses, notification))
+	return c.db.SaveSentNotification(types.NewSentNotification(app.ID, usersAddresses, notification))
 }
 
 // SendNotificationToApp allows to send the given notification to the application having the given id
-func (c *Client) SendNotificationToApp(appID string, notification *caerus.Notification) error {
+func (c *Client) SendNotificationToApp(appID string, notification types.Notification) error {
 	// Get the app with the given id
 	app, found, err := c.db.GetApp(appID)
 	if err != nil {
@@ -137,8 +137,19 @@ func (c *Client) SendNotificationToApp(appID string, notification *caerus.Notifi
 		return nil
 	}
 
-	// Crete a POST request to the notification webhook URL authenticating the request using the Authorization header
-	bodyBz, err := json.Marshal(&notification)
+	// Create the request body
+	signature, err := SignNotification(notification, app.SecretKey)
+	if err != nil {
+		return err
+	}
+
+	requestBody := SentNotificationBody{
+		Notification: notification,
+		Signature:    signature,
+	}
+
+	// Create a POST request to the notification webhook URL authenticating the request using the Authorization header
+	bodyBz, err := json.Marshal(&requestBody)
 	if err != nil {
 		return err
 	}
@@ -149,7 +160,6 @@ func (c *Client) SendNotificationToApp(appID string, notification *caerus.Notifi
 	}
 
 	// Set the authorization header
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer: %s", app.SecretKey))
 	req.Header.Set("Content-Type", "application/json")
 
 	// Create an HTTP client and send the request

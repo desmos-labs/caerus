@@ -15,7 +15,7 @@ type Database interface {
 }
 
 type Firebase interface {
-	SendNotificationToApp(appID string, notification *types.Notification) error
+	SendNotificationToApp(appID string, notification types.Notification) error
 }
 
 type ChainClient interface {
