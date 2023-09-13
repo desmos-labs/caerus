@@ -51,12 +51,12 @@ func (h *Handler) HandleFeeGrantRequest(req *RequestFeeGrantRequest) (*RequestFe
 	}
 
 	// Check if the app has granted a MsgGrantFeeAllowance permission
-	hasGrantedAuthorization, err := h.chainClient.HasGrantedMsgGrantAllowanceAuthorization(app.WalletAddress)
+	hasGrantedAuthzAuthorization, err := h.chainClient.HasGrantedMsgGrantAllowanceAuthorization(app.WalletAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	if !hasGrantedAuthorization {
+	if !hasGrantedAuthzAuthorization {
 		return nil, utils.WrapErr(codes.FailedPrecondition, "on-chain authorization not found")
 	}
 
