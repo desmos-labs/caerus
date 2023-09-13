@@ -2,7 +2,6 @@ package logging
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"time"
 
@@ -32,19 +31,10 @@ func init() {
 // This code is simple enough to be copied and not imported.
 func ZeroLogInterceptorLogger(l zerolog.Logger) logging.Logger {
 	return logging.LoggerFunc(func(ctx context.Context, lvl logging.Level, msg string, fields ...any) {
+		// Build the logger
 		logger := l.With().Fields(fields).Logger()
 
-		switch lvl {
-		case logging.LevelDebug:
-			logger.Debug().Msg(msg)
-		case logging.LevelInfo:
-			logger.Info().Msg(msg)
-		case logging.LevelWarn:
-			logger.Warn().Msg(msg)
-		case logging.LevelError:
-			logger.Error().Msg(msg)
-		default:
-			panic(fmt.Sprintf("unknown level %v", lvl))
-		}
+		// Log the message using the trace level
+		logger.Trace().Msg(msg)
 	})
 }
