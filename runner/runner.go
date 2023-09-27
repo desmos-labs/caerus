@@ -38,12 +38,12 @@ func (r *Runner) SetServiceRegistrar(registrar ServiceRegistrar) {
 func (r *Runner) Run() {
 	serverInstance := server.New(r.ctx.Database)
 
-	// Register the reflection service to allow listing methods provided by the server
-	reflection.Register(serverInstance)
-
 	if r.serviceRegistrar != nil {
 		r.serviceRegistrar(r.ctx, serverInstance)
 	}
+
+	// Register the reflection service to allow listing methods provided by the server
+	reflection.Register(serverInstance)
 
 	// Build the HTTP server to be able to shut it down if needed
 	runningAddress := utils.GetEnvOr(EnvServerAddress, "0.0.0.0")
