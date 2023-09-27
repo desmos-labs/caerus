@@ -50,7 +50,7 @@ func (suite *FilesServerTestSuite) SetupSuite() {
 
 	// Create the handler
 	suite.storage = files.NewIPFSStorage("https://ipfs.desmos.network")
-	suite.handler = files.NewHandler(suite.tempDir, suite.storage, suite.db)
+	suite.handler = files.NewHandler(suite.tempDir, suite.storage)
 
 	// Create the server
 	suite.server = testutils.CreateServer(suite.db)
@@ -180,12 +180,6 @@ func (suite *FilesServerTestSuite) TestUploadMedia() {
 			shouldErr: false,
 			check: func(res *files.UploadFileResponse) {
 				suite.Require().NotEmpty(res.FileName)
-
-				// Make sure the image hash has been saved properly
-				var hash string
-				err := suite.db.SQL.QueryRow(`SELECT hash FROM files_hashes WHERE file_name = $1`, res.FileName).Scan(&hash)
-				suite.Require().NoError(err)
-				suite.Require().Equal("L-J[3W*E#u;2%Lb:sE$OWBe@R%NH", hash)
 			},
 		},
 	}
@@ -204,7 +198,7 @@ func (suite *FilesServerTestSuite) TestUploadMedia() {
 			}
 
 			// Perform the request
-			res, err := suite.uploadFile(ctx, path.Join(suite.tempDir, "temp_file.jpeg"))
+			res, err := suite.uploadFile(ctx, "/home/riccardo/Downloads/Riccardo_Montagnin_A_crowd_of_people_walking_in_the_middle_of_N_09606c49-0ecf-4a2c-aef8-be2b3a99a7d6.png")
 
 			// Check the response
 			if tc.shouldErr {

@@ -1,8 +1,6 @@
 package files
 
 import (
-	"errors"
-	"image"
 	_ "image/gif"  // Required to properly decode GIF images
 	_ "image/jpeg" // Required to properly decode JPEG images
 	_ "image/png"  // Required to properly decode PNG images
@@ -11,7 +9,6 @@ import (
 	"path"
 	"strings"
 
-	"github.com/bbrks/go-blurhash"
 	"google.golang.org/grpc/codes"
 
 	"github.com/desmos-labs/caerus/utils"
@@ -20,23 +17,21 @@ import (
 type Handler struct {
 	uploadFolder string
 	storage      Storage
-	db           Database
 }
 
 // NewHandler returns a new Handler instance
-func NewHandler(filesBasePath string, storage Storage, db Database) *Handler {
+func NewHandler(filesBasePath string, storage Storage) *Handler {
 	uploadsFolder := path.Join(filesBasePath, "uploads")
 	utils.CreateDirIfNotExists(uploadsFolder)
 
 	return &Handler{
 		uploadFolder: uploadsFolder,
 		storage:      storage,
-		db:           db,
 	}
 }
 
 // NewHandlerFromEnvVariables builds a new Handler instance reading the configurations from the environment variables
-func NewHandlerFromEnvVariables(db Database) *Handler {
+func NewHandlerFromEnvVariables() *Handler {
 	defaultBasePath, err := os.UserHomeDir()
 	if err != nil {
 		panic(err)
@@ -45,7 +40,6 @@ func NewHandlerFromEnvVariables(db Database) *Handler {
 	return NewHandler(
 		utils.GetEnvOr(EnvFileStorageBaseFolder, defaultBasePath),
 		StorageFromEnvVariables(),
-		db,
 	)
 }
 
@@ -90,44 +84,13 @@ func (h *Handler) SaveFile(fileName string, data []byte) (string, error) {
 // UploadFile writes the contents of the file located at the given path in a temporary file, and uploads them remotely.
 // After the uploads is completed, the path to the temporary file is returned along with the upload response.
 // Note: The caller should make sure the temporary file is deleted.
-func (h *Handler) UploadFile(filePath string) (string, *UploadFileResponse, error) {
+func (h *Handler) UploadFile(filePath string) (*UploadFileResponse, error) {
 	fileName, err := h.storage.UploadFile(filePath)
 	if err != nil {
-		return filePath, nil, err
+		return nil, err
 	}
 
-	// Get the URL to download the file
-	response := NewUploadFileResponse(fileName)
-
-	// Read the image
-	reader, err := os.Open(filePath)
-	if err != nil {
-		return filePath, response, err
-	}
-	defer reader.Close()
-
-	img, _, err := image.Decode(reader)
-	if err != nil {
-		// If the image is not supported, then just return the response
-		if errors.Is(err, image.ErrFormat) {
-			return filePath, response, nil
-		}
-		return filePath, response, err
-	}
-
-	// Create the image hash
-	str, err := blurhash.Encode(4, 3, img)
-	if err != nil {
-		return filePath, response, err
-	}
-
-	// Save the image hash
-	err = h.db.SaveMediaHash(fileName, str)
-	if err != nil {
-		return filePath, response, err
-	}
-
-	return filePath, response, nil
+	return NewUploadFileResponse(fileName), nil
 }
 
 // GetFile gets the contents of the file having the given name, and writes them on a temporary

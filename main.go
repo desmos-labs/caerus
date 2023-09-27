@@ -76,7 +76,7 @@ func main() {
 	// Register the default routes
 	serverRunner.SetServiceRegistrar(func(context runner.Context, server *grpc.Server) {
 		applications.RegisterApplicationServiceServer(server, applications.NewServerFromEnvVariables(context.Database))
-		files.RegisterFilesServiceServer(server, files.NewServerFromEnvVariables(context.Database))
+		files.RegisterFilesServiceServer(server, files.NewServerFromEnvVariables())
 		grants.RegisterGrantsServiceServer(server, grants.NewServerFromEnvVariables(context.ChainClient, context.Codec, context.Database))
 		notifications.RegisterNotificationsServiceServer(server, notifications.NewServerFromEnvVariables(context.NotificationsClient, context.Database))
 		users.RegisterUsersServiceServer(server, users.NewServerFromEnvVariables(context.Codec, context.Amino, context.Database))
