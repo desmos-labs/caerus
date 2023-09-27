@@ -198,7 +198,7 @@ func (suite *FilesServerTestSuite) TestUploadMedia() {
 			}
 
 			// Perform the request
-			res, err := suite.uploadFile(ctx, "/home/riccardo/Downloads/Riccardo_Montagnin_A_crowd_of_people_walking_in_the_middle_of_N_09606c49-0ecf-4a2c-aef8-be2b3a99a7d6.png")
+			res, err := suite.uploadFile(ctx, path.Join(suite.tempDir, "temp_file.jpeg"))
 
 			// Check the response
 			if tc.shouldErr {
