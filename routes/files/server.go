@@ -21,9 +21,9 @@ func NewServer(handler *Handler) *Server {
 	}
 }
 
-func NewServerFromEnvVariables(db Database) *Server {
+func NewServerFromEnvVariables() *Server {
 	return &Server{
-		handler: NewHandlerFromEnvVariables(db),
+		handler: NewHandlerFromEnvVariables(),
 	}
 }
 
@@ -49,11 +49,13 @@ func (s *Server) UploadFile(stream FilesService_UploadFileServer) error {
 			}
 
 			// Now, handle the request
-			tempFilePath, res, err := s.handler.UploadFile(filePath)
+			res, err := s.handler.UploadFile(filePath)
 			if err != nil {
 				return err
 			}
-			os.Remove(tempFilePath)
+
+			// Remove the file from the local storage
+			os.Remove(filePath)
 
 			return stream.SendAndClose(res)
 		}
