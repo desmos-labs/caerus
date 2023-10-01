@@ -4,11 +4,10 @@ go 1.20
 
 require (
 	firebase.google.com/go/v4 v4.12.0
-	github.com/bbrks/go-blurhash v1.1.1
 	github.com/cosmos/cosmos-proto v1.0.0-beta.2
 	github.com/cosmos/cosmos-sdk v0.47.4
 	github.com/cosmos/gogoproto v1.4.10
-	github.com/desmos-labs/cosmos-go-wallet v0.7.0
+	github.com/desmos-labs/cosmos-go-wallet v0.7.1
 	github.com/desmos-labs/desmos/v6 v6.0.0
 	github.com/go-co-op/gocron v1.31.0
 	github.com/golangci/golangci-lint v1.54.1
