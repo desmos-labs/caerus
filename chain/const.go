@@ -7,4 +7,5 @@ const (
 	EnvChainRPCUrl                = "CHAIN_RPC_URL"
 	EnvChainGRPCUrl               = "CHAIN_GRPC_URL"
 	EnvChainGasPrice              = "CHAIN_GAS_PRICE"
+	EnvChainGasAdjustment         = "CHAIN_GAS_ADJUSTMENT"
 )

@@ -2,6 +2,7 @@ package chain
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	wallettypes "github.com/desmos-labs/cosmos-go-wallet/types"
@@ -25,6 +26,11 @@ func (c *Config) Validate() error {
 
 // ReadConfigFromEnvVariables reads a Config instance from the env variables values
 func ReadConfigFromEnvVariables() (*Config, error) {
+	gasAdjustment, err := strconv.ParseFloat(utils.GetEnvOr(EnvChainGasAdjustment, "1.8"), 64)
+	if err != nil {
+		return nil, err
+	}
+
 	cfg := &Config{
 		Account: &wallettypes.AccountConfig{
 			Mnemonic: utils.GetEnvOr(EnvChainAccountRecoveryPhrase, ""),
@@ -35,7 +41,7 @@ func ReadConfigFromEnvVariables() (*Config, error) {
 			RPCAddr:       utils.GetEnvOr(EnvChainRPCUrl, "https://rpc.morpheus.desmos.network:443"),
 			GRPCAddr:      utils.GetEnvOr(EnvChainGRPCUrl, "https://grpc.morpheus.desmos.network:443"),
 			GasPrice:      utils.GetEnvOr(EnvChainGasPrice, "0.01udaric"),
-			GasAdjustment: 1.5,
+			GasAdjustment: gasAdjustment,
 		},
 	}
 	return cfg, cfg.Validate()
