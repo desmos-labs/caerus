@@ -111,7 +111,19 @@ func GrantAuthorizations(ctx scheduler.Context) error {
 			grantedGrantRequestsIDs = append(grantedGrantRequestsIDs, grantRequest.ID)
 			grantedUsers[appID] = append(grantedUsers[appID], grantRequest.DesmosAddress)
 
-			grantAllowanceMsgs = append(grantAllowanceMsgs, msgGrantAllowance)
+			// Only add the message if the fee allowance has not been granted yet
+			hasFeeGrant, err := ctx.ChainClient.HasFeeGrant(feeGrantGranteeAddress.String(), feeGrantGranterAddress.String())
+			if err != nil {
+				return err
+			}
+
+			if !hasFeeGrant {
+				grantAllowanceMsgs = append(grantAllowanceMsgs, msgGrantAllowance)
+			}
+		}
+
+		if len(grantAllowanceMsgs) == 0 {
+			continue
 		}
 
 		// Parse the messages

@@ -20,6 +20,7 @@ type Firebase interface {
 
 type ChainClient interface {
 	AccAddress() string
+	HasFeeGrant(granteeAddress string, granterAddress string) (bool, error)
 	HasGrantedMsgGrantAllowanceAuthorization(appAddress string) (bool, error)
 	BroadcastTxCommit(data *wallettypes.TransactionData) (*sdk.TxResponse, error)
 }
